@@ -1,5 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
+import { ILead, IPipelineStep } from '../../_interfaces/interface-leads';
 
 /**
  * All delt tilstand i appen, som i eris-fe. Komponentene leser signals herfra og
@@ -20,7 +21,9 @@ export class StateService {
     /** Mobilmenyen (panelet fra siden). Lukkes ved navigasjon og klikk utenfor. */
     readonly isMenuOpen = signal(false);
 
-    // Dashbord
-    /** undefined = ikke hentet ennå. */
-    readonly leadsCount = signal<number | undefined>(undefined);
+    // Leads
+    readonly leads = signal<Array<ILead>>([]);
+    readonly pipelineSteps = signal<Array<IPipelineStep>>([]);
+    /** false til første vellykkede henting, så visningen kan skille tomt fra ikke lastet. */
+    readonly leadsLoaded = signal(false);
 }

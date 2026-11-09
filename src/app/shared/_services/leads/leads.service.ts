@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
+import { ILead, IPipelineStep } from '../../_interfaces/interface-leads';
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
- * Kall mot tabellen leads via Data API. RLS avgjør hva den innloggede får se.
+ * Kall mot leads og pipeline_steg via Data API. RLS avgjør hva den innloggede får se.
  */
 @Injectable({
     providedIn: 'root'
@@ -11,11 +12,31 @@ export class LeadsService {
 
     private readonly supabase = inject(SupabaseService);
 
-    async getCount(): Promise<number> {
-        const { count, error } = await this.supabase.client
+    // PostgREST returnerer maks 1000 rader om ikke annet er sagt. Grensen her er romslig for
+    // dagens volum (846), og må gjøres om til sidevis henting før den nås.
+    private static readonly MaxRows = 5000;
+
+    private static readonly LeadColumns =
+        'id, navn, bedriftsnavn, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
+        'demo_dato, demo_tid, registrert_dato, lisenser';
+
+    async getLeads(): Promise<Array<ILead>> {
+        const { data, error } = await this.supabase.client
             .from('leads')
-            .select('*', { count: 'exact', head: true });
+            .select<string, ILead>(LeadsService.LeadColumns)
+            .order('opprettet_ekst', { ascending: false })
+            .limit(LeadsService.MaxRows);
         if (error) throw error;
-        return count ?? 0;
+        return data ?? [];
+    }
+
+    async getPipelineSteps(): Promise<Array<IPipelineStep>> {
+        const { data, error } = await this.supabase.client
+            .from('pipeline_steg')
+            .select<string, IPipelineStep>('nokkel, label, farge, rekkefolge, aktiv')
+            .eq('aktiv', true)
+            .order('rekkefolge', { ascending: true });
+        if (error) throw error;
+        return data ?? [];
     }
 }

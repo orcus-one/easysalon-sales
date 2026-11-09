@@ -1,21 +1,114 @@
 <div class="page-header">
   <h1>Oversikt</h1>
   <div class="page-actions">
-    <span class="muted num">{{ today | date:'d. MMMM yyyy' }}</span>
+    <span class="muted num">Oppdatert {{ loadedAt() | date:'HH:mm' }}</span>
     <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
   </div>
 </div>
 
-<section class="kpis">
-  <div class="card kpi">
-    <span class="eyebrow">Leads</span>
-    <span class="kpi-value num">
-      @if (leadsCount() === undefined) { … } @else { {{ leadsCount() | number:'1.0-0' }} }
-    </span>
-    <span class="muted">totalt i basen</span>
-  </div>
-</section>
-
 @if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 }
+
+<!-- Nøkkeltall -->
+<section class="kpis" [class.pending]="!hasLoaded()">
+  <div class="card kpi">
+    <span class="eyebrow">Leads</span>
+    <span class="kpi-value num">{{ kpis().total | number:'1.0-0' }}</span>
+    <span class="muted">totalt</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Nye</span>
+    <span class="kpi-value num">{{ kpis().newLast30 | number:'1.0-0' }}</span>
+    <span class="muted">siste 30 dager</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Demoer</span>
+    <span class="kpi-value num">{{ kpis().upcomingDemos | number:'1.0-0' }}</span>
+    <span class="muted">booket fremover</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Vunnet</span>
+    <span class="kpi-value num">{{ kpis().wonLast30 | number:'1.0-0' }}</span>
+    <span class="muted">siste 30 dager, {{ kpis().licensesLast30 | number:'1.0-0' }} lisenser</span>
+  </div>
+</section>
+
+<div class="grid">
+
+  <!-- Pipeline -->
+  <section class="card span-2">
+    <div class="card-head">
+      <h2>Pipeline</h2>
+      <span class="muted">{{ kpis().total | number:'1.0-0' }} leads fordelt på status</span>
+    </div>
+
+    <div class="bar" role="img" aria-label="Fordeling av leads per status">
+      @for (item of pipeline(); track item.step.nokkel) {
+        @if (item.count > 0) {
+          <span class="bar-seg" [style.flex-grow]="item.count" [style.background]="item.step.farge"
+                [title]="item.step.label + ': ' + item.count"></span>
+        }
+      }
+    </div>
+
+    <ul class="steps">
+      @for (item of pipeline(); track item.step.nokkel) {
+        <li class="step" [class.empty]="item.count === 0">
+          <span class="swatch" [style.background]="item.step.farge"></span>
+          <span class="step-label">{{ item.step.label }}</span>
+          <span class="step-count num">{{ item.count | number:'1.0-0' }}</span>
+          <span class="step-share num muted">{{ item.share | percent:'1.0-0' }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- Per kilde -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Kilder</h2>
+      <span class="muted">andel som er vunnet</span>
+    </div>
+    <table class="table">
+      <thead>
+        <tr><th>Kilde</th><th class="num r">Leads</th><th class="num r">Vunnet</th><th class="num r">Andel</th></tr>
+      </thead>
+      <tbody>
+        @for (row of bySource(); track row.kilde) {
+          <tr>
+            <td>{{ row.kilde }}</td>
+            <td class="num r">{{ row.total | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.won | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.wonShare | percent:'1.0-1' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Kommende -->
+  <section class="card span-3">
+    <div class="card-head">
+      <h2>Kommende</h2>
+      <span class="muted">oppfølginger og demoer de neste {{ upcomingDays }} dagene</span>
+    </div>
+    @if (hasLoaded() && upcoming().length === 0) {
+      <p class="muted empty-state">Ingenting planlagt de neste {{ upcomingDays }} dagene.</p>
+    } @else {
+      <ul class="upcoming">
+        @for (item of upcoming(); track item.kind + item.lead.id) {
+          <li class="upcoming-item">
+            <span class="pill" [class.pill-demo]="item.kind === 'demo'">{{ item.kind === 'demo' ? 'Demo' : 'Oppfølging' }}</span>
+            <span class="when num">{{ item.date | date:'EEE d. MMM' }}@if (item.time) { · {{ item.time.slice(0, 5) }}}</span>
+            <span class="who">
+              <span class="who-name">{{ item.lead.navn }}</span>
+              @if (item.lead.bedriftsnavn) { <span class="muted"> · {{ item.lead.bedriftsnavn }}</span> }
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+</div>
