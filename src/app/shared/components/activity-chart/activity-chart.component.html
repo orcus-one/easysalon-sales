@@ -11,7 +11,7 @@
   }
 
   @for (bar of bars(); track bar.label) {
-    <g [class.empty]="bar.empty">
+    <g [class.empty]="bar.empty" [class.weekend]="bar.weekend">
       <title>{{ bar.title }}</title>
       <rect class="slot" [attr.x]="bar.slotX" [attr.y]="8" [attr.width]="bar.slotWidth" [attr.height]="baseline - 8" />
       <rect class="ringt" [attr.x]="bar.x" [attr.y]="bar.ringtY" [attr.width]="barWidth()" [attr.height]="bar.ringtH" />

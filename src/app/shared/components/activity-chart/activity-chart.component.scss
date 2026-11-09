@@ -14,5 +14,7 @@ rect.ringt, rect.sms { rx: 1.5; }
 /* Svak søyle bak hver dag, så dager uten aktivitet står som tydelige hull. */
 rect.slot { fill: var(--surface-2); }
 g.empty rect.slot { fill: var(--border); }
+/* Lørdag og søndag merkes i dagnummeret. */
+g.weekend text.day { fill: var(--crit); }
 g:hover rect.ringt, g:hover rect.sms { opacity: .8; }
 g:hover rect.slot { fill: var(--border); }

@@ -6,6 +6,7 @@ interface IBar {
   slotX: number;
   slotWidth: number;
   empty: boolean;
+  weekend: boolean;
   ringt: number;
   sms: number;
   ringtY: number;
@@ -78,6 +79,7 @@ export class ActivityChartComponent {
         slotX: this.padLeft + i * slot + 1,
         slotWidth: Math.max(1, slot - 2),
         empty: d.ringt + d.sms === 0,
+        weekend: date.getDay() === 0 || date.getDay() === 6,
         ringt: d.ringt,
         sms: d.sms,
         ringtY: base - ringtH,
