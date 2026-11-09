@@ -22,6 +22,9 @@
   --crit: #C62828;
   --chart-1: #E48A9A;
   --chart-2: #0D9488;
+  /* Rolig blå til informasjon, f.eks. oppfølging. Ikke varsel. */
+  --info: #4F5BD5;
+  --info-soft: rgba(99, 102, 241, .14);
   --shadow: 0 1px 2px rgba(28, 27, 34, .06), 0 8px 24px rgba(28, 27, 34, .06);
   --radius: 14px;
   --radius-sm: 10px;
@@ -45,6 +48,8 @@
     --crit: #EF5350;
     --chart-1: #F0A6B3;
     --chart-2: #2DD4BF;
+    --info: #A5B4FC;
+    --info-soft: rgba(99, 102, 241, .22);
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .3);
   }
 }
