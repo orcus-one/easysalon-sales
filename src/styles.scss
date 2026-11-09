@@ -1,0 +1,106 @@
+/*
+  Designplan for salgsverktøyet.
+  Layout: topplinje med ordmerke, navigasjon og bruker; innhold i én kolonne på maks 1200px med
+  nøkkeltall øverst og detaljer under. Rolige, svakt kjølige flater, EasySalon-rosa kun som aksent.
+  Inter til alt i grensesnittet (selvhostet i src/fonts), Playfair Display bare i ordmerket.
+*/
+@use "fonts/fonts";
+
+:root {
+  color-scheme: light;
+  --bg: #F6F5F8;
+  --surface: #FFFFFF;
+  --surface-2: #FBFAFC;
+  --fg: #1C1B22;
+  --muted: #6B6879;
+  --border: #E6E2EA;
+  --accent: #E48A9A;
+  --accent-ink: #B8536A;
+  --accent-soft: rgba(228, 138, 154, .14);
+  --ok: #2E7D32;
+  --warn: #B26A00;
+  --crit: #C62828;
+  --shadow: 0 1px 2px rgba(28, 27, 34, .06), 0 8px 24px rgba(28, 27, 34, .06);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-brand: 'Playfair Display', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #15141A;
+    --surface: #1E1D25;
+    --surface-2: #24232C;
+    --fg: #ECEAF1;
+    --muted: #9B97A8;
+    --border: #2E2C38;
+    --accent: #E48A9A;
+    --accent-ink: #F0A6B3;
+    --accent-soft: rgba(228, 138, 154, .18);
+    --ok: #66BB6A;
+    --warn: #FFB74D;
+    --crit: #EF5350;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .3);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.01em; text-wrap: balance; }
+h1 { font-size: 24px; }
+h2 { font-size: 18px; }
+p { margin: 0; }
+a { color: var(--accent-ink); }
+
+.wordmark { font-family: var(--font-brand); font-weight: 700; letter-spacing: 0; }
+.muted { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* Flater: kortstil brukes bare der noe skal skilles ut som eget objekt. */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 22px;
+}
+
+/* Skjema */
+label { display: block; font-weight: 500; font-size: 14px; margin: 14px 0 6px; }
+input[type=email], input[type=password], input[type=text] {
+  width: 100%; font: inherit; font-size: 15px; padding: 11px 13px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--fg); outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  &:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+}
+
+/* Knapper */
+.btn {
+  font: inherit; font-weight: 600; font-size: 14px; padding: 10px 16px; border: 1px solid transparent;
+  border-radius: var(--radius-sm); cursor: pointer; background: var(--fg); color: var(--bg);
+  transition: opacity .15s, background .15s;
+  &:hover { opacity: .92; }
+  &:disabled { opacity: .55; cursor: default; }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+.btn-light { background: var(--surface); color: var(--fg); border-color: var(--border); }
+.btn-block { width: 100%; margin-top: 22px; padding: 12px 16px; }
+
+.error { color: var(--crit); font-size: 14px; margin-top: 12px; min-height: 1.3em; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

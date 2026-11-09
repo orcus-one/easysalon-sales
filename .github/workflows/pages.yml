@@ -1,0 +1,36 @@
+# Bygger Angular-appen og legger den ut som GitHub Pages-side ved hver push til main.
+# Samme mønster som easysalon-sites, med byggesteg før opplasting.
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # base-href må være repo-navnet så lenge siden ligger på orcus-one.github.io/easysalon-sales/.
+      # Får siden eget domene, endres den til /.
+      - run: npm run build -- --base-href /easysalon-sales/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/easysalon-sales/browser
+      - id: deployment
+        uses: actions/deploy-pages@v4

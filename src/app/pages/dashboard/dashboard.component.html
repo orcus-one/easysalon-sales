@@ -1,0 +1,47 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <img src="logo.png" alt="EasySalon">
+      <span class="wordmark">Salg</span>
+    </div>
+    <nav class="nav" aria-label="Hovedmeny">
+      <a class="nav-link active" href="#/dashboard">Oversikt</a>
+    </nav>
+    <div class="user">
+      <span class="muted">{{ userEmail() }}</span>
+      <button type="button" class="btn btn-light" (click)="logout()">Logg ut</button>
+    </div>
+  </div>
+</header>
+
+<main class="content">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">Oversikt</span>
+      <h1>Salg</h1>
+    </div>
+    <div class="page-actions">
+      <span class="muted num">{{ today | date:'d. MMMM yyyy' }}</span>
+      <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+    </div>
+  </div>
+
+  <section class="kpis">
+    <div class="card kpi">
+      <span class="eyebrow">Leads</span>
+      <span class="kpi-value num">
+        @if (leadsCount() === undefined) { … } @else { {{ leadsCount() | number:'1.0-0' }} }
+      </span>
+      <span class="muted">totalt i basen</span>
+    </div>
+  </section>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <section class="card next">
+    <h2>Neste</h2>
+    <p class="muted">Flere visninger kommer her: pipeline, kampanjer og kostnader.</p>
+  </section>
+</main>
