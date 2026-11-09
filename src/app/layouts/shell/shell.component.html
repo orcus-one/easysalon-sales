@@ -1,16 +1,13 @@
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" routerLink="/dashboard">
+    <a class="brand" routerLink="/dashboard" aria-label="Til oversikten">
       <img src="moonde.png" alt="Moonde" class="logo">
-      <span class="wordmark">hermes<span class="dot">.</span></span>
-      <span class="slogan">Festina lente</span>
     </a>
 
-    <nav class="nav" aria-label="Hovedmeny">
-      @for (item of navItems; track item.path) {
-        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
-      }
-    </nav>
+    <div class="title">
+      <span class="wordmark">hermes<span class="dot">.</span></span>
+      <span class="slogan">Festina lente</span>
+    </div>
 
     <div class="user">
       <span class="muted">{{ userEmail() }}</span>
@@ -22,6 +19,13 @@
       <span class="bars" [class.open]="isMenuOpen()"></span>
     </button>
   </div>
+  <nav class="nav" aria-label="Hovedmeny">
+    <div class="nav-inner">
+      @for (item of navItems; track item.path) {
+        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+      }
+    </div>
+  </nav>
 </header>
 
 <!-- Mobilmeny: panel fra høyre med bakteppe. -->
