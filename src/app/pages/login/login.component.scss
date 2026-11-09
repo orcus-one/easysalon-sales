@@ -16,8 +16,8 @@
 .logo { height: 84px; width: auto; margin: 0 0 30px -16px; display: block; }
 /* Moonde-logoen er ren svart på gjennomsiktig bunn; invertert blir den hvit i mørk modus. */
 @media (prefers-color-scheme: dark) { .logo { filter: invert(1); } }
-.brand-panel h1 { font-size: 40px; }
-.quote { font-family: var(--font-brand); font-style: italic; font-size: 18px; margin-top: 6px; letter-spacing: .01em; }
+.brand-panel h1 { font-size: 44px; line-height: 1.05; }
+.quote { font-size: 17px; font-weight: 400; margin-top: 4px; letter-spacing: .01em; }
 
 .form-panel {
   display: flex; align-items: center; justify-content: center;
