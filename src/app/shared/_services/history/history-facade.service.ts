@@ -20,8 +20,10 @@ export class HistoryFacadeService {
 
     readonly days = signal(HistoryFacadeService.DayOptions[0]);
     readonly typeOptions = LeadsHelperService.EventTypes;
-    /** Typene som vises. Alle på fra start. */
-    readonly enabledTypes = signal<Set<string>>(new Set(LeadsHelperService.EventTypes.map(t => t.type)));
+    /** Typene som vises fra start (Kenneth 2026-11-09). Resten kan skrus på med filteret. */
+    static readonly DefaultTypes = ['ringt_klikk', 'sms_klikk', 'mote_klikk'];
+
+    readonly enabledTypes = signal<Set<string>>(new Set(HistoryFacadeService.DefaultTypes));
 
     readonly isLoading = this.leadsFacade.isLoading;
     readonly error = this.leadsFacade.error;
