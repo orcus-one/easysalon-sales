@@ -12,7 +12,8 @@
   border-right: 1px solid var(--border);
 }
 .brand-inner { max-width: 360px; }
-.logo { height: 64px; width: auto; margin-bottom: 28px; }
+/* Bildet har ca. 5 % luft til venstre for m-en; negativ marg legger m-en på linje med teksten under. */
+.logo { height: 64px; width: auto; margin: 0 0 28px -12px; display: block; }
 /* Moonde-logoen er ren svart på gjennomsiktig bunn; invertert blir den hvit i mørk modus. */
 @media (prefers-color-scheme: dark) { .logo { filter: invert(1); } }
 .brand-panel h1 { font-size: 40px; }
@@ -29,6 +30,6 @@
   .login-page { grid-template-columns: 1fr; }
   .brand-panel { border-right: 0; border-bottom: 1px solid var(--border); padding: 36px 24px; }
   .brand-panel h1 { font-size: 32px; }
-  .logo { height: 48px; margin-bottom: 20px; }
+  .logo { height: 48px; margin: 0 0 20px -9px; }
   .form-panel { padding: 32px 16px 48px; align-items: flex-start; }
 }
