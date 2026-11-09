@@ -64,7 +64,7 @@ p { margin: 0; }
 a { color: var(--accent-ink); }
 
 /* Ordmerket Hermes følger Moonde-logoens geometriske grotesk, ikke serifen. */
-.wordmark { font-family: var(--font-ui); font-weight: 700; letter-spacing: -.03em; }
+.wordmark { font-family: var(--font-ui); font-weight: 500; letter-spacing: -.02em; }
 /* Prikken etter hermes speiler prikken i Moonde-logoen. */
 .wordmark .dot { color: var(--accent); }
 .muted { color: var(--muted); }
