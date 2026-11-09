@@ -8,5 +8,10 @@
 .chart { width: 100%; height: auto; display: block; overflow: visible; }
 line.grid { stroke: var(--border); stroke-width: 1; }
 text.axis { fill: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
-rect { rx: 1.5; }
-g:hover rect { opacity: .8; }
+rect.ringt, rect.sms { rx: 1.5; }
+/* Svak søyle bak hver dag, så dager uten aktivitet står som tydelige hull. */
+rect.slot { fill: var(--surface-2); }
+g.empty rect.slot { fill: var(--accent-soft); }
+g.empty text.day { fill: var(--accent-ink); }
+g:hover rect.ringt, g:hover rect.sms { opacity: .8; }
+g:hover rect.slot { fill: var(--border); }
