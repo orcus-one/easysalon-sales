@@ -65,7 +65,9 @@ h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.01em; text-wrap: bal
 h1 { font-size: 24px; }
 h2 { font-size: 18px; }
 p { margin: 0; }
-a { color: var(--accent-ink); }
+/* Lenker i vanlig tekstfarge med dempet strek. Rosa er aksent, ikke lenkefarge. */
+a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--fg); }
 
 /* Ordmerket Hermes følger Moonde-logoens geometriske grotesk, ikke serifen. */
 .wordmark { font-family: var(--font-ui); font-weight: 500; letter-spacing: -.02em; }

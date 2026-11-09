@@ -26,14 +26,14 @@
 .time { color: var(--muted); }
 .pill {
   justify-self: start; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
-  padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink);
-  &.pill-demo { background: rgba(16, 185, 129, .15); color: var(--ok); }
+  padding: 3px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border);
+  &.pill-demo { background: rgba(16, 185, 129, .15); color: var(--ok); border-color: transparent; }
 }
 .who { display: flex; flex-direction: column; min-width: 0; }
 .who-name { font-weight: 500; }
 .who-company { font-size: 13px; }
 .contact { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 13px; }
-.contact a { text-decoration: none; &:hover { text-decoration: underline; } }
+
 
 @media (max-width: 640px) {
   .page-header { flex-direction: column; align-items: flex-start; }
