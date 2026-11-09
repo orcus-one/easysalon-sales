@@ -20,6 +20,7 @@ export class DashboardComponent {
   readonly pipeline = this.dashboardFacade.pipeline;
   readonly bySource = this.dashboardFacade.bySource;
   readonly upcoming = this.dashboardFacade.upcoming;
+  readonly activity = this.dashboardFacade.activity;
   readonly upcomingDays = DashboardFacadeService.UpcomingDays;
 
   constructor() {

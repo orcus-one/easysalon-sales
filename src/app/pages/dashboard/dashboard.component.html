@@ -87,8 +87,32 @@
     </table>
   </section>
 
+  <!-- Aktivitet -->
+  <section class="card">
+    <div class="card-head">
+      <h2>Aktivitet</h2>
+      <span class="muted">leads kontaktet</span>
+    </div>
+    <table class="table">
+      <thead>
+        <tr><th></th><th class="num r">7 d</th><th class="num r">14 d</th><th class="num r">30 d</th></tr>
+      </thead>
+      <tbody>
+        @for (row of activity(); track row.type) {
+          <tr>
+            <td>{{ row.label }}</td>
+            <td class="num r">{{ row.leadsLast7 | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.leadsLast14 | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.leadsLast30 | number:'1.0-0' }} <span class="muted small">({{ row.eventsLast30 | number:'1.0-0' }})</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <p class="muted note">Unike leads. Tallet i parentes er antall handlinger.</p>
+  </section>
+
   <!-- Kommende -->
-  <section class="card span-3">
+  <section class="card span-2">
     <div class="card-head">
       <h2>Kommende</h2>
       <span class="muted">oppfølginger og demoer de neste {{ upcomingDays }} dagene</span>

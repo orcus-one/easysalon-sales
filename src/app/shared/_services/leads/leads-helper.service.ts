@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    IDashboardKpis, ILead, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    IActivitySummary, IDashboardKpis, ILead, ILeadEvent, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -84,6 +84,33 @@ export class LeadsHelperService {
         return [...groups.entries()]
             .map(([kilde, g]) => ({ kilde, total: g.total, won: g.won, wonShare: g.total ? g.won / g.total : 0 }))
             .sort((a, b) => b.total - a.total);
+    }
+
+    /** Unike leads kontaktet per type siste 7, 14 og 30 dager, i fast rekkefølge. */
+    activity(events: Array<ILeadEvent>, now: Date): Array<IActivitySummary> {
+        const since7 = this.addDays(now, -7);
+        const since14 = this.addDays(now, -14);
+        const since30 = this.addDays(now, -30);
+        const labels: Array<[string, string]> = [
+            ['ringt_klikk', 'Ringt'],
+            ['sms_klikk', 'SMS'],
+            ['epost_klikk', 'E-post'],
+            ['mote_klikk', 'Møte']
+        ];
+        return labels.map(([type, label]) => {
+            const ofType = events.filter(e => e.type === type);
+            const last30 = ofType.filter(e => new Date(e.opprettet_at) >= since30);
+            const last14 = last30.filter(e => new Date(e.opprettet_at) >= since14);
+            const last7 = last14.filter(e => new Date(e.opprettet_at) >= since7);
+            return {
+                type,
+                label,
+                leadsLast7: new Set(last7.map(e => e.lead_id)).size,
+                leadsLast14: new Set(last14.map(e => e.lead_id)).size,
+                leadsLast30: new Set(last30.map(e => e.lead_id)).size,
+                eventsLast30: last30.length
+            };
+        });
     }
 
     /** Oppfølginger og demoer fra og med i dag til og med om `days` dager, tidligst først. */

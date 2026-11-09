@@ -43,6 +43,22 @@ export interface IUpcomingItem {
     kind: 'followup' | 'demo';
 }
 
+/** public.lead_hendelser: loggførte handlinger på et lead. */
+export interface ILeadEvent {
+    lead_id: string;
+    type: string;
+    opprettet_at: string;
+}
+
+export interface IActivitySummary {
+    type: string;
+    label: string;
+    leadsLast7: number;
+    leadsLast14: number;
+    leadsLast30: number;
+    eventsLast30: number;
+}
+
 export interface IDashboardKpis {
     total: number;
     newLast30: number;

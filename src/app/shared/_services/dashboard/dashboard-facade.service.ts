@@ -16,6 +16,7 @@ export class DashboardFacadeService {
     private readonly leadsHelper = inject(LeadsHelperService);
 
     static readonly UpcomingDays = 7;
+    static readonly ActivityDays = 30;
 
     readonly isLoading = signal(false);
     readonly error = signal('');
@@ -27,18 +28,22 @@ export class DashboardFacadeService {
     readonly bySource = computed(() => this.leadsHelper.bySource(this.stateService.leads()));
     readonly upcoming = computed(() =>
         this.leadsHelper.upcoming(this.stateService.leads(), this.loadedAt(), DashboardFacadeService.UpcomingDays));
+    readonly activity = computed(() => this.leadsHelper.activity(this.stateService.leadEvents(), this.loadedAt()));
     readonly hasLoaded = computed(() => this.stateService.leadsLoaded());
 
     async load(): Promise<void> {
         this.isLoading.set(true);
         this.error.set('');
         try {
-            const [leads, steps] = await Promise.all([
+            const now = new Date();
+            const [leads, steps, events] = await Promise.all([
                 this.leadsService.getLeads(),
-                this.leadsService.getPipelineSteps()
+                this.leadsService.getPipelineSteps(),
+                this.leadsService.getContactEvents(this.leadsHelper.addDays(now, -DashboardFacadeService.ActivityDays))
             ]);
             this.stateService.leads.set(leads);
             this.stateService.pipelineSteps.set(steps);
+            this.stateService.leadEvents.set(events);
             this.stateService.leadsLoaded.set(true);
             this.loadedAt.set(new Date());
         } catch {
