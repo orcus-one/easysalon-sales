@@ -97,7 +97,7 @@
   </section>
 
   <!-- Aktivitet -->
-  <section class="card span-2">
+  <section class="card span-3">
     <div class="card-head">
       <h2>Aktivitet</h2>
       <span class="muted">leads kontaktet</span>
@@ -120,30 +120,6 @@
       </tbody>
     </table>
     <p class="muted note">Unike leads. Tallet i parentes er antall handlinger.</p>
-  </section>
-
-  <!-- Kommende -->
-  <section class="card">
-    <div class="card-head">
-      <h2>Kommende</h2>
-      <span class="muted">oppfølginger og demoer de neste {{ upcomingDays }} dagene</span>
-    </div>
-    @if (hasLoaded() && upcoming().length === 0) {
-      <p class="muted empty-state">Ingenting planlagt de neste {{ upcomingDays }} dagene.</p>
-    } @else {
-      <ul class="upcoming">
-        @for (item of upcoming(); track item.kind + item.lead.id) {
-          <li class="upcoming-item">
-            <span class="pill" [class.pill-demo]="item.kind === 'demo'">{{ item.kind === 'demo' ? 'Demo' : 'Oppfølging' }}</span>
-            <span class="when num">{{ item.date | date:'EEE d. MMM' }}@if (item.time) { · {{ item.time.slice(0, 5) }}}</span>
-            <span class="who">
-              <span class="who-name">{{ item.lead.navn }}</span>
-              @if (item.lead.bedriftsnavn) { <span class="muted"> · {{ item.lead.bedriftsnavn }}</span> }
-            </span>
-          </li>
-        }
-      </ul>
-    }
   </section>
 
 </div>

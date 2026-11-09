@@ -20,17 +20,15 @@ export class DashboardComponent {
   readonly kpis = this.dashboardFacade.kpis;
   readonly pipeline = this.dashboardFacade.pipeline;
   readonly bySource = this.dashboardFacade.bySource;
-  readonly upcoming = this.dashboardFacade.upcoming;
   readonly activity = this.dashboardFacade.activity;
   readonly dailyActivity = this.dashboardFacade.dailyActivity;
   readonly activityDays = DashboardFacadeService.ActivityDays;
-  readonly upcomingDays = DashboardFacadeService.UpcomingDays;
 
   constructor() {
-    this.dashboardFacade.load();
+    this.dashboardFacade.ensureLoaded();
   }
 
   refresh(): void {
-    this.dashboardFacade.load();
+    this.dashboardFacade.refresh();
   }
 }

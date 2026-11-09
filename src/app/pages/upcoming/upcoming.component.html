@@ -1,0 +1,50 @@
+<div class="page-header">
+  <div>
+    <h1>Kommende</h1>
+    <p class="muted summary num">{{ followupCount() }} oppfølginger og {{ demoCount() }} demoer de neste {{ days() }} dagene</p>
+  </div>
+  <div class="page-actions">
+    <div class="segmented" role="group" aria-label="Periode">
+      @for (option of dayOptions; track option) {
+        <button type="button" class="seg" [class.active]="days() === option" (click)="setDays(option)">{{ option }} dager</button>
+      }
+    </div>
+    <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+  </div>
+</div>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+@if (hasLoaded() && groups().length === 0) {
+  <section class="card">
+    <p class="muted">Ingenting planlagt de neste {{ days() }} dagene.</p>
+  </section>
+}
+
+@for (group of groups(); track group.date) {
+  <section class="day">
+    <h2 class="day-head">
+      <span class="day-name">{{ group.date | date:'EEEE' }}</span>
+      <span class="muted num">{{ group.date | date:'d. MMMM' }}</span>
+      <span class="muted count num">{{ group.items.length }}</span>
+    </h2>
+    <ul class="card list">
+      @for (item of group.items; track item.kind + item.lead.id) {
+        <li class="row">
+          <span class="time num">{{ item.time ? item.time.slice(0, 5) : '–' }}</span>
+          <span class="pill" [class.pill-demo]="item.kind === 'demo'">{{ item.kind === 'demo' ? 'Demo' : 'Oppfølging' }}</span>
+          <span class="who">
+            <span class="who-name">{{ item.lead.navn }}</span>
+            @if (item.lead.bedriftsnavn) { <span class="muted who-company">{{ item.lead.bedriftsnavn }}</span> }
+          </span>
+          <span class="contact">
+            @if (item.lead.telefon) { <a [href]="'tel:' + item.lead.telefon" class="num">{{ item.lead.telefon }}</a> }
+            @if (item.lead.epost) { <a [href]="'mailto:' + item.lead.epost">{{ item.lead.epost }}</a> }
+          </span>
+        </li>
+      }
+    </ul>
+  </section>
+}

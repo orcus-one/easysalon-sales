@@ -3,6 +3,8 @@ export interface ILead {
     id: string;
     navn: string;
     bedriftsnavn: string | null;
+    telefon: string | null;
+    epost: string | null;
     kilde: string | null;
     status: string;
     opprettet_ekst: string;
@@ -41,6 +43,11 @@ export interface IUpcomingItem {
     date: string;
     time: string | null;
     kind: 'followup' | 'demo';
+}
+
+export interface IUpcomingDay {
+    date: string;
+    items: Array<IUpcomingItem>;
 }
 
 /** public.lead_hendelser: loggførte handlinger på et lead. */

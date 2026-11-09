@@ -19,7 +19,7 @@ export class LeadsService {
     static readonly ContactEventTypes = ['ringt_klikk', 'sms_klikk', 'epost_klikk', 'mote_klikk'];
 
     private static readonly LeadColumns =
-        'id, navn, bedriftsnavn, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
+        'id, navn, bedriftsnavn, telefon, epost, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
         'demo_dato, demo_tid, registrert_dato, lisenser';
 
     async getLeads(): Promise<Array<ILead>> {

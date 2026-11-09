@@ -26,7 +26,8 @@ export class ShellComponent {
   readonly isMenuOpen = this.stateService.isMenuOpen;
 
   readonly navItems: Array<INavItem> = [
-    { path: '/dashboard', label: 'Oversikt' }
+    { path: '/dashboard', label: 'Oversikt' },
+    { path: '/kommende', label: 'Kommende' }
   ];
 
   constructor() {
