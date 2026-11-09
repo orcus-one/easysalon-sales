@@ -16,6 +16,7 @@
 /* Moonde-logoen er ren svart på gjennomsiktig bunn; invertert blir den hvit i mørk modus. */
 @media (prefers-color-scheme: dark) { .logo { filter: invert(1); } }
 .brand-panel h1 { font-size: 40px; }
+.quote { font-family: var(--font-brand); font-style: italic; font-size: 18px; margin-top: 6px; letter-spacing: .01em; }
 
 .form-panel {
   display: flex; align-items: center; justify-content: center;
