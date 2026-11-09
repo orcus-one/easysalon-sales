@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, ILead, ILeadEvent, IPipelineCount,
+    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, ILead, ILeadEvent, IMonthlySummary, IPipelineCount,
     IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
@@ -27,6 +27,45 @@ export class LeadsHelperService {
 
     eventTypeLabel(type: string): string {
         return LeadsHelperService.EventTypes.find(t => t.type === type)?.label ?? type;
+    }
+
+    /** yyyy-MM i lokal tid. */
+    toMonthKey(date: Date): string {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    /** Innsats og resultat per måned fra januar i år til og med inneværende måned. */
+    monthly(leads: Array<ILead>, events: Array<ILeadEvent>, now: Date): Array<IMonthlySummary> {
+        const months = new Map<string, IMonthlySummary>();
+        for (let m = 0; m <= now.getMonth(); m++) {
+            const key = this.toMonthKey(new Date(now.getFullYear(), m, 1));
+            months.set(key, { month: key, newLeads: 0, calls: 0, sms: 0, meetings: 0, demos: 0, won: 0, licenses: 0 });
+        }
+        const monthOf = (value: string) => value.slice(0, 7);
+
+        for (const lead of leads) {
+            const created = months.get(this.toMonthKey(new Date(lead.opprettet_ekst)));
+            if (created) created.newLeads += 1;
+            if (lead.demo_dato) {
+                const demo = months.get(monthOf(lead.demo_dato));
+                if (demo) demo.demos += 1;
+            }
+            if (lead.registrert_dato) {
+                const won = months.get(monthOf(lead.registrert_dato));
+                if (won) {
+                    won.won += 1;
+                    won.licenses += lead.lisenser ?? 0;
+                }
+            }
+        }
+        for (const e of events) {
+            const row = months.get(this.toMonthKey(new Date(e.opprettet_at)));
+            if (!row) continue;
+            if (e.type === 'ringt_klikk') row.calls += 1;
+            if (e.type === 'sms_klikk') row.sms += 1;
+            if (e.type === 'mote_klikk') row.meetings += 1;
+        }
+        return [...months.values()];
     }
 
     /** Hendelser i perioden med lead og etiketter, nyeste først. */

@@ -24,7 +24,7 @@ export class StateService {
     // Leads
     readonly leads = signal<Array<ILead>>([]);
     readonly pipelineSteps = signal<Array<IPipelineStep>>([]);
-    /** Hendelser siste 30 dager, alle typer, nyeste først. */
+    /** Hendelser fra årsstart, alle typer, nyeste først. */
     readonly leadEvents = signal<Array<ILeadEvent>>([]);
     /** false til første vellykkede henting, så visningen kan skille tomt fra ikke lastet. */
     readonly leadsLoaded = signal(false);

@@ -1,0 +1,59 @@
+<div class="page-header">
+  <div>
+    <h1>Hittil i år</h1>
+    <p class="muted sub">Innsats og resultat per måned i {{ year() }}</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+  </div>
+</div>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+<section class="card table-card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Måned</th>
+          <th class="r">Nye leads</th>
+          <th class="r">Ringt</th>
+          <th class="r">SMS</th>
+          <th class="r">Møter</th>
+          <th class="r">Demoer</th>
+          <th class="r">Vunnet</th>
+          <th class="r">Lisenser</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.month) {
+          <tr>
+            <td class="month">{{ row.month + '-01' | date:'MMMM' }}</td>
+            <td class="num r">{{ row.newLeads | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.calls | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.sms | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.meetings | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.demos | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.won | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.licenses | number:'1.0-0' }}</td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Sum</td>
+          <td class="num r">{{ total().newLeads | number:'1.0-0' }}</td>
+          <td class="num r">{{ total().calls | number:'1.0-0' }}</td>
+          <td class="num r">{{ total().sms | number:'1.0-0' }}</td>
+          <td class="num r">{{ total().meetings | number:'1.0-0' }}</td>
+          <td class="num r">{{ total().demos | number:'1.0-0' }}</td>
+          <td class="num r">{{ total().won | number:'1.0-0' }}</td>
+          <td class="num r">{{ total().licenses | number:'1.0-0' }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <p class="muted note">Nye leads etter dato leadet kom inn. Ringt, SMS og møter er loggførte handlinger. Demoer etter demodato, vunnet etter registreringsdato.</p>
+</section>

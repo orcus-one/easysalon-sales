@@ -16,8 +16,15 @@ export class LeadsFacadeService {
     private readonly leadsService = inject(LeadsService);
     private readonly leadsHelper = inject(LeadsHelperService);
 
-    /** Hvor langt tilbake hendelser hentes. Historikken og aktivitetstallene bruker samme vindu. */
+    /** Vinduet for aktivitetstallene og loggen. */
     static readonly ActivityDays = 30;
+
+    /** Hendelser hentes fra årsstart for månedsoversikten, minst 30 dager tilbake rett etter nyttår. */
+    private eventsSince(now: Date): Date {
+        const yearStart = new Date(now.getFullYear(), 0, 1);
+        const thirtyDays = this.leadsHelper.addDays(now, -LeadsFacadeService.ActivityDays);
+        return yearStart < thirtyDays ? yearStart : thirtyDays;
+    }
 
     readonly isLoading = signal(false);
     readonly error = signal('');
@@ -38,7 +45,7 @@ export class LeadsFacadeService {
             const [leads, steps, events] = await Promise.all([
                 this.leadsService.getLeads(),
                 this.leadsService.getPipelineSteps(),
-                this.leadsService.getEvents(this.leadsHelper.addDays(now, -LeadsFacadeService.ActivityDays))
+                this.leadsService.getEvents(this.eventsSince(now))
             ]);
             this.stateService.leads.set(leads);
             this.stateService.pipelineSteps.set(steps);

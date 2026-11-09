@@ -74,6 +74,18 @@ export interface IHistoryDay {
     items: Array<IHistoryItem>;
 }
 
+/** Én rad i månedsoversikten. */
+export interface IMonthlySummary {
+    month: string;
+    newLeads: number;
+    calls: number;
+    sms: number;
+    meetings: number;
+    demos: number;
+    won: number;
+    licenses: number;
+}
+
 export interface IEventTypeOption {
     type: string;
     label: string;
