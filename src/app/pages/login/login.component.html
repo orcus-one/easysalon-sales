@@ -5,10 +5,15 @@
       <h1 class="wordmark">hermes</h1>
       <p class="quote muted">Festina lente</p>
     </div>
+    <footer class="brand-footer muted">
+      <span>&copy; {{ today | date:'yyyy' }} <a href="https://moonde.no" target="_blank" rel="noopener">Moonde AS</a></span>
+      <span class="num">Org.nr. 926 341 987</span>
+    </footer>
   </aside>
 
   <section class="form-panel">
     <form class="form" [formGroup]="form" (ngSubmit)="submit()" autocomplete="on">
+      <p class="today muted num">{{ today | date:'EEEE d. MMMM yyyy' }}</p>
       <h2>Logg inn</h2>
 
       <label for="email">E-post</label>
