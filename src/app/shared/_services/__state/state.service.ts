@@ -16,6 +16,10 @@ export class StateService {
     readonly isLoggedIn = computed(() => !!this.session());
     readonly userEmail = computed(() => this.session()?.user.email ?? '');
 
+    // Skall
+    /** Mobilmenyen (panelet fra siden). Lukkes ved navigasjon og klikk utenfor. */
+    readonly isMenuOpen = signal(false);
+
     // Dashbord
     /** undefined = ikke hentet ennå. */
     readonly leadsCount = signal<number | undefined>(undefined);

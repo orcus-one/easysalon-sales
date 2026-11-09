@@ -1,0 +1,47 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" routerLink="/dashboard">
+      <img src="moonde.png" alt="Moonde" class="logo">
+      <span class="wordmark">hermes<span class="dot">.</span></span>
+      <span class="slogan">Festina lente</span>
+    </a>
+
+    <nav class="nav" aria-label="Hovedmeny">
+      @for (item of navItems; track item.path) {
+        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+      }
+    </nav>
+
+    <div class="user">
+      <span class="muted">{{ userEmail() }}</span>
+      <button type="button" class="btn btn-light" (click)="logout()">Logg ut</button>
+    </div>
+
+    <button type="button" class="menu-btn" (click)="toggleMenu()"
+            [attr.aria-expanded]="isMenuOpen()" aria-controls="mobile-menu" aria-label="Meny">
+      <span class="bars" [class.open]="isMenuOpen()"></span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobilmeny: panel fra høyre med bakteppe. -->
+<div class="backdrop" [class.open]="isMenuOpen()" (click)="closeMenu()"></div>
+<aside id="mobile-menu" class="drawer" [class.open]="isMenuOpen()" aria-label="Meny">
+  <div class="drawer-head">
+    <span class="wordmark">hermes<span class="dot">.</span></span>
+    <button type="button" class="close-btn" (click)="closeMenu()" aria-label="Lukk">&times;</button>
+  </div>
+  <nav class="drawer-nav">
+    @for (item of navItems; track item.path) {
+      <a class="drawer-link" [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+    }
+  </nav>
+  <div class="drawer-foot">
+    <span class="muted drawer-email">{{ userEmail() }}</span>
+    <button type="button" class="btn btn-light" (click)="logout()">Logg ut</button>
+  </div>
+</aside>
+
+<main class="content">
+  <router-outlet />
+</main>

@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { AuthFacadeService } from '../../shared/_services/auth/auth-facade.service';
 import { DashboardFacadeService } from '../../shared/_services/dashboard/dashboard-facade.service';
 import { StateService } from '../../shared/_services/__state/state.service';
 
@@ -13,10 +12,8 @@ import { StateService } from '../../shared/_services/__state/state.service';
 export class DashboardComponent {
 
   private readonly stateService = inject(StateService);
-  private readonly authFacade = inject(AuthFacadeService);
   private readonly dashboardFacade = inject(DashboardFacadeService);
 
-  readonly userEmail = this.stateService.userEmail;
   readonly leadsCount = this.stateService.leadsCount;
   readonly isLoading = this.dashboardFacade.isLoading;
   readonly error = this.dashboardFacade.error;
@@ -28,9 +25,5 @@ export class DashboardComponent {
 
   refresh(): void {
     this.dashboardFacade.load();
-  }
-
-  logout(): void {
-    this.authFacade.logout();
   }
 }

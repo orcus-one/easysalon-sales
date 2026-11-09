@@ -1,0 +1,98 @@
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  /* tynn rosa linje som toner ut mot høyre */
+  &::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 18%, transparent 60%);
+  }
+}
+.topbar-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 20px; height: 56px;
+  display: flex; align-items: center; gap: 24px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;
+  .logo { height: 22px; width: auto; margin-left: -4px; }
+  @media (prefers-color-scheme: dark) { .logo { filter: invert(1); } }
+  .wordmark { font-size: 20px; }
+  .slogan {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+    &::before { content: ""; width: 18px; height: 1px; background: var(--accent); }
+  }
+}
+.nav { display: flex; gap: 4px; flex: 1; }
+.nav-link {
+  padding: 6px 12px; border-radius: 8px; text-decoration: none; color: var(--muted); font-weight: 500; font-size: 14px;
+  &:hover { color: var(--fg); }
+  &.active { color: var(--fg); background: var(--accent-soft); }
+}
+.user { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+
+/* Menyknapp, kun mobil */
+.menu-btn {
+  display: none; margin-left: auto; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface); cursor: pointer; align-items: center; justify-content: center;
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+.bars {
+  position: relative; width: 18px; height: 2px; background: var(--fg); border-radius: 2px; transition: background .15s;
+  &::before, &::after {
+    content: ""; position: absolute; left: 0; width: 18px; height: 2px; background: var(--fg); border-radius: 2px;
+    transition: transform .2s;
+  }
+  &::before { top: -6px; }
+  &::after { top: 6px; }
+  &.open { background: transparent; }
+  &.open::before { transform: translateY(6px) rotate(45deg); }
+  &.open::after { transform: translateY(-6px) rotate(-45deg); }
+}
+
+/* Panel fra høyre */
+.backdrop {
+  position: fixed; inset: 0; z-index: 20; background: rgba(28, 27, 34, .4);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+  &.open { opacity: 1; pointer-events: auto; }
+}
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 30; width: min(320px, 85vw);
+  background: var(--surface); border-left: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform .25s ease;
+  &.open { transform: translateX(0); }
+}
+.drawer-head {
+  display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 20px; height: 56px;
+  border-bottom: 1px solid var(--border);
+  .wordmark { font-size: 20px; }
+}
+.close-btn {
+  width: 36px; height: 36px; border: 0; border-radius: 10px; background: transparent; color: var(--muted);
+  font-size: 26px; line-height: 1; cursor: pointer;
+  &:hover { background: var(--accent-soft); color: var(--fg); }
+}
+.drawer-nav { display: flex; flex-direction: column; padding: 12px; gap: 2px; flex: 1; }
+.drawer-link {
+  padding: 12px 14px; border-radius: 10px; text-decoration: none; color: var(--fg); font-weight: 500; font-size: 16px;
+  &.active { background: var(--accent-soft); }
+}
+.drawer-foot {
+  display: flex; flex-direction: column; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--border);
+}
+.drawer-email { font-size: 13px; overflow-wrap: anywhere; }
+
+.content { max-width: 1200px; margin: 0 auto; padding-block: 28px 56px; padding-inline: 20px; }
+
+@media (max-width: 760px) {
+  .topbar-inner { gap: 12px; padding: 0 16px; }
+  .nav, .user { display: none; }
+  .menu-btn { display: inline-flex; }
+  .content { padding-inline: 16px; }
+}
+@media (max-width: 420px) {
+  .slogan { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer, .backdrop, .bars, .bars::before, .bars::after { transition: none; }
+}
