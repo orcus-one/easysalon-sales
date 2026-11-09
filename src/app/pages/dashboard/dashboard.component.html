@@ -5,7 +5,7 @@
         <source srcset="logo-dark.png" media="(prefers-color-scheme: dark)">
         <img src="logo.png" alt="EasySalon">
       </picture>
-      <span class="wordmark">Salg</span>
+      <span class="wordmark">Hermes</span>
     </div>
     <nav class="nav" aria-label="Hovedmeny">
       <a class="nav-link active" href="#/dashboard">Oversikt</a>
@@ -19,10 +19,7 @@
 
 <main class="content">
   <div class="page-header">
-    <div>
-      <span class="eyebrow">Oversikt</span>
-      <h1>Salg</h1>
-    </div>
+    <h1>Oversikt</h1>
     <div class="page-actions">
       <span class="muted num">{{ today | date:'d. MMMM yyyy' }}</span>
       <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>

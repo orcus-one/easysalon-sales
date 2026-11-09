@@ -12,7 +12,9 @@
   border-right: 1px solid var(--border);
 }
 .brand-inner { max-width: 360px; }
-.logo { height: 56px; width: auto; margin-bottom: 20px; }
+.logo { height: 34px; width: auto; margin-bottom: 22px; }
+/* Moonde-logoen er ren svart på gjennomsiktig bunn; invertert blir den hvit i mørk modus. */
+@media (prefers-color-scheme: dark) { .logo { filter: invert(1); } }
 .brand-panel h1 { font-size: 40px; }
 
 .form-panel {
