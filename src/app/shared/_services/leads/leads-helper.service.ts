@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, ILead, ILeadEvent, IMonthlySummary, IPipelineCount,
-    IPipelineStep, ISourceSummary, IUpcomingItem
+    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, ILead, ILeadEvent, ILeadListItem, IMonthlySummary,
+    IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -27,6 +27,39 @@ export class LeadsHelperService {
 
     eventTypeLabel(type: string): string {
         return LeadsHelperService.EventTypes.find(t => t.type === type)?.label ?? type;
+    }
+
+    /** Steg for en status som ikke finnes i pipeline_steg. Grå, sist i rekkefølgen. */
+    unknownStep(status: string): IPipelineStep {
+        return { nokkel: status, label: status, farge: '#9ca3af', rekkefolge: 999, aktiv: true };
+    }
+
+    /**
+     * Leadlisten: alle leads nyeste først, med steget sitt og første planlagte dato (oppfølging eller demo)
+     * fra og med i dag. Datoer som er passert vises ikke som planlagt.
+     */
+    leadList(leads: Array<ILead>, steps: Array<IPipelineStep>, now: Date): Array<ILeadListItem> {
+        const todayKey = this.toDateKey(now);
+        const stepByKey = new Map(steps.map(s => [s.nokkel, s]));
+        return leads
+            .map(lead => {
+                const planned: Array<IUpcomingItem> = [];
+                if (lead.neste_oppfolging && lead.neste_oppfolging >= todayKey) {
+                    planned.push({ lead, date: lead.neste_oppfolging, time: lead.oppfolging_tid, kind: 'followup' });
+                }
+                if (lead.demo_dato && lead.demo_dato >= todayKey) {
+                    planned.push({ lead, date: lead.demo_dato, time: lead.demo_tid, kind: 'demo' });
+                }
+                planned.sort((a, b) => (a.date + (a.time ?? '')).localeCompare(b.date + (b.time ?? '')));
+                return { lead, step: stepByKey.get(lead.status) ?? this.unknownStep(lead.status), next: planned[0] ?? null };
+            })
+            .sort((a, b) => b.lead.opprettet_ekst.localeCompare(a.lead.opprettet_ekst));
+    }
+
+    /** Fritekstsøk på navn, firma, e-post og telefon. query er allerede trimmet og i små bokstaver. */
+    leadMatches(lead: ILead, query: string): boolean {
+        return [lead.navn, lead.bedriftsnavn, lead.epost, lead.telefon]
+            .some(value => value !== null && value.toLowerCase().includes(query));
     }
 
     /** yyyy-MM i lokal tid. */
@@ -133,7 +166,7 @@ export class LeadsHelperService {
         for (const [status, count] of counts) {
             if (!known.has(status)) {
                 result.push({
-                    step: { nokkel: status, label: status, farge: '#9ca3af', rekkefolge: 999, aktiv: true },
+                    step: this.unknownStep(status),
                     count,
                     share: count / total
                 });

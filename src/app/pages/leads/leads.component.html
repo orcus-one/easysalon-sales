@@ -1,0 +1,84 @@
+<div class="page-header">
+  <div>
+    <h1>Leads</h1>
+    <p class="muted sub">{{ all().length }} leads, nyeste først</p>
+  </div>
+  <div class="page-actions">
+    <input type="text" class="search" placeholder="Søk på navn, firma, e-post eller telefon"
+           aria-label="Søk i leads" [value]="query()" (input)="onSearch($event)" />
+    <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+  </div>
+</div>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+<div class="filters" role="group" aria-label="Filtrer på status">
+  @for (option of statusOptions(); track option.step.nokkel) {
+    <button type="button" class="chip" [class.active]="status() === option.step.nokkel"
+            [attr.aria-pressed]="status() === option.step.nokkel" (click)="toggleStatus(option.step.nokkel)">
+      <span class="swatch" [style.background]="option.step.farge"></span>
+      {{ option.step.label }}
+      <span class="chip-count num">{{ option.count }}</span>
+    </button>
+  }
+</div>
+
+@if (hasLoaded() && filtered().length === 0) {
+  <section class="card">
+    <p class="muted">Ingen leads passer til søket.</p>
+  </section>
+}
+
+@if (visible().length > 0) {
+  <section class="card table-card">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Opprettet</th>
+            <th>Navn</th>
+            <th>Kilde</th>
+            <th>Status</th>
+            <th>Planlagt</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of visible(); track item.lead.id) {
+            <tr>
+              <td class="date num">{{ item.lead.opprettet_ekst | date:'dd.MM.yyyy' }}</td>
+              <td>
+                <span class="who">
+                  <span class="who-name">{{ item.lead.navn }}</span>
+                  @if (item.lead.bedriftsnavn) { <span class="muted who-company">{{ item.lead.bedriftsnavn }}</span> }
+                </span>
+              </td>
+              <td class="source">{{ item.lead.kilde ?? '–' }}</td>
+              <td class="status">
+                <span class="swatch" [style.background]="item.step.farge"></span>{{ item.step.label }}
+              </td>
+              <td class="planned">
+                @if (item.next) {
+                  <span class="planned-wrap">
+                    <span class="num">{{ item.next.date | date:'dd.MM.' }}</span>
+                    @if (item.next.time) { <span class="num muted">{{ item.next.time.slice(0, 5) }}</span> }
+                    <span class="pill" [class.pill-demo]="item.next.kind === 'demo'">{{ item.next.kind === 'demo' ? 'Demo' : 'Oppfølging' }}</span>
+                  </span>
+                } @else {
+                  <span class="muted">–</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="more">
+      <span class="muted num">Viser {{ visible().length }} av {{ filtered().length }}</span>
+      @if (hasMore()) {
+        <button type="button" class="btn btn-light" (click)="showMore()">Vis flere</button>
+      }
+    </div>
+  </section>
+}

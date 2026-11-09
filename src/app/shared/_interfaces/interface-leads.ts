@@ -16,6 +16,13 @@ export interface ILead {
     lisenser: number | null;
 }
 
+/** Én rad i leadlisten: leadet med oppløst steg og første planlagte dato fra og med i dag. */
+export interface ILeadListItem {
+    lead: ILead;
+    step: IPipelineStep;
+    next: IUpcomingItem | null;
+}
+
 /** public.pipeline_steg: appens egne steg med rekkefølge, etikett og farge. */
 export interface IPipelineStep {
     nokkel: string;

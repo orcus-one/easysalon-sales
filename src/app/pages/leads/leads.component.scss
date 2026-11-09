@@ -1,0 +1,19 @@
+.search { width: 320px; max-width: 100%; padding: 9px 12px; font-size: 14px; }
+
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; flex: none; }
+.chip { display: inline-flex; align-items: center; }
+.chip-count { margin-left: 6px; opacity: .7; }
+
+.table .date { white-space: nowrap; color: var(--muted); }
+.table .source, .table .status { white-space: nowrap; }
+.table .planned { white-space: nowrap; }
+.planned-wrap { display: inline-flex; align-items: center; gap: 8px; }
+.pill-demo { background: rgba(16, 185, 129, .15); color: var(--ok); }
+.planned .pill:not(.pill-demo) { background: var(--info-soft); color: var(--info); }
+
+.more { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; font-size: 13px; }
+
+@media (max-width: 640px) {
+  .page-actions { width: 100%; flex-wrap: wrap; }
+  .search { width: 100%; }
+}

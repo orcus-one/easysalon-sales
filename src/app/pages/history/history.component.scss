@@ -1,12 +1,4 @@
-/* Typefilter */
-.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.chip {
-  font: inherit; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 999px; cursor: pointer;
-  border: 1px solid var(--border); background: var(--surface); color: var(--muted);
-  &.active { background: var(--accent-soft); color: var(--fg); border-color: transparent; }
-  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-}
-
+/* Typefilteret bruker .filters og .chip fra styles.scss. */
 .row { grid-template-columns: 52px 120px 1fr auto; }
 .detail { font-size: 13px; text-align: right; }
 .arrow { opacity: .7; padding: 0 2px; }
