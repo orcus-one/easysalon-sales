@@ -16,6 +16,12 @@
       <rect class="slot" [attr.x]="bar.slotX" [attr.y]="8" [attr.width]="bar.slotWidth" [attr.height]="baseline - 8" />
       <rect class="ringt" [attr.x]="bar.x" [attr.y]="bar.ringtY" [attr.width]="barWidth()" [attr.height]="bar.ringtH" />
       <rect class="sms" [attr.x]="bar.x" [attr.y]="bar.smsY" [attr.width]="barWidth()" [attr.height]="bar.smsH" />
+      @if (bar.ringtH >= minLabelHeight) {
+        <text class="val" [attr.x]="bar.x + barWidth() / 2" [attr.y]="bar.ringtY + bar.ringtH / 2 + 3" text-anchor="middle">{{ bar.ringt }}</text>
+      }
+      @if (bar.smsH >= minLabelHeight) {
+        <text class="val" [attr.x]="bar.x + barWidth() / 2" [attr.y]="bar.smsY + bar.smsH / 2 + 3" text-anchor="middle">{{ bar.sms }}</text>
+      }
       <text class="axis day" [attr.x]="bar.x + barWidth() / 2" [attr.y]="labelY" text-anchor="middle">{{ bar.label }}</text>
     </g>
   }

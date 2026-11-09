@@ -6,6 +6,8 @@ interface IBar {
   slotX: number;
   slotWidth: number;
   empty: boolean;
+  ringt: number;
+  sms: number;
   ringtY: number;
   ringtH: number;
   smsY: number;
@@ -76,6 +78,8 @@ export class ActivityChartComponent {
         slotX: this.padLeft + i * slot + 1,
         slotWidth: Math.max(1, slot - 2),
         empty: d.ringt + d.sms === 0,
+        ringt: d.ringt,
+        sms: d.sms,
         ringtY: base - ringtH,
         ringtH,
         smsY: base - ringtH - smsH,
@@ -91,6 +95,9 @@ export class ActivityChartComponent {
     const n = this.data().length || 1;
     return Math.max(2, ((this.width - this.padLeft) / n) * 0.62);
   });
+
+  /** Et segment må være minst så høyt (i viewBox-enheter) for å få tallet skrevet inni. */
+  readonly minLabelHeight = 12;
 
   readonly baseline = this.padTop + this.plotHeight;
   readonly labelY = this.height - 6;
