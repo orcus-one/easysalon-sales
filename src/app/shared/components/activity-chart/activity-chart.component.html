@@ -1,0 +1,23 @@
+<div class="legend">
+  <span class="legend-item"><span class="swatch ringt"></span>Ringt</span>
+  <span class="legend-item"><span class="swatch sms"></span>SMS</span>
+</div>
+
+<svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+     aria-label="Antall ringt og SMS per dag">
+  @for (line of gridLines(); track line.value) {
+    <line class="grid" [attr.x1]="26" [attr.x2]="width" [attr.y1]="line.y" [attr.y2]="line.y" />
+    <text class="axis" x="0" [attr.y]="line.y + 3">{{ line.value }}</text>
+  }
+
+  @for (bar of bars(); track bar.label) {
+    <g>
+      <title>{{ bar.title }}</title>
+      <rect class="ringt" [attr.x]="bar.x" [attr.y]="bar.ringtY" [attr.width]="barWidth()" [attr.height]="bar.ringtH" />
+      <rect class="sms" [attr.x]="bar.x" [attr.y]="bar.smsY" [attr.width]="barWidth()" [attr.height]="bar.smsH" />
+      @if (bar.showLabel) {
+        <text class="axis day" [attr.x]="bar.x + barWidth() / 2" [attr.y]="labelY" text-anchor="middle">{{ bar.label }}</text>
+      }
+    </g>
+  }
+</svg>

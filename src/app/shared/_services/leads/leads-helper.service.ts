@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDashboardKpis, ILead, ILeadEvent, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    IActivitySummary, IDailyActivity, IDashboardKpis, ILead, ILeadEvent, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -117,6 +117,22 @@ export class LeadsHelperService {
                 eventsLast30: last30.length
             };
         });
+    }
+
+    /** Ringt og SMS per dag de siste days dagene til og med i dag, med nuller for dager uten. */
+    dailyActivity(events: Array<ILeadEvent>, now: Date, days: number): Array<IDailyActivity> {
+        const byDay = new Map<string, IDailyActivity>();
+        for (let i = days - 1; i >= 0; i--) {
+            const key = this.toDateKey(this.addDays(now, -i));
+            byDay.set(key, { date: key, ringt: 0, sms: 0 });
+        }
+        for (const e of events) {
+            const day = byDay.get(this.toDateKey(new Date(e.opprettet_at)));
+            if (!day) continue;
+            if (e.type === 'ringt_klikk') day.ringt += 1;
+            if (e.type === 'sms_klikk') day.sms += 1;
+        }
+        return [...byDay.values()];
     }
 
     /** Oppfølginger og demoer fra og med i dag til og med om `days` dager, tidligst først. */

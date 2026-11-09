@@ -61,6 +61,13 @@ export interface IActivitySummary {
     eventsLast30: number;
 }
 
+/** Kontakthendelser per dag, for grafen. */
+export interface IDailyActivity {
+    date: string;
+    ringt: number;
+    sms: number;
+}
+
 export interface IDashboardKpis {
     total: number;
     newLast30: number;

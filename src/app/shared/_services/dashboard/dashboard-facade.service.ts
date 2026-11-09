@@ -29,6 +29,8 @@ export class DashboardFacadeService {
     readonly upcoming = computed(() =>
         this.leadsHelper.upcoming(this.stateService.leads(), this.loadedAt(), DashboardFacadeService.UpcomingDays));
     readonly activity = computed(() => this.leadsHelper.activity(this.stateService.leadEvents(), this.loadedAt()));
+    readonly dailyActivity = computed(() =>
+        this.leadsHelper.dailyActivity(this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.ActivityDays));
     readonly hasLoaded = computed(() => this.stateService.leadsLoaded());
 
     async load(): Promise<void> {

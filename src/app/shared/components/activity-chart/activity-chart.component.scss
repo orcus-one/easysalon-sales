@@ -1,0 +1,12 @@
+:host { display: block; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 10px; height: 10px; border-radius: 3px; }
+.swatch.ringt, rect.ringt { fill: var(--chart-1); background: var(--chart-1); }
+.swatch.sms, rect.sms { fill: var(--chart-2); background: var(--chart-2); }
+
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+line.grid { stroke: var(--border); stroke-width: 1; }
+text.axis { fill: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+rect { rx: 1.5; }
+g:hover rect { opacity: .8; }

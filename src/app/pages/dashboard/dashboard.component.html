@@ -36,6 +36,15 @@
 
 <div class="grid">
 
+  <!-- Graf -->
+  <section class="card span-3">
+    <div class="card-head">
+      <h2>Kontakt per dag</h2>
+      <span class="muted">ringt og SMS siste {{ activityDays }} dager</span>
+    </div>
+    <app-activity-chart [data]="dailyActivity()" />
+  </section>
+
   <!-- Pipeline -->
   <section class="card span-2">
     <div class="card-head">
