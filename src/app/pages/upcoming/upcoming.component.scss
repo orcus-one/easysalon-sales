@@ -1,5 +1,4 @@
 .page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-.summary { font-size: 14px; margin-top: 4px; }
 .page-actions { display: flex; align-items: center; gap: 12px; }
 
 /* Periodevalg */
@@ -10,6 +9,11 @@
   &.active { background: var(--accent-soft); color: var(--fg); }
   &:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 }
+
+/* Nøkkeltall */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi-value { font-size: 34px; font-weight: 600; line-height: 1.1; letter-spacing: -.02em; }
 
 /* Dager */
 .day { margin-bottom: 20px; }

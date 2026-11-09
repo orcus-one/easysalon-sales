@@ -1,8 +1,5 @@
 <div class="page-header">
-  <div>
-    <h1>Kommende</h1>
-    <p class="muted summary num">{{ followupCount() }} oppfølginger og {{ demoCount() }} demoer de neste {{ days() }} dagene</p>
-  </div>
+  <h1>Kommende</h1>
   <div class="page-actions">
     <div class="segmented" role="group" aria-label="Periode">
       @for (option of dayOptions; track option) {
@@ -16,6 +13,19 @@
 @if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 }
+
+<section class="kpis">
+  <div class="card kpi">
+    <span class="eyebrow">Demoer</span>
+    <span class="kpi-value num">{{ demoCount() }}</span>
+    <span class="muted">neste {{ days() }} dager</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Oppfølginger</span>
+    <span class="kpi-value num">{{ followupCount() }}</span>
+    <span class="muted">neste {{ days() }} dager</span>
+  </div>
+</section>
 
 @if (hasLoaded() && groups().length === 0) {
   <section class="card">
