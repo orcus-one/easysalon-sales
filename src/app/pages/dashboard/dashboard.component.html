@@ -88,19 +88,21 @@
   </section>
 
   <!-- Aktivitet -->
-  <section class="card">
+  <section class="card span-2">
     <div class="card-head">
       <h2>Aktivitet</h2>
       <span class="muted">leads kontaktet</span>
     </div>
     <table class="table">
       <thead>
-        <tr><th></th><th class="num r">7 d</th><th class="num r">14 d</th><th class="num r">30 d</th></tr>
+        <tr><th></th><th class="num r">I dag</th><th class="num r">I går</th><th class="num r">7 d</th><th class="num r">14 d</th><th class="num r">30 d</th></tr>
       </thead>
       <tbody>
         @for (row of activity(); track row.type) {
           <tr>
             <td>{{ row.label }}</td>
+            <td class="num r">{{ row.leadsToday | number:'1.0-0' }}</td>
+            <td class="num r">{{ row.leadsYesterday | number:'1.0-0' }}</td>
             <td class="num r">{{ row.leadsLast7 | number:'1.0-0' }}</td>
             <td class="num r">{{ row.leadsLast14 | number:'1.0-0' }}</td>
             <td class="num r">{{ row.leadsLast30 | number:'1.0-0' }} <span class="muted small">({{ row.eventsLast30 | number:'1.0-0' }})</span></td>
@@ -112,7 +114,7 @@
   </section>
 
   <!-- Kommende -->
-  <section class="card span-2">
+  <section class="card">
     <div class="card-head">
       <h2>Kommende</h2>
       <span class="muted">oppfølginger og demoer de neste {{ upcomingDays }} dagene</span>

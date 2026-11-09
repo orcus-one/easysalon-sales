@@ -86,8 +86,10 @@ export class LeadsHelperService {
             .sort((a, b) => b.total - a.total);
     }
 
-    /** Unike leads kontaktet per type siste 7, 14 og 30 dager, i fast rekkefølge. */
+    /** Unike leads kontaktet per type i dag, i går og siste 7, 14 og 30 dager, i fast rekkefølge. */
     activity(events: Array<ILeadEvent>, now: Date): Array<IActivitySummary> {
+        const todayKey = this.toDateKey(now);
+        const yesterdayKey = this.toDateKey(this.addDays(now, -1));
         const since7 = this.addDays(now, -7);
         const since14 = this.addDays(now, -14);
         const since30 = this.addDays(now, -30);
@@ -102,9 +104,13 @@ export class LeadsHelperService {
             const last30 = ofType.filter(e => new Date(e.opprettet_at) >= since30);
             const last14 = last30.filter(e => new Date(e.opprettet_at) >= since14);
             const last7 = last14.filter(e => new Date(e.opprettet_at) >= since7);
+            const today = last7.filter(e => this.toDateKey(new Date(e.opprettet_at)) === todayKey);
+            const yesterday = last7.filter(e => this.toDateKey(new Date(e.opprettet_at)) === yesterdayKey);
             return {
                 type,
                 label,
+                leadsToday: new Set(today.map(e => e.lead_id)).size,
+                leadsYesterday: new Set(yesterday.map(e => e.lead_id)).size,
                 leadsLast7: new Set(last7.map(e => e.lead_id)).size,
                 leadsLast14: new Set(last14.map(e => e.lead_id)).size,
                 leadsLast30: new Set(last30.map(e => e.lead_id)).size,

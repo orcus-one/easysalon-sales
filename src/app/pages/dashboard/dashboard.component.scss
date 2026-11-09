@@ -38,16 +38,17 @@
 /* Kommende */
 .upcoming { list-style: none; margin: 0; padding: 0; }
 .upcoming-item {
-  display: grid; grid-template-columns: 96px 150px 1fr; align-items: center; gap: 12px;
+  display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px;
   padding: 10px 0; border-top: 1px solid var(--border); font-size: 14px;
   &:first-child { border-top: 0; }
+  .who { grid-column: 1 / -1; }
 }
 .pill {
   justify-self: start; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
   padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink);
   &.pill-demo { background: rgba(16, 185, 129, .15); color: var(--ok); }
 }
-.when { color: var(--muted); }
+.when { color: var(--muted); font-size: 13px; }
 .who { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .who-name { font-weight: 500; }
 .empty-state { padding: 8px 0; }
@@ -59,5 +60,4 @@
 @media (max-width: 640px) {
   .page-header { flex-direction: column; align-items: flex-start; }
   .steps { grid-template-columns: 1fr; }
-  .upcoming-item { grid-template-columns: 1fr; gap: 4px; }
 }

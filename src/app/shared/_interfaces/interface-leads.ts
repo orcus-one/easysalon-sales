@@ -53,6 +53,8 @@ export interface ILeadEvent {
 export interface IActivitySummary {
     type: string;
     label: string;
+    leadsToday: number;
+    leadsYesterday: number;
     leadsLast7: number;
     leadsLast14: number;
     leadsLast30: number;
