@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDailyActivity, IDashboardKpis, ILead, ILeadEvent, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, ILead, ILeadEvent, IPipelineCount,
+    IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -13,6 +14,37 @@ export class LeadsHelperService {
 
     /** Statusen som teller som vunnet i andeler per kilde. */
     static readonly WonStatus = 'vunnet';
+
+    /** Hendelsestypene i lead_hendelser med lesbar etikett, i visningsrekkefølge. */
+    static readonly EventTypes: Array<IEventTypeOption> = [
+        { type: 'ringt_klikk', label: 'Ringt' },
+        { type: 'sms_klikk', label: 'SMS' },
+        { type: 'epost_klikk', label: 'E-post' },
+        { type: 'mote_klikk', label: 'Møte' },
+        { type: 'status_endret', label: 'Status endret' },
+        { type: 'notat_endret', label: 'Notat endret' }
+    ];
+
+    eventTypeLabel(type: string): string {
+        return LeadsHelperService.EventTypes.find(t => t.type === type)?.label ?? type;
+    }
+
+    /** Hendelser i perioden med lead og etiketter, nyeste først. */
+    history(events: Array<ILeadEvent>, leads: Array<ILead>, steps: Array<IPipelineStep>, now: Date, days: number): Array<IHistoryItem> {
+        const since = this.addDays(now, -days);
+        const leadById = new Map(leads.map(l => [l.id, l]));
+        const stepLabel = new Map(steps.map(s => [s.nokkel, s.label]));
+        return events
+            .filter(e => new Date(e.opprettet_at) >= since)
+            .map(e => ({
+                event: e,
+                lead: leadById.get(e.lead_id),
+                typeLabel: this.eventTypeLabel(e.type),
+                fromLabel: e.fra_status ? (stepLabel.get(e.fra_status) ?? e.fra_status) : null,
+                toLabel: e.til_status ? (stepLabel.get(e.til_status) ?? e.til_status) : null
+            }))
+            .sort((a, b) => b.event.opprettet_at.localeCompare(a.event.opprettet_at));
+    }
 
     /** Dato som yyyy-MM-dd i lokal tid, samme form som date-kolonnene i basen. */
     toDateKey(date: Date): string {

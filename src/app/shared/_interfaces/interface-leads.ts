@@ -52,9 +52,31 @@ export interface IUpcomingDay {
 
 /** public.lead_hendelser: loggførte handlinger på et lead. */
 export interface ILeadEvent {
+    id: string;
     lead_id: string;
     type: string;
+    fra_status: string | null;
+    til_status: string | null;
     opprettet_at: string;
+}
+
+/** Én linje i historikken: hendelsen med leadet og lesbare etiketter. */
+export interface IHistoryItem {
+    event: ILeadEvent;
+    lead: ILead | undefined;
+    typeLabel: string;
+    fromLabel: string | null;
+    toLabel: string | null;
+}
+
+export interface IHistoryDay {
+    date: string;
+    items: Array<IHistoryItem>;
+}
+
+export interface IEventTypeOption {
+    type: string;
+    label: string;
 }
 
 export interface IActivitySummary {

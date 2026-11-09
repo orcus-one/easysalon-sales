@@ -16,7 +16,7 @@ export class LeadsFacadeService {
     private readonly leadsService = inject(LeadsService);
     private readonly leadsHelper = inject(LeadsHelperService);
 
-    /** Hvor langt tilbake kontakthendelser hentes. */
+    /** Hvor langt tilbake hendelser hentes. Historikken og aktivitetstallene bruker samme vindu. */
     static readonly ActivityDays = 30;
 
     readonly isLoading = signal(false);
@@ -38,7 +38,7 @@ export class LeadsFacadeService {
             const [leads, steps, events] = await Promise.all([
                 this.leadsService.getLeads(),
                 this.leadsService.getPipelineSteps(),
-                this.leadsService.getContactEvents(this.leadsHelper.addDays(now, -LeadsFacadeService.ActivityDays))
+                this.leadsService.getEvents(this.leadsHelper.addDays(now, -LeadsFacadeService.ActivityDays))
             ]);
             this.stateService.leads.set(leads);
             this.stateService.pipelineSteps.set(steps);

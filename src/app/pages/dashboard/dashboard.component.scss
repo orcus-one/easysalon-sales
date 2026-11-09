@@ -1,14 +1,5 @@
-.page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-.page-actions { display: flex; align-items: center; gap: 14px; font-size: 14px; }
-
-/* Nøkkeltall */
-.kpis {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;
-  transition: opacity .2s;
-  &.pending { opacity: .5; }
-}
-.kpi { display: flex; flex-direction: column; gap: 4px; }
-.kpi-value { font-size: 34px; font-weight: 600; line-height: 1.1; letter-spacing: -.02em; }
+/* Nøkkeltall: dempet til første lasting er ferdig */
+.kpis { margin-bottom: 16px; transition: opacity .2s; &.pending { opacity: .5; } }
 
 /* Kort i rutenett */
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -41,6 +32,5 @@
   .span-2, .span-3 { grid-column: auto; }
 }
 @media (max-width: 640px) {
-  .page-header { flex-direction: column; align-items: flex-start; }
   .steps { grid-template-columns: 1fr; }
 }

@@ -16,8 +16,6 @@ export class LeadsService {
     // dagens volum (846), og må gjøres om til sidevis henting før den nås.
     private static readonly MaxRows = 5000;
 
-    static readonly ContactEventTypes = ['ringt_klikk', 'sms_klikk', 'epost_klikk', 'mote_klikk'];
-
     private static readonly LeadColumns =
         'id, navn, bedriftsnavn, telefon, epost, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
         'demo_dato, demo_tid, registrert_dato, lisenser';
@@ -32,13 +30,13 @@ export class LeadsService {
         return data ?? [];
     }
 
-    /** Kontakthendelser fra og med since. Andre typer (status_endret, notat_endret) hentes ikke. */
-    async getContactEvents(since: Date): Promise<Array<ILeadEvent>> {
+    /** Alle hendelser fra og med since, nyeste først. */
+    async getEvents(since: Date): Promise<Array<ILeadEvent>> {
         const { data, error } = await this.supabase.client
             .from('lead_hendelser')
-            .select<string, ILeadEvent>('lead_id, type, opprettet_at')
-            .in('type', LeadsService.ContactEventTypes)
+            .select<string, ILeadEvent>('id, lead_id, type, fra_status, til_status, opprettet_at')
             .gte('opprettet_at', since.toISOString())
+            .order('opprettet_at', { ascending: false })
             .limit(LeadsService.MaxRows);
         if (error) throw error;
         return data ?? [];
