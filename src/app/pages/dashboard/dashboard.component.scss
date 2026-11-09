@@ -8,6 +8,7 @@
 }
 .brand {
   display: flex; align-items: center; gap: 10px;
+  picture { display: flex; }
   img { height: 28px; width: auto; }
   .wordmark { font-size: 20px; }
 }
