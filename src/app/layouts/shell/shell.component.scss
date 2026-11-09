@@ -1,11 +1,6 @@
 .topbar {
   position: sticky; top: 0; z-index: 10;
   background: var(--surface); border-bottom: 1px solid var(--border);
-  /* tynn rosa linje som toner ut mot høyre */
-  &::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 18%, transparent 60%);
-  }
 }
 /* Tre felt: logo | navn og motto | bruker */
 .topbar-inner {
@@ -29,7 +24,14 @@
 
 
 /* Fanerad under topplinjen */
-.nav { border-top: 1px solid var(--border); background: var(--surface); }
+.nav {
+  position: relative; border-top: 1px solid var(--border); background: var(--surface);
+  /* tynn rosa linje over faneraden som toner ut mot høyre */
+  &::before {
+    content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 18%, transparent 60%);
+  }
+}
 .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; gap: 4px; }
 .nav-link {
   padding: 10px 12px; text-decoration: none; color: var(--muted); font-weight: 500; font-size: 14px;
