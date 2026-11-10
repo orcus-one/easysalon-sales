@@ -123,3 +123,35 @@ export interface IDashboardKpis {
     wonLast30: number;
     licensesLast30: number;
 }
+
+/** Hva slags dag et KPI-kort gjelder. Målet gjelder bare arbeidsdager. */
+export type KpiDayKind = 'workday' | 'weekend' | 'holiday';
+
+/** Én dag i KPI-måneden: antall telefoner og om målet ble nådd. */
+export interface IKpiDay {
+    date: string;
+    dayOfMonth: number;
+    kind: KpiDayKind;
+    /** Navnet på helligdagen, ellers null. */
+    holidayName: string | null;
+    /** Dagen er etter i dag og vises uten tall. */
+    isFuture: boolean;
+    isToday: boolean;
+    calls: number;
+    /** Arbeidsdag til og med i dag med minst målet i telefoner. Alltid false for andre dager. */
+    met: boolean;
+}
+
+/** En måned i KPI-visningen med dagene i kalenderorden og oppsummering for arbeidsdagene som er passert. */
+export interface IKpiMonth {
+    /** yyyy-MM */
+    month: string;
+    /** Tomme celler før den første, så den første havner på riktig ukedag (mandag først). */
+    leadingBlanks: number;
+    days: Array<IKpiDay>;
+    workdaysPassed: number;
+    daysMet: number;
+    callsOnWorkdays: number;
+    /** Telefoner per arbeidsdag som er passert, 0 når ingen er passert. */
+    averageCalls: number;
+}

@@ -1,0 +1,45 @@
+/* Månedsvelger: pil, månedsnavn, pil */
+.month-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
+.month-name { min-width: 200px; text-align: center; text-transform: capitalize; }
+.nav-btn {
+  display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0;
+  border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: var(--fg); cursor: pointer;
+  transition: background .15s, opacity .15s;
+  &:hover:not(:disabled) { background: var(--surface-2); }
+  &:disabled { opacity: .35; cursor: default; }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+
+.kpis { margin-bottom: 16px; transition: opacity .2s; &.pending { opacity: .5; } }
+.of { font-size: 18px; font-weight: 500; }
+
+/* Kalenderrutenett, mandag først */
+.weekdays, .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+.weekdays { margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
+.days { transition: opacity .2s; &.pending { opacity: .5; } }
+
+.day-card {
+  aspect-ratio: 1; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between;
+  min-width: 0; box-shadow: none;
+  &.met { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+  &.missed { background: var(--crit-soft); border-color: transparent; color: var(--crit); }
+  &.met .muted, &.missed .muted { color: inherit; opacity: .75; }
+  &.off { background: var(--surface-2); }
+  &.off .day-number { color: var(--muted); }
+  &.future { background: transparent; border-style: dashed; }
+  &.today { outline: 2px solid var(--fg); outline-offset: 2px; }
+}
+.day-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+.day-number { font-weight: 500; }
+.phone { opacity: .7; flex: none; }
+.day-count { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; text-align: center; }
+.day-foot { font-size: 11px; text-align: center; min-height: 1.3em; }
+
+@media (max-width: 640px) {
+  .weekdays, .days { gap: 6px; }
+  .day-card { padding: 6px 8px; border-radius: var(--radius-sm); }
+  .day-count { font-size: 20px; }
+  .day-foot { display: none; }
+  .phone { display: none; }
+  .month-name { min-width: 0; }
+}

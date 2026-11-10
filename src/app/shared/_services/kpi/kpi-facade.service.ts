@@ -1,0 +1,58 @@
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { StateService } from '../__state/state.service';
+import { LeadsFacadeService } from '../leads/leads-facade.service';
+import { LeadsHelperService } from '../leads/leads-helper.service';
+
+/**
+ * Siden «KPI»: telefoner per dag i én måned målt mot dagsmålet, med bladring måned for måned innenfor
+ * inneværende år. Hendelsene fra årsstart ligger allerede i StateService, så visningen er ren computed.
+ */
+@Injectable({
+    providedIn: 'root'
+})
+export class KpiFacadeService {
+
+    private readonly stateService = inject(StateService);
+    private readonly leadsFacade = inject(LeadsFacadeService);
+    private readonly leadsHelper = inject(LeadsHelperService);
+
+    /** Telefoner per arbeidsdag (Kenneth 2026-11-10). */
+    static readonly CallTarget = 25;
+
+    readonly isLoading = this.leadsFacade.isLoading;
+    readonly error = this.leadsFacade.error;
+    readonly hasLoaded = computed(() => this.stateService.leadsLoaded());
+
+    /** Den første i måneden som vises. Starter på inneværende måned. */
+    readonly month = signal(this.firstOfMonth(new Date()));
+
+    /** Bakover stopper på januar i år, siden hendelser bare hentes fra årsstart. Fremover stopper på inneværende måned. */
+    readonly canGoBack = computed(() => this.month().getMonth() > 0);
+    readonly canGoForward = computed(() => this.month() < this.firstOfMonth(this.leadsFacade.loadedAt()));
+
+    readonly kpi = computed(() => {
+        const month = this.month();
+        return this.leadsHelper.callKpiMonth(
+            this.stateService.leadEvents(), month.getFullYear(), month.getMonth(), KpiFacadeService.CallTarget, this.leadsFacade.loadedAt());
+    });
+
+    previousMonth(): void {
+        if (this.canGoBack()) this.month.update(m => new Date(m.getFullYear(), m.getMonth() - 1, 1));
+    }
+
+    nextMonth(): void {
+        if (this.canGoForward()) this.month.update(m => new Date(m.getFullYear(), m.getMonth() + 1, 1));
+    }
+
+    ensureLoaded(): void {
+        this.leadsFacade.ensureLoaded();
+    }
+
+    refresh(): void {
+        this.leadsFacade.load();
+    }
+
+    private firstOfMonth(date: Date): Date {
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+}

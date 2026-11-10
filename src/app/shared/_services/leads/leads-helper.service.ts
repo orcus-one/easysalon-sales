@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, ILead, ILeadEvent, ILeadListItem, IMonthlySummary,
-    IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, ILead, ILeadEvent, ILeadListItem,
+    IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -130,6 +130,73 @@ export class LeadsHelperService {
         const copy = new Date(date);
         copy.setDate(copy.getDate() + days);
         return copy;
+    }
+
+    /**
+     * Norske offentlige høytidsdager 2026 til 2028 som statisk liste (Kenneth 2026-11-10). Må fylles på
+     * før 2029. Bevegelige dager er regnet fra påskedag: 5. april 2026, 28. mars 2027 og 16. april 2028.
+     */
+    static readonly Holidays: ReadonlyMap<string, string> = new Map([
+        ['2026-01-01', 'Første nyttårsdag'], ['2026-04-02', 'Skjærtorsdag'], ['2026-04-03', 'Langfredag'],
+        ['2026-04-05', 'Første påskedag'], ['2026-04-06', 'Andre påskedag'], ['2026-05-01', 'Arbeidernes dag'],
+        ['2026-05-14', 'Kristi himmelfartsdag'], ['2026-05-17', 'Grunnlovsdagen'], ['2026-05-24', 'Første pinsedag'],
+        ['2026-05-25', 'Andre pinsedag'], ['2026-12-25', 'Første juledag'], ['2026-12-26', 'Andre juledag'],
+
+        ['2027-01-01', 'Første nyttårsdag'], ['2027-03-25', 'Skjærtorsdag'], ['2027-03-26', 'Langfredag'],
+        ['2027-03-28', 'Første påskedag'], ['2027-03-29', 'Andre påskedag'], ['2027-05-01', 'Arbeidernes dag'],
+        ['2027-05-06', 'Kristi himmelfartsdag'], ['2027-05-16', 'Første pinsedag'], ['2027-05-17', 'Grunnlovsdagen og andre pinsedag'],
+        ['2027-12-25', 'Første juledag'], ['2027-12-26', 'Andre juledag'],
+
+        ['2028-01-01', 'Første nyttårsdag'], ['2028-04-13', 'Skjærtorsdag'], ['2028-04-14', 'Langfredag'],
+        ['2028-04-16', 'Første påskedag'], ['2028-04-17', 'Andre påskedag'], ['2028-05-01', 'Arbeidernes dag'],
+        ['2028-05-17', 'Grunnlovsdagen'], ['2028-05-25', 'Kristi himmelfartsdag'], ['2028-06-04', 'Første pinsedag'],
+        ['2028-06-05', 'Andre pinsedag'], ['2028-12-25', 'Første juledag'], ['2028-12-26', 'Andre juledag']
+    ]);
+
+    /**
+     * Telefoner per dag i én måned målt mot et dagsmål. Helg og helligdag er med i rutenettet for at ukene
+     * skal stemme, men teller ikke mot målet. Dager etter i dag vises uten tall. Oppsummeringen gjelder
+     * arbeidsdagene til og med i dag.
+     */
+    callKpiMonth(events: Array<ILeadEvent>, year: number, monthIndex: number, target: number, now: Date): IKpiMonth {
+        const todayKey = this.toDateKey(now);
+        const monthKey = this.toMonthKey(new Date(year, monthIndex, 1));
+        const callsByDay = new Map<string, number>();
+        for (const e of events) {
+            if (e.type !== 'ringt_klikk') continue;
+            const key = this.toDateKey(new Date(e.opprettet_at));
+            if (key.startsWith(monthKey)) callsByDay.set(key, (callsByDay.get(key) ?? 0) + 1);
+        }
+
+        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+        const days: Array<IKpiDay> = [];
+        for (let d = 1; d <= daysInMonth; d++) {
+            const date = new Date(year, monthIndex, d);
+            const key = this.toDateKey(date);
+            const holidayName = LeadsHelperService.Holidays.get(key) ?? null;
+            const weekday = date.getDay();
+            const kind = holidayName ? 'holiday' : (weekday === 0 || weekday === 6) ? 'weekend' : 'workday';
+            const isFuture = key > todayKey;
+            const calls = callsByDay.get(key) ?? 0;
+            days.push({
+                date: key, dayOfMonth: d, kind, holidayName, isFuture, isToday: key === todayKey, calls,
+                met: kind === 'workday' && !isFuture && calls >= target
+            });
+        }
+
+        const passed = days.filter(day => day.kind === 'workday' && !day.isFuture);
+        const callsOnWorkdays = passed.reduce((sum, day) => sum + day.calls, 0);
+        // getDay gir søndag = 0; vi vil ha mandag først.
+        const leadingBlanks = (new Date(year, monthIndex, 1).getDay() + 6) % 7;
+        return {
+            month: monthKey,
+            leadingBlanks,
+            days,
+            workdaysPassed: passed.length,
+            daysMet: passed.filter(day => day.met).length,
+            callsOnWorkdays,
+            averageCalls: passed.length === 0 ? 0 : callsOnWorkdays / passed.length
+        };
     }
 
     kpis(leads: Array<ILead>, now: Date): IDashboardKpis {

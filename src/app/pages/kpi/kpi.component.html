@@ -1,0 +1,81 @@
+<div class="page-header">
+  <div>
+    <h1>KPI</h1>
+    <p class="muted sub">{{ target }} telefoner per arbeidsdag</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+  </div>
+</div>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+<div class="month-nav">
+  <button type="button" class="nav-btn" (click)="previousMonth()" [disabled]="!canGoBack()" aria-label="Forrige måned">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <h2 class="month-name">{{ month() | date:'MMMM yyyy' }}</h2>
+  <button type="button" class="nav-btn" (click)="nextMonth()" [disabled]="!canGoForward()" aria-label="Neste måned">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<section class="kpis" [class.pending]="!hasLoaded()">
+  <div class="card kpi">
+    <span class="eyebrow">Dager på mål</span>
+    <span class="kpi-value num">{{ kpi().daysMet }} <span class="muted of">av {{ kpi().workdaysPassed }}</span></span>
+    <span class="muted">arbeidsdager til og med i dag</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Snitt per dag</span>
+    <span class="kpi-value num">{{ kpi().averageCalls | number:'1.0-1' }}</span>
+    <span class="muted">telefoner per arbeidsdag</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Telefoner</span>
+    <span class="kpi-value num">{{ kpi().callsOnWorkdays | number:'1.0-0' }}</span>
+    <span class="muted">på arbeidsdager i måneden</span>
+  </div>
+</section>
+
+<div class="weekdays" aria-hidden="true">
+  @for (day of weekdays; track day) {
+    <span class="muted">{{ day }}</span>
+  }
+</div>
+
+<div class="days" [class.pending]="!hasLoaded()">
+  @for (blank of blanks(); track blank) {
+    <div class="blank"></div>
+  }
+  @for (day of kpi().days; track day.date) {
+    <div class="card day-card" [class.met]="day.met" [class.missed]="day.kind === 'workday' && !day.isFuture && !day.met"
+         [class.off]="day.kind !== 'workday'" [class.future]="day.isFuture" [class.today]="day.isToday"
+         [attr.title]="day.holidayName">
+      <div class="day-head">
+        <span class="num day-number">{{ day.dayOfMonth }}</span>
+        @if (day.kind === 'workday') {
+          <svg class="phone" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        }
+      </div>
+      @if (day.isFuture) {
+        <span class="day-count muted">–</span>
+      } @else if (day.kind === 'workday' || day.calls > 0) {
+        <span class="day-count num">{{ day.calls }}</span>
+      } @else {
+        <span class="day-count muted">–</span>
+      }
+      <span class="day-foot muted">
+        @if (day.kind === 'holiday') { Helligdag }
+        @else if (day.kind === 'weekend') { Helg }
+        @else if (!day.isFuture) { av {{ target }} }
+      </span>
+    </div>
+  }
+</div>
+
+<p class="muted note">Telefoner er loggførte «Ringt»-hendelser. Helg og helligdager teller ikke mot målet. Helligdagene ligger som fast liste for 2026 til 2028.</p>
