@@ -55,6 +55,8 @@ export class LeadListFacadeService {
     readonly isFormOpen = this.stateService.isLeadFormOpen;
     readonly isSaving = signal(false);
     readonly saveError = signal('');
+    /** Dagens dato som yyyy-MM-dd, satt når skjemaet åpnes. Forslag i feltet «Opprettet». */
+    readonly formDefaultDate = signal('');
     /** Kilder som ennå ikke finnes blant leadene, men som skal kunne velges (Kenneth 2026-11-10). */
     static readonly KnownSources = ['Kontaktskjema', 'Gatebesøk', 'organisk_registrering'];
 
@@ -73,7 +75,13 @@ export class LeadListFacadeService {
 
     openForm(): void {
         this.saveError.set('');
+        this.formDefaultDate.set(this.leadsHelper.toDateKey(new Date()));
         this.isFormOpen.set(true);
+    }
+
+    /** yyyy-MM-dd fra datofeltet til ISO-tidspunkt ved midnatt lokal tid, så datoen blir den samme ved visning. */
+    toCreatedAt(dateKey: string): string {
+        return new Date(`${dateKey}T00:00:00`).toISOString();
     }
 
     closeForm(): void {

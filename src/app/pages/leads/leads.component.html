@@ -20,9 +20,13 @@
       </div>
       <form (submit)="onSubmit($event)">
         <div class="form-grid">
-          <div class="wide">
+          <div>
             <label for="lead-navn">Navn</label>
             <input id="lead-navn" name="navn" type="text" required autofocus autocomplete="off" />
+          </div>
+          <div>
+            <label for="lead-opprettet">Opprettet</label>
+            <input id="lead-opprettet" name="opprettet_ekst" type="date" required [value]="formDefaultDate()" />
           </div>
           <div>
             <label for="lead-bedriftsnavn">Firma</label>

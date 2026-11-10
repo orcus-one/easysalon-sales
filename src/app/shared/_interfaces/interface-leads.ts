@@ -26,6 +26,8 @@ export interface ISourceOption {
 /** Feltene i skjemaet «Opprett lead». Navnene er kolonnene i leads, tomme felt sendes som null. */
 export interface ILeadInput {
     navn: string;
+    /** Når leadet kom inn, ISO-tidspunkt. Skjemaet foreslår i dag og lar brukeren sette en annen dato. */
+    opprettet_ekst: string;
     bedriftsnavn: string | null;
     orgnummer: string | null;
     telefon: string | null;

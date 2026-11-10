@@ -34,6 +34,7 @@ export class LeadsComponent {
   readonly sourceOptions = this.leadListFacade.sourceOptions;
   readonly stepOptions = this.leadListFacade.stepOptions;
   readonly defaultStatus = this.leadListFacade.defaultStatus;
+  readonly formDefaultDate = this.leadListFacade.formDefaultDate;
 
   constructor() {
     this.leadListFacade.ensureLoaded();
@@ -78,6 +79,7 @@ export class LeadsComponent {
     };
     const input: ILeadInput = {
       navn: field('navn') ?? '',
+      opprettet_ekst: this.leadListFacade.toCreatedAt(field('opprettet_ekst') ?? this.formDefaultDate()),
       bedriftsnavn: field('bedriftsnavn'),
       orgnummer: field('orgnummer'),
       telefon: field('telefon'),
