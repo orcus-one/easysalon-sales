@@ -27,8 +27,8 @@ export class ShellComponent {
 
   readonly navItems: Array<INavItem> = [
     { path: '/dashboard', label: 'Oversikt' },
-    { path: '/leads', label: 'Leads' },
     { path: '/kpi', label: 'KPI' },
+    { path: '/leads', label: 'Leads' },
     { path: '/kommende', label: 'Kommende' },
     { path: '/historikk', label: 'Løpende aktivitet' },
     { path: '/aar', label: 'Hittil i år' }
