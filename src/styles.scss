@@ -178,10 +178,12 @@ input[type=email], input[type=password], input[type=text] {
   &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 }
 
-/* Tabeller i kort. Tallkolonner og overskriftene deres høyrestilles med .r. */
+/* Tabeller i kort. Tallkolonner og overskriftene deres høyrestilles med .r. Minstebredden gjelder bare tabeller
+   i .table-wrap, som ruller sidelengs; de små tabellene på Oversikt skal følge kortet sitt. */
 .table-card { padding: 20px 22px 16px; }
 .table-wrap { overflow-x: auto; }
-.table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px; }
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table-wrap .table { min-width: 640px; }
 .table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 0 10px 10px; white-space: nowrap; }
 .table th:first-child, .table td:first-child { padding-left: 0; }
 .table th:last-child, .table td:last-child { padding-right: 0; }
