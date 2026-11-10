@@ -105,13 +105,14 @@ a:hover { text-decoration-color: var(--fg); }
 
 /* Skjema */
 label { display: block; font-weight: 500; font-size: 14px; margin: 14px 0 6px; }
-input[type=email], input[type=password], input[type=text] {
+input[type=email], input[type=password], input[type=text], input[type=tel], input[type=date], input[type=time], select, textarea {
   width: 100%; font: inherit; font-size: 15px; padding: 11px 13px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: var(--surface); color: var(--fg); outline: none;
   transition: border-color .15s, box-shadow .15s;
   &:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 }
+textarea { resize: vertical; min-height: 80px; }
 
 /* Knapper */
 .btn {

@@ -28,4 +28,6 @@ export class StateService {
     readonly leadEvents = signal<Array<ILeadEvent>>([]);
     /** false til første vellykkede henting, så visningen kan skille tomt fra ikke lastet. */
     readonly leadsLoaded = signal(false);
+    /** Dialogen «Opprett lead» på Leads-siden. */
+    readonly isLeadFormOpen = signal(false);
 }

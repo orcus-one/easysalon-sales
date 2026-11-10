@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ILead, ILeadEvent, IPipelineStep } from '../../_interfaces/interface-leads';
+import { ILead, ILeadEvent, ILeadInput, IPipelineStep } from '../../_interfaces/interface-leads';
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
@@ -29,6 +29,15 @@ export class LeadsService {
             .limit(LeadsService.MaxRows);
         if (error) throw error;
         return data ?? [];
+    }
+
+    /**
+     * Oppretter et lead med feltene fra skjemaet. Krever skriveregel på leads for authenticated; den er ikke satt
+     * opp ennå (2026-11-10), så kallet feiler til regelen og eventuelle standardverdier (org_id) er på plass.
+     */
+    async createLead(input: ILeadInput): Promise<void> {
+        const { error } = await this.supabase.client.from('leads').insert(input);
+        if (error) throw error;
     }
 
     /** Alle hendelser fra og med since, nyeste først. Hentes sidevis, PostgREST gir maks 1000 per kall. */

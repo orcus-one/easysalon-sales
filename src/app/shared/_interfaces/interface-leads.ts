@@ -17,6 +17,20 @@ export interface ILead {
     lisenser: number | null;
 }
 
+/** Feltene i skjemaet «Opprett lead». Navnene er kolonnene i leads, tomme felt sendes som null. */
+export interface ILeadInput {
+    navn: string;
+    bedriftsnavn: string | null;
+    orgnummer: string | null;
+    telefon: string | null;
+    epost: string | null;
+    kilde: string | null;
+    status: string;
+    notater: string | null;
+    neste_oppfolging: string | null;
+    oppfolging_tid: string | null;
+}
+
 /** Én rad i leadlisten: leadet med oppløst steg og første planlagte dato fra og med i dag. */
 export interface ILeadListItem {
     lead: ILead;

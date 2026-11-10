@@ -1,8 +1,9 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { ILeadListItem, IPipelineCount } from '../../_interfaces/interface-leads';
+import { ILeadInput, ILeadListItem, IPipelineCount } from '../../_interfaces/interface-leads';
 import { StateService } from '../__state/state.service';
 import { LeadsFacadeService } from '../leads/leads-facade.service';
 import { LeadsHelperService } from '../leads/leads-helper.service';
+import { LeadsService } from '../leads/leads.service';
 
 /**
  * Siden «Leads»: alle leads nyeste først, med kilde, steg og planlagt dato. Alt ligger allerede i
@@ -16,9 +17,12 @@ export class LeadListFacadeService {
     private readonly stateService = inject(StateService);
     private readonly leadsFacade = inject(LeadsFacadeService);
     private readonly leadsHelper = inject(LeadsHelperService);
+    private readonly leadsService = inject(LeadsService);
 
     /** Rader som vises fra start, og hvor mange «Vis flere» legger på. */
     static readonly PageSize = 100;
+    /** Steget et nytt lead får når ingenting annet er valgt. */
+    static readonly DefaultStatus = 'ny';
 
     readonly query = signal('');
     /** Nøkkel i pipeline_steg. Tom = alle steg. */
@@ -46,6 +50,41 @@ export class LeadListFacadeService {
 
     readonly visible = computed(() => this.filtered().slice(0, this.visibleCount()));
     readonly hasMore = computed(() => this.filtered().length > this.visibleCount());
+
+    // Skjemaet «Opprett lead»
+    readonly isFormOpen = this.stateService.isLeadFormOpen;
+    readonly isSaving = signal(false);
+    readonly saveError = signal('');
+    /** Kildene som finnes blant leadene, alfabetisk. Selgerens app har en fast liste; dette speiler den. */
+    readonly sourceOptions = computed(() =>
+        [...new Set(this.stateService.leads().map(l => l.kilde).filter((k): k is string => k !== null))].sort((a, b) => a.localeCompare(b, 'nb')));
+    readonly stepOptions = computed(() => this.stateService.pipelineSteps());
+    readonly defaultStatus = LeadListFacadeService.DefaultStatus;
+
+    openForm(): void {
+        this.saveError.set('');
+        this.isFormOpen.set(true);
+    }
+
+    closeForm(): void {
+        if (this.isSaving()) return;
+        this.isFormOpen.set(false);
+    }
+
+    /** Lagrer leadet, henter listen på nytt så det nye leadet vises øverst, og lukker skjemaet. */
+    async createLead(input: ILeadInput): Promise<void> {
+        this.isSaving.set(true);
+        this.saveError.set('');
+        try {
+            await this.leadsService.createLead(input);
+            await this.leadsFacade.load();
+            this.isFormOpen.set(false);
+        } catch {
+            this.saveError.set('Fikk ikke lagret leadet. Prøv igjen.');
+        } finally {
+            this.isSaving.set(false);
+        }
+    }
 
     setQuery(query: string): void {
         this.query.set(query);

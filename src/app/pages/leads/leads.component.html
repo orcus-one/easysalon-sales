@@ -7,8 +7,80 @@
     <input type="text" class="search" placeholder="Søk på navn, firma, e-post, telefon eller org.nr."
            aria-label="Søk i leads" [value]="query()" (input)="onSearch($event)" />
     <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+    <button type="button" class="btn" (click)="openForm()">Opprett lead</button>
   </div>
 </div>
+
+@if (isFormOpen()) {
+  <div class="backdrop" (click)="closeForm()">
+    <section class="card dialog" role="dialog" aria-modal="true" aria-labelledby="lead-form-title" (click)="$event.stopPropagation()">
+      <div class="dialog-head">
+        <h2 id="lead-form-title">Opprett lead</h2>
+        <button type="button" class="close-btn" (click)="closeForm()" aria-label="Lukk">&times;</button>
+      </div>
+      <form (submit)="onSubmit($event)">
+        <div class="form-grid">
+          <div class="wide">
+            <label for="lead-navn">Navn</label>
+            <input id="lead-navn" name="navn" type="text" required autofocus autocomplete="off" />
+          </div>
+          <div>
+            <label for="lead-bedriftsnavn">Firma</label>
+            <input id="lead-bedriftsnavn" name="bedriftsnavn" type="text" autocomplete="off" />
+          </div>
+          <div>
+            <label for="lead-orgnummer">Org.nr.</label>
+            <input id="lead-orgnummer" name="orgnummer" type="text" inputmode="numeric" autocomplete="off" />
+          </div>
+          <div>
+            <label for="lead-telefon">Telefon</label>
+            <input id="lead-telefon" name="telefon" type="tel" autocomplete="off" />
+          </div>
+          <div>
+            <label for="lead-epost">E-post</label>
+            <input id="lead-epost" name="epost" type="email" autocomplete="off" />
+          </div>
+          <div>
+            <label for="lead-kilde">Kilde</label>
+            <select id="lead-kilde" name="kilde">
+              <option value="">Velg kilde</option>
+              @for (source of sourceOptions(); track source) {
+                <option [value]="source">{{ source }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label for="lead-status">Status</label>
+            <select id="lead-status" name="status">
+              @for (step of stepOptions(); track step.nokkel) {
+                <option [value]="step.nokkel" [selected]="step.nokkel === defaultStatus">{{ step.label }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label for="lead-oppfolging">Neste oppfølging</label>
+            <input id="lead-oppfolging" name="neste_oppfolging" type="date" />
+          </div>
+          <div>
+            <label for="lead-oppfolging-tid">Klokkeslett</label>
+            <input id="lead-oppfolging-tid" name="oppfolging_tid" type="time" />
+          </div>
+          <div class="wide">
+            <label for="lead-notater">Notater</label>
+            <textarea id="lead-notater" name="notater" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          @if (saveError()) {
+            <p class="error" role="alert">{{ saveError() }}</p>
+          }
+          <button type="button" class="btn btn-light" (click)="closeForm()" [disabled]="isSaving()">Avbryt</button>
+          <button type="submit" class="btn" [disabled]="isSaving()">{{ isSaving() ? 'Lagrer' : 'Lagre lead' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
 
 @if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
