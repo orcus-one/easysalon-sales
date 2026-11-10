@@ -1,11 +1,13 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { KpiView } from '../../_interfaces/interface-leads';
 import { StateService } from '../__state/state.service';
 import { LeadsFacadeService } from '../leads/leads-facade.service';
 import { LeadsHelperService } from '../leads/leads-helper.service';
 
 /**
- * Siden «KPI»: telefoner per dag i én måned målt mot dagsmålet, med bladring måned for måned innenfor
- * inneværende år. Hendelsene fra årsstart ligger allerede i StateService, så visningen er ren computed.
+ * Siden «KPI» med to nivåer: telefoner per dag i én måned målt mot dagsmålet, med bladring måned for måned
+ * innenfor inneværende år, og demoer per ISO-uke i året målt mot ukemålet. Alt ligger allerede i StateService,
+ * så visningen er ren computed.
  */
 @Injectable({
     providedIn: 'root'
@@ -18,10 +20,20 @@ export class KpiFacadeService {
 
     /** Telefoner per arbeidsdag (Kenneth 2026-11-10). */
     static readonly CallTarget = 25;
+    /** Demoer per uke (Kenneth 2026-11-10). Justeres når effekten av telefonene har satt seg. */
+    static readonly DemoTarget = 5;
 
     readonly isLoading = this.leadsFacade.isLoading;
     readonly error = this.leadsFacade.error;
     readonly hasLoaded = computed(() => this.stateService.leadsLoaded());
+
+    /** Nivået som vises. Telefon er standard, og valget huskes mellom sidebytter. */
+    readonly view = signal<KpiView>('calls');
+
+    readonly year = computed(() => this.leadsFacade.loadedAt().getFullYear());
+
+    readonly demoKpi = computed(() =>
+        this.leadsHelper.demoKpiYear(this.stateService.leads(), this.year(), KpiFacadeService.DemoTarget, this.leadsFacade.loadedAt()));
 
     /** Den første i måneden som vises. Starter på inneværende måned. */
     readonly month = signal(this.firstOfMonth(new Date()));
@@ -35,6 +47,10 @@ export class KpiFacadeService {
         return this.leadsHelper.callKpiMonth(
             this.stateService.leadEvents(), month.getFullYear(), month.getMonth(), KpiFacadeService.CallTarget, this.leadsFacade.loadedAt());
     });
+
+    setView(view: KpiView): void {
+        this.view.set(view);
+    }
 
     previousMonth(): void {
         if (this.canGoBack()) this.month.update(m => new Date(m.getFullYear(), m.getMonth() - 1, 1));

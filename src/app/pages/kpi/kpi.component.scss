@@ -13,33 +13,38 @@
 .kpis { margin-bottom: 16px; transition: opacity .2s; &.pending { opacity: .5; } }
 .of { font-size: 18px; font-weight: 500; }
 
-/* Kalenderrutenett, mandag først */
-.weekdays, .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+/* Rutenett: dager mandag først (7 kolonner), uker så mange som får plass */
+.weekdays, .days, .weeks { display: grid; gap: 10px; transition: opacity .2s; }
+.weekdays, .days { grid-template-columns: repeat(7, 1fr); }
+.weeks { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 .weekdays { margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
-.days { transition: opacity .2s; &.pending { opacity: .5; } }
+.days.pending, .weeks.pending { opacity: .5; }
 
-.day-card {
+/* Ett kort per dag eller uke. Grønt på mål, rødt under, dempet for helg og helligdag, stiplet frem i tid. */
+.tile {
   aspect-ratio: 1; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between;
   min-width: 0; box-shadow: none;
   &.met { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
   &.missed { background: var(--crit-soft); border-color: transparent; color: var(--crit); }
   &.met .muted, &.missed .muted { color: inherit; opacity: .75; }
   &.off { background: var(--surface-2); }
-  &.off .day-number { color: var(--muted); }
+  &.off .tile-label { color: var(--muted); }
   &.future { background: transparent; border-style: dashed; }
-  &.today { outline: 2px solid var(--fg); outline-offset: 2px; }
+  &.current { outline: 2px solid var(--fg); outline-offset: 2px; }
 }
-.day-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
-.day-number { font-weight: 500; }
-.phone { opacity: .7; flex: none; }
-.day-count { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; text-align: center; }
-.day-foot { font-size: 11px; text-align: center; min-height: 1.3em; }
+.tile-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 13px; }
+.tile-label { font-weight: 500; white-space: nowrap; }
+.tile-range { font-size: 11px; white-space: nowrap; }
+.tile-icon { opacity: .7; flex: none; }
+.tile-count { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; text-align: center; }
+.tile-foot { font-size: 11px; text-align: center; min-height: 1.3em; }
 
 @media (max-width: 640px) {
-  .weekdays, .days { gap: 6px; }
-  .day-card { padding: 6px 8px; border-radius: var(--radius-sm); }
-  .day-count { font-size: 20px; }
-  .day-foot { display: none; }
-  .phone { display: none; }
+  .page-actions { width: 100%; flex-wrap: wrap; }
+  .weekdays, .days, .weeks { gap: 6px; }
+  .weeks { grid-template-columns: repeat(4, 1fr); }
+  .tile { padding: 6px 8px; border-radius: var(--radius-sm); }
+  .tile-count { font-size: 20px; }
+  .tile-foot, .tile-icon, .tile-range { display: none; }
   .month-name { min-width: 0; }
 }

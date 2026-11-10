@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, ILead, ILeadEvent, ILeadListItem,
-    IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
+    ILeadListItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -196,6 +196,49 @@ export class LeadsHelperService {
             daysMet: passed.filter(day => day.met).length,
             callsOnWorkdays,
             averageCalls: passed.length === 0 ? 0 : callsOnWorkdays / passed.length
+        };
+    }
+
+    /** Mandagen i ISO-uke 1: 4. januar er alltid i uke 1. */
+    private isoWeekOneStart(year: number): Date {
+        const jan4 = new Date(year, 0, 4);
+        return this.addDays(jan4, -((jan4.getDay() + 6) % 7));
+    }
+
+    /** Antall ISO-uker i året, 52 eller 53. 28. desember er alltid i årets siste uke. */
+    isoWeeksInYear(year: number): number {
+        const dec28 = new Date(year, 11, 28);
+        const diffDays = Math.round((dec28.getTime() - this.isoWeekOneStart(year).getTime()) / 86_400_000);
+        return Math.floor(diffDays / 7) + 1;
+    }
+
+    /**
+     * Demoer per ISO-uke i ett år målt mot et ukemål. Demoer telles på demo_dato, så uker frem i tid viser det
+     * som er booket. Inneværende uke regnes som passert og måles mot målet. Uke 1 kan begynne i desember
+     * året før og siste uke kan slutte i januar året etter; demoer der telles i den uken.
+     */
+    demoKpiYear(leads: Array<ILead>, year: number, target: number, now: Date): IKpiYear {
+        const todayKey = this.toDateKey(now);
+        const weekOneStart = this.isoWeekOneStart(year);
+        const weeks: Array<IKpiWeek> = [];
+        for (let w = 1; w <= this.isoWeeksInYear(year); w++) {
+            const startDate = this.addDays(weekOneStart, (w - 1) * 7);
+            const start = this.toDateKey(startDate);
+            const end = this.toDateKey(this.addDays(startDate, 6));
+            const demos = leads.filter(l => l.demo_dato !== null && l.demo_dato >= start && l.demo_dato <= end).length;
+            const isFuture = start > todayKey;
+            weeks.push({ week: w, start, end, isFuture, isCurrent: start <= todayKey && todayKey <= end, demos, met: !isFuture && demos >= target });
+        }
+        const passed = weeks.filter(week => !week.isFuture);
+        const demosOnPassedWeeks = passed.reduce((sum, week) => sum + week.demos, 0);
+        return {
+            year,
+            weeks,
+            weeksPassed: passed.length,
+            weeksMet: passed.filter(week => week.met).length,
+            demosOnPassedWeeks,
+            averageDemos: passed.length === 0 ? 0 : demosOnPassedWeeks / passed.length,
+            demosTotal: weeks.reduce((sum, week) => sum + week.demos, 0)
         };
     }
 

@@ -155,3 +155,33 @@ export interface IKpiMonth {
     /** Telefoner per arbeidsdag som er passert, 0 når ingen er passert. */
     averageCalls: number;
 }
+
+/** Nivåene under KPI. */
+export type KpiView = 'calls' | 'demos';
+
+/** Én ISO-uke i KPI-visningen for demoer. */
+export interface IKpiWeek {
+    week: number;
+    /** Første og siste dag i uken som yyyy-MM-dd. */
+    start: string;
+    end: string;
+    /** Uken begynner etter i dag. Viser bookede demoer uten rødt eller grønt. */
+    isFuture: boolean;
+    isCurrent: boolean;
+    demos: number;
+    /** Uke til og med denne med minst målet i demoer. Alltid false for uker frem i tid. */
+    met: boolean;
+}
+
+/** Alle ISO-ukene i et år med oppsummering for ukene til og med denne. */
+export interface IKpiYear {
+    year: number;
+    weeks: Array<IKpiWeek>;
+    weeksPassed: number;
+    weeksMet: number;
+    demosOnPassedWeeks: number;
+    /** Demoer per uke til og med denne, 0 når ingen er passert. */
+    averageDemos: number;
+    /** Alle demoer med demodato i årets uker, også bookede fremover. */
+    demosTotal: number;
+}
