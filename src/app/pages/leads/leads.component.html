@@ -4,7 +4,7 @@
     <p class="muted sub">{{ all().length }} leads, nyeste først</p>
   </div>
   <div class="page-actions">
-    <input type="text" class="search" placeholder="Søk på navn, firma, e-post eller telefon"
+    <input type="text" class="search" placeholder="Søk på navn, firma, e-post, telefon eller org.nr."
            aria-label="Søk i leads" [value]="query()" (input)="onSearch($event)" />
     <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
   </div>
@@ -52,6 +52,7 @@
                 <span class="who">
                   <span class="who-name">{{ item.lead.navn }}</span>
                   @if (item.lead.bedriftsnavn) { <span class="muted who-company">{{ item.lead.bedriftsnavn }}</span> }
+                  @if (item.lead.orgnummer) { <span class="muted who-company num">{{ formatOrgNumber(item.lead.orgnummer) }}</span> }
                 </span>
               </td>
               <td class="source">{{ item.lead.kilde ?? '–' }}</td>

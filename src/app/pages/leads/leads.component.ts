@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { LeadListFacadeService } from '../../shared/_services/lead-list/lead-list-facade.service';
+import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
 
 @Component({
   selector: 'app-leads',
@@ -11,6 +12,9 @@ import { LeadListFacadeService } from '../../shared/_services/lead-list/lead-lis
 export class LeadsComponent {
 
   private readonly leadListFacade = inject(LeadListFacadeService);
+  private readonly leadsHelper = inject(LeadsHelperService);
+
+  formatOrgNumber = (orgnummer: string | null): string => this.leadsHelper.formatOrgNumber(orgnummer);
 
   readonly isLoading = this.leadListFacade.isLoading;
   readonly error = this.leadListFacade.error;

@@ -3,6 +3,7 @@ export interface ILead {
     id: string;
     navn: string;
     bedriftsnavn: string | null;
+    orgnummer: string | null;
     telefon: string | null;
     epost: string | null;
     kilde: string | null;

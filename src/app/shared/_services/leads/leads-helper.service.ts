@@ -56,10 +56,25 @@ export class LeadsHelperService {
             .sort((a, b) => b.lead.opprettet_ekst.localeCompare(a.lead.opprettet_ekst));
     }
 
-    /** Fritekstsøk på navn, firma, e-post og telefon. query er allerede trimmet og i små bokstaver. */
+    /**
+     * Fritekstsøk på navn, firma, e-post, telefon og organisasjonsnummer. query er allerede trimmet og i små
+     * bokstaver. Organisasjonsnummer sammenlignes uten mellomrom, så «123 456» treffer «123456789».
+     */
     leadMatches(lead: ILead, query: string): boolean {
+        const compact = query.replace(/\s+/g, '');
         return [lead.navn, lead.bedriftsnavn, lead.epost, lead.telefon]
-            .some(value => value !== null && value.toLowerCase().includes(query));
+            .some(value => value !== null && value.toLowerCase().includes(query))
+            || (compact !== '' && this.orgNumberDigits(lead.orgnummer).includes(compact));
+    }
+
+    private orgNumberDigits(orgnummer: string | null): string {
+        return (orgnummer ?? '').replace(/\D/g, '');
+    }
+
+    /** Organisasjonsnummer med mellomrom, «123 456 789». Andre lengder vises som de er. */
+    formatOrgNumber(orgnummer: string | null): string {
+        const digits = this.orgNumberDigits(orgnummer);
+        return digits.length === 9 ? `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}` : (orgnummer ?? '');
     }
 
     /** yyyy-MM i lokal tid. */
