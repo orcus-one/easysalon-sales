@@ -56,7 +56,7 @@ export class LeadListFacadeService {
     readonly isSaving = signal(false);
     readonly saveError = signal('');
     /** Kilder som ennå ikke finnes blant leadene, men som skal kunne velges (Kenneth 2026-11-10). */
-    static readonly KnownSources = ['Kontaktskjema', 'Gatebesøk'];
+    static readonly KnownSources = ['Kontaktskjema', 'Gatebesøk', 'organisk_registrering'];
 
     /** Kildene som finnes blant leadene pluss de kjente, alfabetisk. Selgerens app har en fast liste; dette speiler den. */
     readonly sourceOptions = computed(() => {
