@@ -55,9 +55,14 @@ export class LeadListFacadeService {
     readonly isFormOpen = this.stateService.isLeadFormOpen;
     readonly isSaving = signal(false);
     readonly saveError = signal('');
-    /** Kildene som finnes blant leadene, alfabetisk. Selgerens app har en fast liste; dette speiler den. */
-    readonly sourceOptions = computed(() =>
-        [...new Set(this.stateService.leads().map(l => l.kilde).filter((k): k is string => k !== null))].sort((a, b) => a.localeCompare(b, 'nb')));
+    /** Kilder som ennå ikke finnes blant leadene, men som skal kunne velges (Kenneth 2026-11-10). */
+    static readonly KnownSources = ['Kontaktskjema', 'Gatebesøk'];
+
+    /** Kildene som finnes blant leadene pluss de kjente, alfabetisk. Selgerens app har en fast liste; dette speiler den. */
+    readonly sourceOptions = computed(() => {
+        const fromLeads = this.stateService.leads().map(l => l.kilde).filter((k): k is string => k !== null);
+        return [...new Set([...fromLeads, ...LeadListFacadeService.KnownSources])].sort((a, b) => a.localeCompare(b, 'nb'));
+    });
     readonly stepOptions = computed(() => this.stateService.pipelineSteps());
     readonly defaultStatus = LeadListFacadeService.DefaultStatus;
 
