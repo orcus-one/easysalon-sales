@@ -17,6 +17,12 @@ export interface ILead {
     lisenser: number | null;
 }
 
+/** Et valg i kildelisten: verdien som lagres i leads.kilde og teksten som vises. */
+export interface ISourceOption {
+    value: string;
+    label: string;
+}
+
 /** Feltene i skjemaet «Opprett lead». Navnene er kolonnene i leads, tomme felt sendes som null. */
 export interface ILeadInput {
     navn: string;
@@ -55,6 +61,8 @@ export interface IPipelineCount {
 
 export interface ISourceSummary {
     kilde: string;
+    /** Visningstekst for kilden, se LeadsHelperService.sourceLabel. */
+    label: string;
     total: number;
     won: number;
     wonShare: number;

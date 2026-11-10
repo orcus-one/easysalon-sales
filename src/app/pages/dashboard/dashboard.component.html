@@ -86,7 +86,7 @@
       <tbody>
         @for (row of bySource(); track row.kilde) {
           <tr>
-            <td>{{ row.kilde }}</td>
+            <td>{{ row.label }}</td>
             <td class="num r">{{ row.total | number:'1.0-0' }}</td>
             <td class="num r">{{ row.won | number:'1.0-0' }}</td>
             <td class="num r">{{ row.wonShare | percent:'1.0-1' }}</td>

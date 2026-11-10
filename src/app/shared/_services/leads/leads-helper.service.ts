@@ -29,6 +29,19 @@ export class LeadsHelperService {
         return LeadsHelperService.EventTypes.find(t => t.type === type)?.label ?? type;
     }
 
+    /**
+     * Kilder som lagres som nøkkel i leads.kilde og trenger egen visningstekst. De eldre kildene (Brønnøysund,
+     * Meta, Konkurrent, Onboarding) er lagret med visningsteksten som verdi og trenger ingen oppføring.
+     */
+    static readonly SourceLabels: ReadonlyMap<string, string> = new Map([
+        ['organisk_registrering', 'Organisk registrering']
+    ]);
+
+    sourceLabel(kilde: string | null): string {
+        if (kilde === null) return '–';
+        return LeadsHelperService.SourceLabels.get(kilde) ?? kilde;
+    }
+
     /** Steg for en status som ikke finnes i pipeline_steg. Grå, sist i rekkefølgen. */
     unknownStep(status: string): IPipelineStep {
         return { nokkel: status, label: status, farge: '#9ca3af', rekkefolge: 999, aktiv: true };
@@ -311,7 +324,7 @@ export class LeadsHelperService {
             groups.set(key, group);
         }
         return [...groups.entries()]
-            .map(([kilde, g]) => ({ kilde, total: g.total, won: g.won, wonShare: g.total ? g.won / g.total : 0 }))
+            .map(([kilde, g]) => ({ kilde, label: this.sourceLabel(kilde), total: g.total, won: g.won, wonShare: g.total ? g.won / g.total : 0 }))
             .sort((a, b) => b.total - a.total);
     }
 

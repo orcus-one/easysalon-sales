@@ -16,6 +16,7 @@ export class LeadsComponent {
   private readonly leadsHelper = inject(LeadsHelperService);
 
   formatOrgNumber = (orgnummer: string | null): string => this.leadsHelper.formatOrgNumber(orgnummer);
+  sourceLabel = (kilde: string | null): string => this.leadsHelper.sourceLabel(kilde);
 
   readonly isLoading = this.leadListFacade.isLoading;
   readonly error = this.leadListFacade.error;

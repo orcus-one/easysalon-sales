@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { ILeadInput, ILeadListItem, IPipelineCount } from '../../_interfaces/interface-leads';
+import { ILeadInput, ILeadListItem, IPipelineCount, ISourceOption } from '../../_interfaces/interface-leads';
 import { StateService } from '../__state/state.service';
 import { LeadsFacadeService } from '../leads/leads-facade.service';
 import { LeadsHelperService } from '../leads/leads-helper.service';
@@ -58,10 +58,15 @@ export class LeadListFacadeService {
     /** Kilder som ennå ikke finnes blant leadene, men som skal kunne velges (Kenneth 2026-11-10). */
     static readonly KnownSources = ['Kontaktskjema', 'Gatebesøk', 'organisk_registrering'];
 
-    /** Kildene som finnes blant leadene pluss de kjente, alfabetisk. Selgerens app har en fast liste; dette speiler den. */
-    readonly sourceOptions = computed(() => {
+    /**
+     * Kildene som finnes blant leadene pluss de kjente, med visningstekst, alfabetisk på teksten. Selgerens app
+     * har en fast liste; dette speiler den.
+     */
+    readonly sourceOptions = computed<Array<ISourceOption>>(() => {
         const fromLeads = this.stateService.leads().map(l => l.kilde).filter((k): k is string => k !== null);
-        return [...new Set([...fromLeads, ...LeadListFacadeService.KnownSources])].sort((a, b) => a.localeCompare(b, 'nb'));
+        return [...new Set([...fromLeads, ...LeadListFacadeService.KnownSources])]
+            .map(value => ({ value, label: this.leadsHelper.sourceLabel(value) }))
+            .sort((a, b) => a.label.localeCompare(b.label, 'nb'));
     });
     readonly stepOptions = computed(() => this.stateService.pipelineSteps());
     readonly defaultStatus = LeadListFacadeService.DefaultStatus;

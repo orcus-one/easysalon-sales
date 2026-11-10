@@ -44,8 +44,8 @@
             <label for="lead-kilde">Kilde</label>
             <select id="lead-kilde" name="kilde">
               <option value="">Velg kilde</option>
-              @for (source of sourceOptions(); track source) {
-                <option [value]="source">{{ source }}</option>
+              @for (source of sourceOptions(); track source.value) {
+                <option [value]="source.value">{{ source.label }}</option>
               }
             </select>
           </div>
@@ -127,7 +127,7 @@
                   @if (item.lead.orgnummer) { <span class="muted who-company num">{{ formatOrgNumber(item.lead.orgnummer) }}</span> }
                 </span>
               </td>
-              <td class="source">{{ item.lead.kilde ?? '–' }}</td>
+              <td class="source">{{ sourceLabel(item.lead.kilde) }}</td>
               <td class="status">
                 <span class="swatch" [style.background]="item.step.farge"></span>{{ item.step.label }}
               </td>
