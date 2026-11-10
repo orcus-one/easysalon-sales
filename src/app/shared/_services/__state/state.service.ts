@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
-import { ILead, ILeadEvent, IPipelineStep } from '../../_interfaces/interface-leads';
+import { ILead, ILeadEvent, IOrganisation, IPipelineStep } from '../../_interfaces/interface-leads';
 
 /**
  * All delt tilstand i appen, som i eris-fe. Komponentene leser signals herfra og
@@ -24,6 +24,8 @@ export class StateService {
     // Leads
     readonly leads = signal<Array<ILead>>([]);
     readonly pipelineSteps = signal<Array<IPipelineStep>>([]);
+    /** Selgerens organisasjoner, normalt én. Nye leads knyttes til den. */
+    readonly organisations = signal<Array<IOrganisation>>([]);
     /** Hendelser fra årsstart, alle typer, nyeste først. */
     readonly leadEvents = signal<Array<ILeadEvent>>([]);
     /** false til første vellykkede henting, så visningen kan skille tomt fra ikke lastet. */

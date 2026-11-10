@@ -42,14 +42,16 @@ export class LeadsFacadeService {
         this.error.set('');
         try {
             const now = new Date();
-            const [leads, steps, events] = await Promise.all([
+            const [leads, steps, events, organisations] = await Promise.all([
                 this.leadsService.getLeads(),
                 this.leadsService.getPipelineSteps(),
-                this.leadsService.getEvents(this.eventsSince(now))
+                this.leadsService.getEvents(this.eventsSince(now)),
+                this.leadsService.getOrganisations()
             ]);
             this.stateService.leads.set(leads);
             this.stateService.pipelineSteps.set(steps);
             this.stateService.leadEvents.set(events);
+            this.stateService.organisations.set(organisations);
             this.stateService.leadsLoaded.set(true);
             this.loadedAt.set(new Date());
         } catch {

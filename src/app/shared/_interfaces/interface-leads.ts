@@ -39,11 +39,21 @@ export interface ILeadInput {
     oppfolging_tid: string | null;
 }
 
+/** Raden som settes inn: skjemaet pluss organisasjonen fasaden legger på. */
+export interface ILeadInsert extends ILeadInput {
+    org_id: string;
+}
+
 /** Én rad i leadlisten: leadet med oppløst steg og første planlagte dato fra og med i dag. */
 export interface ILeadListItem {
     lead: ILead;
     step: IPipelineStep;
     next: IUpcomingItem | null;
+}
+
+/** public.organisasjoner: selgerens organisasjon. Bare id hentes; leads.org_id peker hit. */
+export interface IOrganisation {
+    id: string;
 }
 
 /** public.pipeline_steg: appens egne steg med rekkefølge, etikett og farge. */

@@ -89,12 +89,22 @@ export class LeadListFacadeService {
         this.isFormOpen.set(false);
     }
 
-    /** Lagrer leadet, henter listen på nytt så det nye leadet vises øverst, og lukker skjemaet. */
+    /**
+     * Lagrer leadet knyttet til selgerens organisasjon, henter listen på nytt så det nye leadet vises øverst, og
+     * lukker skjemaet. Med flere organisasjoner stopper vi i stedet for å gjette (Kenneth 2026-11-10).
+     */
     async createLead(input: ILeadInput): Promise<void> {
+        const organisations = this.stateService.organisations();
+        if (organisations.length !== 1) {
+            this.saveError.set(organisations.length === 0
+                ? 'Fant ingen organisasjon å knytte leadet til.'
+                : 'Fant flere organisasjoner, vet ikke hvilken leadet skal knyttes til.');
+            return;
+        }
         this.isSaving.set(true);
         this.saveError.set('');
         try {
-            await this.leadsService.createLead(input);
+            await this.leadsService.createLead({ ...input, org_id: organisations[0].id });
             await this.leadsFacade.load();
             this.isFormOpen.set(false);
         } catch {
