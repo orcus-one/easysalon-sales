@@ -4,8 +4,8 @@ import { StateService } from '../__state/state.service';
 import { LeadsService } from '../leads/leads.service';
 
 /**
- * Dialogen «Nytt notat»: legger et notat i lead_notes på leadet dialogen ble åpnet for. Åpnes fra leadlisten
- * og fra leadpanelet. Notatfeltet på selve leadet (leads.notater) er noe annet og røres ikke.
+ * Dialogen «Nytt notat»: legger et notat i lead_notes på leadet dialogen ble åpnet for. Åpnes fra
+ * leadpanelet. Notatfeltet på selve leadet (leads.notater) er noe annet og røres ikke.
  */
 @Injectable({
     providedIn: 'root'

@@ -2,9 +2,8 @@ import { Component, HostListener, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NoteDialogComponent } from '../../shared/components/note-dialog/note-dialog.component';
-import { ILead, ILeadInput } from '../../shared/_interfaces/interface-leads';
+import { ILeadInput } from '../../shared/_interfaces/interface-leads';
 import { LeadListFacadeService } from '../../shared/_services/lead-list/lead-list-facade.service';
-import { LeadNoteFacadeService } from '../../shared/_services/lead-note/lead-note-facade.service';
 import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
 
 @Component({
@@ -16,7 +15,6 @@ import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.se
 export class LeadsComponent {
 
   private readonly leadListFacade = inject(LeadListFacadeService);
-  private readonly leadNoteFacade = inject(LeadNoteFacadeService);
   private readonly leadsHelper = inject(LeadsHelperService);
   private readonly router = inject(Router);
 
@@ -58,14 +56,10 @@ export class LeadsComponent {
     this.leadListFacade.toggleSource(source);
   }
 
-  /** Klikk hvor som helst på raden åpner leadet. Lenkene (navn, telefon, e-post) og knappen i raden gjør sitt eget. */
+  /** Klikk hvor som helst på raden åpner leadet. Lenkene i raden (navn, telefon, e-post) gjør sitt eget. */
   openLead(event: MouseEvent, id: string): void {
-    if ((event.target as HTMLElement).closest('a, button')) return;
+    if ((event.target as HTMLElement).closest('a')) return;
     this.router.navigate(['/leads', id]);
-  }
-
-  addNote(lead: ILead): void {
-    this.leadNoteFacade.open({ id: lead.id, navn: lead.navn });
   }
 
   showMore(): void {

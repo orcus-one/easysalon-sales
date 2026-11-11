@@ -2,8 +2,8 @@ import { Component, ElementRef, HostListener, effect, inject, viewChild } from '
 import { LeadNoteFacadeService } from '../../_services/lead-note/lead-note-facade.service';
 
 /**
- * Dialogen «Nytt notat». Står én gang på Leads-siden og styres av StateService.noteTarget, så den kan åpnes
- * både fra leadlisten og fra leadpanelet.
+ * Dialogen «Nytt notat». Står én gang på Leads-siden og styres av StateService.noteTarget. Åpnes fra
+ * leadpanelet.
  */
 @Component({
   selector: 'app-note-dialog',

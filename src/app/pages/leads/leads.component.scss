@@ -7,9 +7,8 @@
 .filters-first { margin-bottom: 8px; }
 .filter-label { align-self: center; min-width: 48px; font-size: 13px; }
 
-/* Kontaktkolonnen og notatknappen gjør tabellen bredere enn standarden på 640 px før den ruller sidelengs. */
-.table-wrap .table { min-width: 1000px; }
-.table .actions { width: 1%; white-space: nowrap; }
+/* Kontaktkolonnen gjør tabellen bredere enn standarden på 640 px før den ruller sidelengs. */
+.table-wrap .table { min-width: 860px; }
 /* Hele raden åpner leadet. Navnet er i tillegg en vanlig lenke, for tastatur og ny fane. */
 .lead-row { cursor: pointer; }
 .lead-row:hover td { background: var(--surface-2); }

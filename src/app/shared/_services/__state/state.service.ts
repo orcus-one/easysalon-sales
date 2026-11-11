@@ -44,6 +44,6 @@ export class StateService {
     readonly curLeadNotes = signal<Array<ILeadNote>>([]);
 
     // Dialogen «Nytt notat»
-    /** Leadet notatet skal legges på. null = dialogen er lukket. Åpnes fra leadlisten og fra leadpanelet. */
+    /** Leadet notatet skal legges på. null = dialogen er lukket. Åpnes fra leadpanelet. */
     readonly noteTarget = signal<INoteTarget | null>(null);
 }

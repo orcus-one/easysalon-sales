@@ -131,8 +131,6 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .btn-light { background: var(--surface); color: var(--fg); border-color: var(--border); }
 .btn-block { width: 100%; margin-top: 22px; padding: 12px 16px; }
-/* Liten knapp til bruk inne i tabellrader. */
-.btn-small { font-size: 13px; font-weight: 500; padding: 6px 10px; white-space: nowrap; }
 
 .error { color: var(--crit); font-size: 14px; margin-top: 12px; min-height: 1.3em; }
 
