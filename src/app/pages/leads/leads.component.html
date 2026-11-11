@@ -115,6 +115,7 @@
           <tr>
             <th>Opprettet</th>
             <th>Navn</th>
+            <th>Kontakt</th>
             <th>Kilde</th>
             <th>Status</th>
             <th>Planlagt</th>
@@ -130,6 +131,16 @@
                   @if (item.lead.bedriftsnavn) { <span class="muted who-company">{{ item.lead.bedriftsnavn }}</span> }
                   @if (item.lead.orgnummer) { <span class="muted who-company num">{{ formatOrgNumber(item.lead.orgnummer) }}</span> }
                 </span>
+              </td>
+              <td>
+                @if (item.lead.telefon || item.lead.epost) {
+                  <span class="contact">
+                    @if (item.lead.telefon) { <a [href]="'tel:' + item.lead.telefon" class="num">{{ item.lead.telefon }}</a> }
+                    @if (item.lead.epost) { <a [href]="'mailto:' + item.lead.epost">{{ item.lead.epost }}</a> }
+                  </span>
+                } @else {
+                  <span class="muted">–</span>
+                }
               </td>
               <td class="source">{{ sourceLabel(item.lead.kilde) }}</td>
               <td class="status">
