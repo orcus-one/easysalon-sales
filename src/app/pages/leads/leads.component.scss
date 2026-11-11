@@ -3,6 +3,9 @@
 .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; flex: none; }
 .chip { display: inline-flex; align-items: center; }
 .chip-count { margin-left: 6px; opacity: .7; }
+/* To filterrader, kilde og status, med en liten ledetekst foran hver så radene kan skilles. */
+.filters-first { margin-bottom: 8px; }
+.filter-label { align-self: center; min-width: 48px; font-size: 13px; }
 
 /* Kontaktkolonnen gjør tabellen bredere enn standarden på 640 px før den ruller sidelengs. */
 .table-wrap .table { min-width: 860px; }

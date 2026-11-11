@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     IActivitySummary, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
-    ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceSummary, IUpcomingItem
+    ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceCount, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -366,6 +366,15 @@ export class LeadsHelperService {
             }
         }
         return result;
+    }
+
+    /** Kildene som finnes i leadlisten med antall, største først. Brukes som kildefilter. */
+    sourceCounts(items: Array<ILeadListItem>): Array<ISourceCount> {
+        const counts = new Map<string, number>();
+        for (const item of items) counts.set(item.source, (counts.get(item.source) ?? 0) + 1);
+        return [...counts.entries()]
+            .map(([source, count]) => ({ source, label: source === LeadsHelperService.NoSource ? 'Uten kilde' : source, count }))
+            .sort((a, b) => b.count - a.count);
     }
 
     /** Antall og andel vunnet per kilde, største kilde først. */

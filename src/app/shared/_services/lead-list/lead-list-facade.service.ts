@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { ILeadInput, ILeadListItem, IPipelineCount, ISource } from '../../_interfaces/interface-leads';
+import { ILeadInput, ILeadListItem, IPipelineCount, ISource, ISourceCount } from '../../_interfaces/interface-leads';
 import { StateService } from '../__state/state.service';
 import { LeadsFacadeService } from '../leads/leads-facade.service';
 import { LeadsHelperService } from '../leads/leads-helper.service';
@@ -27,6 +27,8 @@ export class LeadListFacadeService {
     readonly query = signal('');
     /** Nøkkel i pipeline_steg. Tom = alle steg. */
     readonly status = signal('');
+    /** Kildens visningstekst slik den står på radene. Tom = alle kilder. */
+    readonly source = signal('');
     readonly visibleCount = signal(LeadListFacadeService.PageSize);
 
     readonly isLoading = this.leadsFacade.isLoading;
@@ -41,11 +43,16 @@ export class LeadListFacadeService {
     readonly statusOptions = computed<Array<IPipelineCount>>(() =>
         this.leadsHelper.pipeline(this.stateService.leads(), this.stateService.pipelineSteps()).filter(p => p.count > 0));
 
+    /** Kildene som faktisk har leads, med antall, største først. Brukes som kildefilter. */
+    readonly sourceFilterOptions = computed<Array<ISourceCount>>(() => this.leadsHelper.sourceCounts(this.all()));
+
     readonly filtered = computed<Array<ILeadListItem>>(() => {
         const query = this.query().trim().toLowerCase();
         const status = this.status();
+        const source = this.source();
         return this.all().filter(item =>
             (status === '' || item.lead.status === status)
+            && (source === '' || item.source === source)
             && (query === '' || this.leadsHelper.leadMatches(item.lead, query)));
     });
 
@@ -113,6 +120,12 @@ export class LeadListFacadeService {
     /** Samme steg igjen slår filteret av. */
     toggleStatus(status: string): void {
         this.status.set(this.status() === status ? '' : status);
+        this.visibleCount.set(LeadListFacadeService.PageSize);
+    }
+
+    /** Samme kilde igjen slår filteret av. Virker sammen med statusfilteret og søket. */
+    toggleSource(source: string): void {
+        this.source.set(this.source() === source ? '' : source);
         this.visibleCount.set(LeadListFacadeService.PageSize);
     }
 

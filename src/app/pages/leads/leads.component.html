@@ -90,7 +90,19 @@
   <p class="error" role="alert">{{ error() }}</p>
 }
 
+<div class="filters filters-first" role="group" aria-label="Filtrer på kilde">
+  <span class="filter-label muted">Kilde</span>
+  @for (option of sourceFilterOptions(); track option.source) {
+    <button type="button" class="chip" [class.active]="source() === option.source"
+            [attr.aria-pressed]="source() === option.source" (click)="toggleSource(option.source)">
+      {{ option.label }}
+      <span class="chip-count num">{{ option.count }}</span>
+    </button>
+  }
+</div>
+
 <div class="filters" role="group" aria-label="Filtrer på status">
+  <span class="filter-label muted">Status</span>
   @for (option of statusOptions(); track option.step.nokkel) {
     <button type="button" class="chip" [class.active]="status() === option.step.nokkel"
             [attr.aria-pressed]="status() === option.step.nokkel" (click)="toggleStatus(option.step.nokkel)">

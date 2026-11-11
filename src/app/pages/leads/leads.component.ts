@@ -25,6 +25,8 @@ export class LeadsComponent {
   readonly query = this.leadListFacade.query;
   readonly status = this.leadListFacade.status;
   readonly statusOptions = this.leadListFacade.statusOptions;
+  readonly source = this.leadListFacade.source;
+  readonly sourceFilterOptions = this.leadListFacade.sourceFilterOptions;
   readonly all = this.leadListFacade.all;
   readonly filtered = this.leadListFacade.filtered;
   readonly visible = this.leadListFacade.visible;
@@ -47,6 +49,10 @@ export class LeadsComponent {
 
   toggleStatus(status: string): void {
     this.leadListFacade.toggleStatus(status);
+  }
+
+  toggleSource(source: string): void {
+    this.leadListFacade.toggleSource(source);
   }
 
   /** Klikk hvor som helst på raden åpner leadet. Lenkene i raden (navn, telefon, e-post) gjør sitt eget. */

@@ -80,6 +80,14 @@ export interface IPipelineCount {
     share: number;
 }
 
+/** Et valg i kildefilteret på Leads-siden: kildens visningstekst slik den står på radene, og antall leads. */
+export interface ISourceCount {
+    source: string;
+    /** Teksten på knappen. Lik source, bortsett fra for leads uten kilde. */
+    label: string;
+    count: number;
+}
+
 export interface ISourceSummary {
     /** Visningstekst for kilden, se LeadsHelperService.sourceLabel. Leadene grupperes på den. */
     label: string;
