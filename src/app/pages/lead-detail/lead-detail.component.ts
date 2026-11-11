@@ -1,6 +1,6 @@
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, HostListener, effect, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LeadDetailFacadeService } from '../../shared/_services/lead-detail/lead-detail-facade.service';
 import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
 
@@ -14,6 +14,7 @@ export class LeadDetailComponent {
 
   private readonly leadDetailFacade = inject(LeadDetailFacadeService);
   private readonly leadsHelper = inject(LeadsHelperService);
+  private readonly router = inject(Router);
 
   /** Rute-parameteren, bundet inn av ruteren (withComponentInputBinding). */
   readonly id = input.required<string>();
@@ -34,6 +35,12 @@ export class LeadDetailComponent {
   constructor() {
     // Ny id i ruten åpner et nytt lead, også når komponenten gjenbrukes.
     effect(() => this.leadDetailFacade.open(this.id()));
+  }
+
+  /** Escape lukker panelet, som lukkeknappen. */
+  @HostListener('document:keydown.escape')
+  close(): void {
+    this.router.navigate(['/leads']);
   }
 
   refresh(): void {

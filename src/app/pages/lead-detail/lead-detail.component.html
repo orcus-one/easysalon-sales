@@ -1,12 +1,14 @@
 <div class="panel">
-<a routerLink="/leads" class="back muted">Tilbake til leads</a>
+<a routerLink="/leads" class="close" aria-label="Lukk leadet">
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+</a>
 
 @if (error()) {
-  <p class="error" role="alert">{{ error() }}</p>
+  <p class="error notice" role="alert">{{ error() }}</p>
 }
 
 @if (notFound()) {
-  <section class="card">
+  <section class="card notice">
     <p class="muted">Fant ikke leadet.</p>
   </section>
 }

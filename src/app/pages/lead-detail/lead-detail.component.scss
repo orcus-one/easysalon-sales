@@ -6,9 +6,20 @@
 }
 /* Samme bredde og luft som skallets .content. En piksel høyere enn panelet, så det alltid er noe å rulle og
    hjulet aldri går videre til listen under. */
-.panel { max-width: 1200px; margin: 0 auto; padding-block: 28px 56px; padding-inline: 20px; min-height: calc(100% + 1px); }
+.panel { position: relative; max-width: 1200px; margin: 0 auto; padding-block: 28px 56px; padding-inline: 20px; min-height: calc(100% + 1px); }
 
-.back { display: inline-block; font-size: 13px; margin-bottom: 14px; }
+/* Rund lukkeknapp øverst til høyre i panelet. Sidehodet holder av plass til den. */
+.close {
+  position: absolute; top: 22px; right: 20px;
+  display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+  border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: var(--fg);
+  box-shadow: var(--shadow); transition: background .15s;
+  &:hover { background: var(--surface-2); }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+.page-header { padding-right: 64px; min-height: 48px; }
+/* Meldinger uten sidehode (feil, ikke funnet) skal heller ikke havne under knappen. */
+.notice { margin-right: 64px; }
 
 .status { display: inline-flex; align-items: center; white-space: nowrap; }
 .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; flex: none; }
@@ -38,6 +49,7 @@
 
 @media (max-width: 760px) {
   .panel { padding-inline: 16px; }
+  .close { right: 16px; }
 }
 
 @media (max-width: 640px) {
