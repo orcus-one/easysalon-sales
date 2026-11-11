@@ -1,11 +1,19 @@
+<!-- Teksten under tallene: den valgte dagen, ellers perioden. -->
+@let period = date() ? (date() | date:'d. MMMM yyyy') : 'siste ' + days() + ' dager';
+
 <div class="page-header">
   <h1>Løpende aktivitet</h1>
   <div class="page-actions">
     <div class="segmented" role="group" aria-label="Periode">
       @for (option of dayOptions; track option) {
-        <button type="button" class="seg" [class.active]="days() === option" (click)="setDays(option)">{{ option }} dager</button>
+        <button type="button" class="seg" [class.active]="!date() && days() === option" (click)="setDays(option)">{{ option }} dager</button>
       }
     </div>
+    <input type="date" class="date-input" [class.active]="!!date()" [value]="date()" [min]="minDate()" [max]="maxDate()"
+           (change)="onDate($event)" aria-label="Vis én dag">
+    @if (date()) {
+      <button type="button" class="btn btn-light" (click)="setDays(days())">Vis perioden</button>
+    }
     <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
   </div>
 </div>
@@ -18,17 +26,17 @@
   <div class="card kpi">
     <span class="eyebrow">Ringt</span>
     <span class="kpi-value num">{{ calledCount() }}</span>
-    <span class="muted">siste {{ days() }} dager</span>
+    <span class="muted">{{ period }}</span>
   </div>
   <div class="card kpi">
     <span class="eyebrow">SMS</span>
     <span class="kpi-value num">{{ smsCount() }}</span>
-    <span class="muted">siste {{ days() }} dager</span>
+    <span class="muted">{{ period }}</span>
   </div>
   <div class="card kpi">
     <span class="eyebrow">Statusendringer</span>
     <span class="kpi-value num">{{ statusCount() }}</span>
-    <span class="muted">siste {{ days() }} dager</span>
+    <span class="muted">{{ period }}</span>
   </div>
 </section>
 
@@ -43,7 +51,10 @@
 
 @if (hasLoaded() && groups().length === 0) {
   <section class="card">
-    <p class="muted">Ingen hendelser de siste {{ days() }} dagene.</p>
+    <p class="muted">
+      @if (date()) { Ingen hendelser {{ period }} med de valgte typene. }
+      @else { Ingen hendelser de siste {{ days() }} dagene. }
+    </p>
   </section>
 }
 

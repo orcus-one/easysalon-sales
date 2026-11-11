@@ -134,10 +134,19 @@ export class LeadsHelperService {
     /** Hendelser i perioden med lead og etiketter, nyeste først. */
     history(events: Array<ILeadEvent>, leads: Array<ILead>, steps: Array<IPipelineStep>, now: Date, days: number): Array<IHistoryItem> {
         const since = this.addDays(now, -days);
+        return this.historyItems(events.filter(e => new Date(e.opprettet_at) >= since), leads, steps);
+    }
+
+    /** Hendelsene på én dag (yyyy-MM-dd, lokal tid), nyeste først. */
+    historyForDay(events: Array<ILeadEvent>, leads: Array<ILead>, steps: Array<IPipelineStep>, dateKey: string): Array<IHistoryItem> {
+        return this.historyItems(events.filter(e => this.toDateKey(new Date(e.opprettet_at)) === dateKey), leads, steps);
+    }
+
+    /** Hendelser med leadet og lesbare etiketter, nyeste først. */
+    private historyItems(events: Array<ILeadEvent>, leads: Array<ILead>, steps: Array<IPipelineStep>): Array<IHistoryItem> {
         const leadById = new Map(leads.map(l => [l.id, l]));
         const stepLabel = new Map(steps.map(s => [s.nokkel, s.label]));
         return events
-            .filter(e => new Date(e.opprettet_at) >= since)
             .map(e => ({
                 event: e,
                 lead: leadById.get(e.lead_id),

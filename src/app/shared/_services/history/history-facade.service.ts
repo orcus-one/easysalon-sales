@@ -29,10 +29,22 @@ export class HistoryFacadeService {
     readonly error = this.leadsFacade.error;
     readonly hasLoaded = computed(() => this.stateService.leadsLoaded());
 
-    /** Alle hendelser i perioden, før typefilteret. Tellerne i boksene bruker denne. */
-    readonly itemsInPeriod = computed(() => this.leadsHelper.history(
-        this.stateService.leadEvents(), this.stateService.leads(), this.stateService.pipelineSteps(),
-        this.leadsFacade.loadedAt(), this.days()));
+    /** Én bestemt dag som yyyy-MM-dd. Tom = perioden i days. Valgt dag går foran perioden (Kenneth 2026-11-11). */
+    readonly date = signal('');
+    /** Hendelsene er hentet fra årsstart, så dagen kan velges fra 1. januar til og med i dag. */
+    readonly minDate = computed(() => `${this.leadsFacade.loadedAt().getFullYear()}-01-01`);
+    readonly maxDate = computed(() => this.leadsHelper.toDateKey(this.leadsFacade.loadedAt()));
+
+    /** Alle hendelser i perioden eller på den valgte dagen, før typefilteret. Tellerne i boksene bruker denne. */
+    readonly itemsInPeriod = computed(() => {
+        const date = this.date();
+        const events = this.stateService.leadEvents();
+        const leads = this.stateService.leads();
+        const steps = this.stateService.pipelineSteps();
+        return date !== ''
+            ? this.leadsHelper.historyForDay(events, leads, steps, date)
+            : this.leadsHelper.history(events, leads, steps, this.leadsFacade.loadedAt(), this.days());
+    });
 
     readonly items = computed(() => {
         const enabled = this.enabledTypes();
@@ -57,8 +69,15 @@ export class HistoryFacadeService {
     readonly smsCount = computed(() => this.itemsInPeriod().filter(i => i.event.type === 'sms_klikk').length);
     readonly statusCount = computed(() => this.itemsInPeriod().filter(i => i.event.type === 'status_endret').length);
 
+    /** Å velge en periode går tilbake fra dagvisningen. */
     setDays(days: number): void {
         this.days.set(days);
+        this.date.set('');
+    }
+
+    /** Tom streng (feltet er tømt) går tilbake til perioden. Datoer utenfor det som er hentet avvises. */
+    setDate(date: string): void {
+        this.date.set(date !== '' && (date < this.minDate() || date > this.maxDate()) ? '' : date);
     }
 
     toggleType(type: string): void {

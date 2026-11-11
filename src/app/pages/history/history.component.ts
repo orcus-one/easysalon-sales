@@ -17,6 +17,9 @@ export class HistoryComponent {
   readonly hasLoaded = this.historyFacade.hasLoaded;
   readonly days = this.historyFacade.days;
   readonly dayOptions = HistoryFacadeService.DayOptions;
+  readonly date = this.historyFacade.date;
+  readonly minDate = this.historyFacade.minDate;
+  readonly maxDate = this.historyFacade.maxDate;
   readonly typeOptions = this.historyFacade.typeOptions;
   readonly enabledTypes = this.historyFacade.enabledTypes;
   readonly groups = this.historyFacade.groups;
@@ -30,6 +33,10 @@ export class HistoryComponent {
 
   setDays(days: number): void {
     this.historyFacade.setDays(days);
+  }
+
+  onDate(event: Event): void {
+    this.historyFacade.setDate((event.target as HTMLInputElement).value);
   }
 
   toggleType(type: string): void {

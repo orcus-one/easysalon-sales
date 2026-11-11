@@ -3,6 +3,10 @@
 .detail { font-size: 13px; text-align: right; }
 .arrow { opacity: .7; padding: 0 2px; }
 
+/* Datofeltet for én dag står ved siden av periodevalget, i samme høyde, og markeres når en dag er valgt. */
+.date-input { width: auto; font-size: 14px; padding: 8px 10px; }
+.date-input.active { background: var(--accent-soft); border-color: transparent; }
+
 /* Fargen på merket per hendelsestype ligger i styles.scss, delt med livsløpet på et lead. */
 
 @media (max-width: 640px) {
