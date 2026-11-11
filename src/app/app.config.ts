@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import localeNb from '@angular/common/locales/nb';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withHashLocation } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withHashLocation } from '@angular/router';
 
 import { routes } from './app.routes';
 
@@ -13,6 +13,7 @@ export const appConfig: ApplicationConfig = {
     // Norsk formatering av dato og tall i hele appen.
     { provide: LOCALE_ID, useValue: 'nb' },
     // Hash-ruting: GitHub Pages kjenner ikke rutene våre, så /#/dashboard virker uten omveier.
-    provideRouter(routes, withHashLocation())
+    // Rute-parametere bindes rett inn som input på sidene (id på et lead).
+    provideRouter(routes, withHashLocation(), withComponentInputBinding())
   ]
 };

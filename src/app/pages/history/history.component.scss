@@ -3,11 +3,7 @@
 .detail { font-size: 13px; text-align: right; }
 .arrow { opacity: .7; padding: 0 2px; }
 
-/* Merket får farge etter hendelsestype */
-.row[data-type="ringt_klikk"] .pill { background: var(--chart-1-soft); color: var(--chart-1-ink); }
-.row[data-type="sms_klikk"] .pill { background: var(--chart-2-soft); color: var(--chart-2-ink); }
-.row[data-type="epost_klikk"] .pill,
-.row[data-type="mote_klikk"] .pill { background: var(--info-soft); color: var(--info); }
+/* Fargen på merket per hendelsestype ligger i styles.scss, delt med livsløpet på et lead. */
 
 @media (max-width: 640px) {
   .row { grid-template-columns: 52px 1fr; }

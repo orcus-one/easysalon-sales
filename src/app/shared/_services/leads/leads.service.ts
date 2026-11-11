@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ILead, ILeadEvent, ILeadInsert, IOrganisation, IPipelineStep } from '../../_interfaces/interface-leads';
+import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, IOrganisation, IPipelineStep } from '../../_interfaces/interface-leads';
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
@@ -29,6 +29,36 @@ export class LeadsService {
             .limit(LeadsService.MaxRows);
         if (error) throw error;
         return data ?? [];
+    }
+
+    private static readonly LeadDetailColumns = LeadsService.LeadColumns + ', notater, forst_kontakt_at, oppdatert_at';
+
+    /** Ett lead med notat og tidspunkter, null når id-en ikke finnes. */
+    async getLead(id: string): Promise<ILeadDetail | null> {
+        const { data, error } = await this.supabase.client
+            .from('leads')
+            .select<string, ILeadDetail>(LeadsService.LeadDetailColumns)
+            .eq('id', id)
+            .maybeSingle();
+        if (error) throw error;
+        return data;
+    }
+
+    /** Alle hendelser på ett lead uansett alder, nyeste først, med kommentar. Sidevis som getEvents. */
+    async getLeadEvents(leadId: string): Promise<Array<ILeadEventDetail>> {
+        const all: Array<ILeadEventDetail> = [];
+        for (let from = 0; ; from += LeadsService.PageSize) {
+            const { data, error } = await this.supabase.client
+                .from('lead_hendelser')
+                .select<string, ILeadEventDetail>('id, lead_id, type, fra_status, til_status, kommentar, opprettet_at')
+                .eq('lead_id', leadId)
+                .order('opprettet_at', { ascending: false })
+                .range(from, from + LeadsService.PageSize - 1);
+            if (error) throw error;
+            all.push(...(data ?? []));
+            if (!data || data.length < LeadsService.PageSize) break;
+        }
+        return all;
     }
 
     /** Oppretter et lead. Regelen «Authenticated users can insert» på leads er på plass (Kenneth 2026-11-10). */

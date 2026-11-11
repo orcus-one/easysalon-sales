@@ -102,6 +102,37 @@ export interface ILeadEvent {
     opprettet_at: string;
 }
 
+/** Leadet slik detaljvisningen henter det: listekolonnene pluss notat og tidspunkter. */
+export interface ILeadDetail extends ILead {
+    notater: string | null;
+    forst_kontakt_at: string | null;
+    oppdatert_at: string | null;
+}
+
+/** Hendelse med kommentaren, hentet per lead for livsløpet. */
+export interface ILeadEventDetail extends ILeadEvent {
+    kommentar: string | null;
+}
+
+/** Én linje i livsløpet til et lead: en hendelse, eller opprettelsen (type «opprettet»). */
+export interface ILifecycleItem {
+    id: string;
+    /** ISO-tidspunkt. */
+    at: string;
+    type: string;
+    label: string;
+    fromLabel: string | null;
+    toLabel: string | null;
+    comment: string | null;
+}
+
+/** Antall hendelser av én type på et lead. */
+export interface ILifecycleCount {
+    type: string;
+    label: string;
+    count: number;
+}
+
 /** Én linje i historikken: hendelsen med leadet og lesbare etiketter. */
 export interface IHistoryItem {
     event: ILeadEvent;

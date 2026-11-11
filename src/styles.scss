@@ -162,6 +162,11 @@ textarea { resize: vertical; min-height: 80px; }
   justify-self: start; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
   padding: 3px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted);
 }
+/* Merket får farge etter hendelsestype (Løpende aktivitet og livsløpet på et lead) */
+.row[data-type="ringt_klikk"] .pill { background: var(--chart-1-soft); color: var(--chart-1-ink); }
+.row[data-type="sms_klikk"] .pill { background: var(--chart-2-soft); color: var(--chart-2-ink); }
+.row[data-type="epost_klikk"] .pill,
+.row[data-type="mote_klikk"] .pill { background: var(--info-soft); color: var(--info); }
 .who { display: flex; flex-direction: column; min-width: 0; }
 .who-name { font-weight: 500; }
 .who-company { font-size: 13px; }

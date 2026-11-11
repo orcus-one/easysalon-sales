@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
-    ILeadListItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -144,6 +144,38 @@ export class LeadsHelperService {
                 toLabel: e.til_status ? (stepLabel.get(e.til_status) ?? e.til_status) : null
             }))
             .sort((a, b) => b.event.opprettet_at.localeCompare(a.event.opprettet_at));
+    }
+
+    /** Typen på linjen i livsløpet som står for selve opprettelsen. Finnes ikke i lead_hendelser. */
+    static readonly CreatedType = 'opprettet';
+
+    /**
+     * Livsløpet til ett lead: alle hendelsene pluss opprettelsen (opprettet_ekst), nyeste først. Tidspunktene
+     * sammenlignes som datoer, siden de to kolonnene ikke nødvendigvis har samme tidssone i teksten.
+     */
+    lifecycle(lead: ILead, events: Array<ILeadEventDetail>, steps: Array<IPipelineStep>): Array<ILifecycleItem> {
+        const stepLabel = new Map(steps.map(s => [s.nokkel, s.label]));
+        const items: Array<ILifecycleItem> = events.map(e => ({
+            id: e.id,
+            at: e.opprettet_at,
+            type: e.type,
+            label: this.eventTypeLabel(e.type),
+            fromLabel: e.fra_status ? (stepLabel.get(e.fra_status) ?? e.fra_status) : null,
+            toLabel: e.til_status ? (stepLabel.get(e.til_status) ?? e.til_status) : null,
+            comment: e.kommentar?.trim() || null
+        }));
+        items.push({
+            id: LeadsHelperService.CreatedType, at: lead.opprettet_ekst, type: LeadsHelperService.CreatedType,
+            label: 'Opprettet', fromLabel: null, toLabel: null, comment: null
+        });
+        return items.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+    }
+
+    /** Antall hendelser per type på ett lead, i visningsrekkefølge, bare typer som forekommer. */
+    lifecycleCounts(events: Array<ILeadEventDetail>): Array<ILifecycleCount> {
+        return LeadsHelperService.EventTypes
+            .map(t => ({ type: t.type, label: t.label, count: events.filter(e => e.type === t.type).length }))
+            .filter(c => c.count > 0);
     }
 
     /** Dato som yyyy-MM-dd i lokal tid, samme form som date-kolonnene i basen. */

@@ -1,0 +1,102 @@
+<a routerLink="/leads" class="back muted">Tilbake til leads</a>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+@if (notFound()) {
+  <section class="card">
+    <p class="muted">Fant ikke leadet.</p>
+  </section>
+}
+
+@if (lead(); as lead) {
+  <div class="page-header">
+    <div>
+      <h1>{{ lead.navn }}</h1>
+      @if (lead.bedriftsnavn) { <p class="muted sub">{{ lead.bedriftsnavn }}</p> }
+    </div>
+    <div class="page-actions">
+      @if (step(); as step) {
+        <span class="status"><span class="swatch" [style.background]="step.farge"></span>{{ step.label }}</span>
+      }
+      <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <section class="card facts">
+      <h2>Opplysninger</h2>
+      <dl>
+        <dt>Telefon</dt>
+        <dd>@if (lead.telefon) { <a [href]="'tel:' + lead.telefon" class="num">{{ lead.telefon }}</a> } @else { <span class="muted">–</span> }</dd>
+        <dt>E-post</dt>
+        <dd>@if (lead.epost) { <a [href]="'mailto:' + lead.epost">{{ lead.epost }}</a> } @else { <span class="muted">–</span> }</dd>
+        <dt>Org.nr.</dt>
+        <dd class="num">@if (lead.orgnummer) { {{ formatOrgNumber(lead.orgnummer) }} } @else { <span class="muted">–</span> }</dd>
+        <dt>Kilde</dt>
+        <dd>{{ sourceLabel(lead.kilde) }}</dd>
+        <dt>Opprettet</dt>
+        <dd class="num">{{ lead.opprettet_ekst | date:'dd.MM.yyyy' }}</dd>
+        <dt>Første kontakt</dt>
+        <dd class="num">@if (lead.forst_kontakt_at) { {{ lead.forst_kontakt_at | date:'dd.MM.yyyy HH:mm' }} } @else { <span class="muted">–</span> }</dd>
+        <dt>Neste oppfølging</dt>
+        <dd class="num">
+          @if (lead.neste_oppfolging) {
+            {{ lead.neste_oppfolging | date:'dd.MM.yyyy' }}
+            @if (lead.oppfolging_tid) { <span class="muted">{{ lead.oppfolging_tid.slice(0, 5) }}</span> }
+          } @else { <span class="muted">–</span> }
+        </dd>
+        <dt>Demo</dt>
+        <dd class="num">
+          @if (lead.demo_dato) {
+            {{ lead.demo_dato | date:'dd.MM.yyyy' }}
+            @if (lead.demo_tid) { <span class="muted">{{ lead.demo_tid.slice(0, 5) }}</span> }
+          } @else { <span class="muted">–</span> }
+        </dd>
+        <dt>Registrert</dt>
+        <dd class="num">@if (lead.registrert_dato) { {{ lead.registrert_dato | date:'dd.MM.yyyy' }} } @else { <span class="muted">–</span> }</dd>
+        <dt>Lisenser</dt>
+        <dd class="num">@if (lead.lisenser !== null) { {{ lead.lisenser }} } @else { <span class="muted">–</span> }</dd>
+        <dt>Sist endret</dt>
+        <dd class="num">@if (lead.oppdatert_at) { {{ lead.oppdatert_at | date:'dd.MM.yyyy HH:mm' }} } @else { <span class="muted">–</span> }</dd>
+      </dl>
+      <h3>Notat</h3>
+      @if (lead.notater) {
+        <p class="notes">{{ lead.notater }}</p>
+      } @else {
+        <p class="muted">Ingen notat.</p>
+      }
+    </section>
+
+    <section class="lifecycle">
+      <h2 class="day-head">
+        <span>Livsløp</span>
+        <span class="muted count num">{{ eventCount() }} hendelser</span>
+      </h2>
+      @if (counts().length > 0) {
+        <div class="filters">
+          @for (count of counts(); track count.type) {
+            <span class="chip tally">{{ count.label }} <span class="num tally-count">{{ count.count }}</span></span>
+          }
+        </div>
+      }
+      <ul class="card list">
+        @for (item of lifecycle(); track item.id) {
+          <li class="row" [attr.data-type]="item.type">
+            <span class="time num">{{ item.at | date:'dd.MM.yyyy' }}</span>
+            <span class="time num">{{ item.at | date:'HH:mm' }}</span>
+            <span class="pill">{{ item.label }}</span>
+            <span class="detail">
+              @if (item.type === 'status_endret') {
+                <span class="muted">{{ item.fromLabel ?? '–' }} <span class="arrow">til</span> {{ item.toLabel ?? '–' }}</span>
+              }
+              @if (item.comment) { <span class="comment">{{ item.comment }}</span> }
+            </span>
+          </li>
+        }
+      </ul>
+      <p class="muted note">Livsløpet viser hendelsene som er loggført på leadet, nyeste øverst. Opprettet er dagen leadet kom inn.</p>
+    </section>
+  </div>
+}

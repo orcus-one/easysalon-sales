@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
-import { ILead, ILeadEvent, IOrganisation, IPipelineStep } from '../../_interfaces/interface-leads';
+import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, IOrganisation, IPipelineStep } from '../../_interfaces/interface-leads';
 
 /**
  * All delt tilstand i appen, som i eris-fe. Komponentene leser signals herfra og
@@ -32,4 +32,10 @@ export class StateService {
     readonly leadsLoaded = signal(false);
     /** Dialogen «Opprett lead» på Leads-siden. */
     readonly isLeadFormOpen = signal(false);
+
+    // Detaljvisningen av ett lead
+    /** Leadet som er åpnet, null før det er hentet eller når id-en ikke finnes. */
+    readonly curLead = signal<ILeadDetail | null>(null);
+    /** Alle hendelsene på leadet som er åpnet, nyeste først. */
+    readonly curLeadEvents = signal<Array<ILeadEventDetail>>([]);
 }

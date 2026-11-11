@@ -4,6 +4,7 @@ import { ShellComponent } from './layouts/shell/shell.component';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LeadsComponent } from './pages/leads/leads.component';
+import { LeadDetailComponent } from './pages/lead-detail/lead-detail.component';
 import { KpiComponent } from './pages/kpi/kpi.component';
 import { UpcomingComponent } from './pages/upcoming/upcoming.component';
 import { HistoryComponent } from './pages/history/history.component';
@@ -19,6 +20,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'leads', component: LeadsComponent },
+      { path: 'leads/:id', component: LeadDetailComponent },
       { path: 'kpi', component: KpiComponent },
       { path: 'kommende', component: UpcomingComponent },
       { path: 'historikk', component: HistoryComponent },

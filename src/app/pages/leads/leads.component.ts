@@ -1,12 +1,13 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ILeadInput } from '../../shared/_interfaces/interface-leads';
 import { LeadListFacadeService } from '../../shared/_services/lead-list/lead-list-facade.service';
 import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
 
 @Component({
   selector: 'app-leads',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './leads.component.html',
   styleUrl: './leads.component.scss'
 })

@@ -127,7 +127,7 @@
               <td class="date num">{{ item.lead.opprettet_ekst | date:'dd.MM.yyyy' }}</td>
               <td>
                 <span class="who">
-                  <span class="who-name">{{ item.lead.navn }}</span>
+                  <a class="who-name" [routerLink]="['/leads', item.lead.id]">{{ item.lead.navn }}</a>
                   @if (item.lead.bedriftsnavn) { <span class="muted who-company">{{ item.lead.bedriftsnavn }}</span> }
                   @if (item.lead.orgnummer) { <span class="muted who-company num">{{ formatOrgNumber(item.lead.orgnummer) }}</span> }
                 </span>
