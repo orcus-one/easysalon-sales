@@ -35,7 +35,10 @@
 .tile-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 13px; }
 .tile-label { font-weight: 500; white-space: nowrap; }
 .tile-range { font-size: 11px; white-space: nowrap; }
+.tile-day { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
 .tile-icon { opacity: .7; flex: none; }
+/* Medalje eller kryss til høyre i dagkortet, i kortets egen farge (grønn på mål, rød under). */
+.tile-mark { flex: none; }
 .tile-count { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; text-align: center; }
 .tile-foot { font-size: 11px; text-align: center; min-height: 1.3em; }
 
@@ -45,6 +48,6 @@
   .weeks { grid-template-columns: repeat(4, 1fr); }
   .tile { padding: 6px 8px; border-radius: var(--radius-sm); }
   .tile-count { font-size: 20px; }
-  .tile-foot, .tile-icon, .tile-range { display: none; }
+  .tile-foot, .tile-icon, .tile-mark, .tile-range { display: none; }
   .month-name { min-width: 0; }
 }
