@@ -1,0 +1,28 @@
+<div class="legend">
+  <span class="legend-item"><span class="swatch met"></span>På mål</span>
+  <span class="legend-item"><span class="swatch missed"></span>Under mål</span>
+  <span class="legend-item"><span class="swatch off"></span>Helg og helligdag</span>
+  <span class="legend-item"><span class="swatch-line"></span>Mål {{ target() }}</span>
+</div>
+
+<svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+     aria-label="Telefoner per dag målt mot dagsmålet">
+  @for (line of gridLines(); track line.value) {
+    <line class="grid" [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="line.y" [attr.y2]="line.y" />
+    <text class="axis" x="0" [attr.y]="line.y + 3">{{ line.value }}</text>
+  }
+
+  @for (bar of bars(); track bar.date) {
+    <g [attr.data-status]="bar.status" [class.today]="bar.isToday">
+      <title>{{ bar.title }}</title>
+      <rect class="slot" [attr.x]="bar.slotX" [attr.y]="padTop" [attr.width]="bar.slotWidth" [attr.height]="baseline - padTop" />
+      <rect class="bar" [attr.x]="bar.x" [attr.y]="bar.y" [attr.width]="barWidth()" [attr.height]="bar.height" />
+      @if (bar.showCount) {
+        <text class="val" [attr.x]="bar.x + barWidth() / 2" [attr.y]="bar.y - 4" text-anchor="middle">{{ bar.calls }}</text>
+      }
+      <text class="axis day" [attr.x]="bar.x + barWidth() / 2" [attr.y]="labelY" text-anchor="middle">{{ bar.label }}</text>
+    </g>
+  }
+
+  <line class="target" [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="targetY()" [attr.y2]="targetY()" />
+</svg>

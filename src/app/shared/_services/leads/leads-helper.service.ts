@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDailyActivity, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
+    IActivitySummary, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
     ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
@@ -213,6 +213,36 @@ export class LeadsHelperService {
         ['2028-06-05', 'Andre pinsedag'], ['2028-12-25', 'Første juledag'], ['2028-12-26', 'Andre juledag']
     ]);
 
+    /** Én dag målt mot dagsmålet: arbeidsdag, helg eller helligdag, og om målet ble nådd. Felles for KPI-siden og grafen på Oversikt. */
+    private kpiDay(date: Date, calls: number, target: number, todayKey: string): IKpiDay {
+        const key = this.toDateKey(date);
+        const holidayName = LeadsHelperService.Holidays.get(key) ?? null;
+        const weekday = date.getDay();
+        const kind = holidayName ? 'holiday' : (weekday === 0 || weekday === 6) ? 'weekend' : 'workday';
+        const isFuture = key > todayKey;
+        return {
+            date: key, dayOfMonth: date.getDate(), kind, holidayName, isFuture, isToday: key === todayKey, calls,
+            met: kind === 'workday' && !isFuture && calls >= target
+        };
+    }
+
+    /** Telefoner per dag de siste days dagene til og med i dag, målt mot dagsmålet som på KPI-siden. */
+    dailyCalls(events: Array<ILeadEvent>, now: Date, days: number, target: number): Array<IKpiDay> {
+        const todayKey = this.toDateKey(now);
+        const callsByDay = new Map<string, number>();
+        for (const e of events) {
+            if (e.type !== 'ringt_klikk') continue;
+            const key = this.toDateKey(new Date(e.opprettet_at));
+            callsByDay.set(key, (callsByDay.get(key) ?? 0) + 1);
+        }
+        const result: Array<IKpiDay> = [];
+        for (let i = days - 1; i >= 0; i--) {
+            const date = this.addDays(now, -i);
+            result.push(this.kpiDay(date, callsByDay.get(this.toDateKey(date)) ?? 0, target, todayKey));
+        }
+        return result;
+    }
+
     /**
      * Telefoner per dag i én måned målt mot et dagsmål. Helg og helligdag er med i rutenettet for at ukene
      * skal stemme, men teller ikke mot målet. Dager etter i dag vises uten tall. Oppsummeringen gjelder
@@ -232,16 +262,7 @@ export class LeadsHelperService {
         const days: Array<IKpiDay> = [];
         for (let d = 1; d <= daysInMonth; d++) {
             const date = new Date(year, monthIndex, d);
-            const key = this.toDateKey(date);
-            const holidayName = LeadsHelperService.Holidays.get(key) ?? null;
-            const weekday = date.getDay();
-            const kind = holidayName ? 'holiday' : (weekday === 0 || weekday === 6) ? 'weekend' : 'workday';
-            const isFuture = key > todayKey;
-            const calls = callsByDay.get(key) ?? 0;
-            days.push({
-                date: key, dayOfMonth: d, kind, holidayName, isFuture, isToday: key === todayKey, calls,
-                met: kind === 'workday' && !isFuture && calls >= target
-            });
+            days.push(this.kpiDay(date, callsByDay.get(this.toDateKey(date)) ?? 0, target, todayKey));
         }
 
         const passed = days.filter(day => day.kind === 'workday' && !day.isFuture);
@@ -391,22 +412,6 @@ export class LeadsHelperService {
                 eventsLast30: last30.length
             };
         });
-    }
-
-    /** Ringt og SMS per dag de siste days dagene til og med i dag, med nuller for dager uten. */
-    dailyActivity(events: Array<ILeadEvent>, now: Date, days: number): Array<IDailyActivity> {
-        const byDay = new Map<string, IDailyActivity>();
-        for (let i = days - 1; i >= 0; i--) {
-            const key = this.toDateKey(this.addDays(now, -i));
-            byDay.set(key, { date: key, ringt: 0, sms: 0 });
-        }
-        for (const e of events) {
-            const day = byDay.get(this.toDateKey(new Date(e.opprettet_at)));
-            if (!day) continue;
-            if (e.type === 'ringt_klikk') day.ringt += 1;
-            if (e.type === 'sms_klikk') day.sms += 1;
-        }
-        return [...byDay.values()];
     }
 
     /** Oppfølginger og demoer fra og med i dag til og med om `days` dager, tidligst først. */

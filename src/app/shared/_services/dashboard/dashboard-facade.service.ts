@@ -1,5 +1,6 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { StateService } from '../__state/state.service';
+import { KpiFacadeService } from '../kpi/kpi-facade.service';
 import { LeadsFacadeService } from '../leads/leads-facade.service';
 import { LeadsHelperService } from '../leads/leads-helper.service';
 
@@ -26,8 +27,10 @@ export class DashboardFacadeService {
     readonly pipeline = computed(() => this.leadsHelper.pipeline(this.stateService.leads(), this.stateService.pipelineSteps()));
     readonly bySource = computed(() => this.leadsHelper.bySource(this.stateService.leads()));
     readonly activity = computed(() => this.leadsHelper.activity(this.stateService.leadEvents(), this.loadedAt()));
-    readonly dailyActivity = computed(() =>
-        this.leadsHelper.dailyActivity(this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.ActivityDays));
+    /** Samme dagsmål som KPI-siden, så grafen og KPI-kortene sier det samme om en dag. */
+    static readonly CallTarget = KpiFacadeService.CallTarget;
+    readonly dailyCalls = computed(() => this.leadsHelper.dailyCalls(
+        this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.ActivityDays, DashboardFacadeService.CallTarget));
 
     ensureLoaded(): void {
         this.leadsFacade.ensureLoaded();

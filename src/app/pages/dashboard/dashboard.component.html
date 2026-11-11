@@ -39,10 +39,10 @@
   <!-- Graf -->
   <section class="card span-3">
     <div class="card-head">
-      <h2>Kontakt per dag</h2>
-      <span class="muted">ringt og SMS siste {{ activityDays }} dager</span>
+      <h2>Telefoner per dag</h2>
+      <span class="muted">siste {{ activityDays }} dager, mål {{ callTarget }} per arbeidsdag</span>
     </div>
-    <app-activity-chart [data]="dailyActivity()" />
+    <app-call-chart [data]="dailyCalls()" [target]="callTarget" />
   </section>
 
   <!-- Pipeline -->
