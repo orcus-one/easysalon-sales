@@ -37,8 +37,11 @@
 .tile-range { font-size: 11px; white-space: nowrap; }
 .tile-day { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
 .tile-icon { opacity: .7; flex: none; }
-/* Medalje eller kryss til høyre i dagkortet, i kortets egen farge (grønn på mål, rød under). */
+/* Medalje eller kryss til høyre i dagkortet. Krysset har kortets røde farge. Medaljen er gul (Kenneth
+   2026-11-11): fylt skive med mørkere kant og bånd, så den synes mot det grønne kortet. */
 .tile-mark { flex: none; }
+.tile-mark.medal { color: #B7791F; }
+.tile-mark.medal circle { fill: #FBBF24; }
 .tile-count { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; text-align: center; }
 .tile-foot { font-size: 11px; text-align: center; min-height: 1.3em; }
 
