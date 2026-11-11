@@ -20,13 +20,13 @@ export class LeadDetailComponent {
   readonly id = input.required<string>();
 
   formatOrgNumber = (orgnummer: string | null): string => this.leadsHelper.formatOrgNumber(orgnummer);
-  sourceLabel = (kilde: string | null): string => this.leadsHelper.sourceLabel(kilde);
 
   readonly isLoading = this.leadDetailFacade.isLoading;
   readonly error = this.leadDetailFacade.error;
   readonly notFound = this.leadDetailFacade.notFound;
   readonly lead = this.leadDetailFacade.lead;
   readonly step = this.leadDetailFacade.step;
+  readonly sourceLabel = this.leadDetailFacade.sourceLabel;
   readonly lifecycle = this.leadDetailFacade.lifecycle;
   readonly counts = this.leadDetailFacade.counts;
   readonly eventCount = this.leadDetailFacade.eventCount;

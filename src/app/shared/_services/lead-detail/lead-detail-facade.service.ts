@@ -36,6 +36,11 @@ export class LeadDetailFacadeService {
         return this.stateService.pipelineSteps().find(s => s.nokkel === lead.status) ?? this.leadsHelper.unknownStep(lead.status);
     });
 
+    readonly sourceLabel = computed(() => {
+        const lead = this.lead();
+        return lead ? this.leadsHelper.sourceLabel(lead, this.stateService.sources()) : '';
+    });
+
     readonly lifecycle = computed(() => {
         const lead = this.lead();
         return lead ? this.leadsHelper.lifecycle(lead, this.stateService.curLeadEvents(), this.stateService.pipelineSteps()) : [];
@@ -44,7 +49,7 @@ export class LeadDetailFacadeService {
     readonly counts = computed(() => this.leadsHelper.lifecycleCounts(this.stateService.curLeadEvents()));
     readonly eventCount = computed(() => this.stateService.curLeadEvents().length);
 
-    /** Åpner leadet: tømmer forrige, og henter leadet og hendelsene. Stegene kommer fra den felles lasten. */
+    /** Åpner leadet: tømmer forrige, og henter leadet og hendelsene. Stegene og kildene kommer fra den felles lasten. */
     async open(id: string): Promise<void> {
         this.openId = id;
         this.stateService.curLead.set(null);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     IActivitySummary, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
-    ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISourceSummary, IUpcomingItem
+    ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -29,17 +29,16 @@ export class LeadsHelperService {
         return LeadsHelperService.EventTypes.find(t => t.type === type)?.label ?? type;
     }
 
-    /**
-     * Kilder som lagres som nøkkel i leads.kilde og trenger egen visningstekst. De eldre kildene (Brønnøysund,
-     * Meta, Konkurrent, Onboarding) er lagret med visningsteksten som verdi og trenger ingen oppføring.
-     */
-    static readonly SourceLabels: ReadonlyMap<string, string> = new Map([
-        ['organisk_registrering', 'Organisk registrering']
-    ]);
+    /** Vises når et lead ikke har kilde. */
+    static readonly NoSource = '–';
 
-    sourceLabel(kilde: string | null): string {
-        if (kilde === null) return '–';
-        return LeadsHelperService.SourceLabels.get(kilde) ?? kilde;
+    /**
+     * Visningsteksten for kilden til et lead: etiketten i kilder for leads.kilde_id. Leads som bare har den gamle
+     * teksten (lagt inn av selgerens app før den skriver kilde_id) viser teksten som den er.
+     */
+    sourceLabel(lead: Pick<ILead, 'kilde_id' | 'kilde'>, sources: Array<ISource>): string {
+        const source = lead.kilde_id === null ? undefined : sources.find(s => s.id === lead.kilde_id);
+        return source?.label ?? lead.kilde ?? LeadsHelperService.NoSource;
     }
 
     /** Steg for en status som ikke finnes i pipeline_steg. Grå, sist i rekkefølgen. */
@@ -51,7 +50,7 @@ export class LeadsHelperService {
      * Leadlisten: alle leads nyeste først, med steget sitt og første planlagte dato (oppfølging eller demo)
      * fra og med i dag. Datoer som er passert vises ikke som planlagt.
      */
-    leadList(leads: Array<ILead>, steps: Array<IPipelineStep>, now: Date): Array<ILeadListItem> {
+    leadList(leads: Array<ILead>, steps: Array<IPipelineStep>, sources: Array<ISource>, now: Date): Array<ILeadListItem> {
         const todayKey = this.toDateKey(now);
         const stepByKey = new Map(steps.map(s => [s.nokkel, s]));
         return leads
@@ -64,7 +63,10 @@ export class LeadsHelperService {
                     planned.push({ lead, date: lead.demo_dato, time: lead.demo_tid, kind: 'demo' });
                 }
                 planned.sort((a, b) => (a.date + (a.time ?? '')).localeCompare(b.date + (b.time ?? '')));
-                return { lead, step: stepByKey.get(lead.status) ?? this.unknownStep(lead.status), next: planned[0] ?? null };
+                return {
+                    lead, step: stepByKey.get(lead.status) ?? this.unknownStep(lead.status),
+                    source: this.sourceLabel(lead, sources), next: planned[0] ?? null
+                };
             })
             .sort((a, b) => b.lead.opprettet_ekst.localeCompare(a.lead.opprettet_ekst));
     }
@@ -367,17 +369,18 @@ export class LeadsHelperService {
     }
 
     /** Antall og andel vunnet per kilde, største kilde først. */
-    bySource(leads: Array<ILead>): Array<ISourceSummary> {
+    bySource(leads: Array<ILead>, sources: Array<ISource>): Array<ISourceSummary> {
         const groups = new Map<string, { total: number; won: number }>();
         for (const lead of leads) {
-            const key = lead.kilde ?? 'Ukjent';
+            const label = this.sourceLabel(lead, sources);
+            const key = label === LeadsHelperService.NoSource ? 'Ukjent' : label;
             const group = groups.get(key) ?? { total: 0, won: 0 };
             group.total += 1;
             if (lead.status === LeadsHelperService.WonStatus) group.won += 1;
             groups.set(key, group);
         }
         return [...groups.entries()]
-            .map(([kilde, g]) => ({ kilde, label: this.sourceLabel(kilde), total: g.total, won: g.won, wonShare: g.total ? g.won / g.total : 0 }))
+            .map(([label, g]) => ({ label, total: g.total, won: g.won, wonShare: g.total ? g.won / g.total : 0 }))
             .sort((a, b) => b.total - a.total);
     }
 

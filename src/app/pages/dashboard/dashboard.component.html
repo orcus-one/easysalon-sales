@@ -84,7 +84,7 @@
         <tr><th>Kilde</th><th class="num r">Leads</th><th class="num r">Vunnet</th><th class="num r">Andel</th></tr>
       </thead>
       <tbody>
-        @for (row of bySource(); track row.kilde) {
+        @for (row of bySource(); track row.label) {
           <tr>
             <td>{{ row.label }}</td>
             <td class="num r">{{ row.total | number:'1.0-0' }}</td>

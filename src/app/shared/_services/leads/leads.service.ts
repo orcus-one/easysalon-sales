@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, IOrganisation, IPipelineStep } from '../../_interfaces/interface-leads';
+import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
- * Kall mot leads og pipeline_steg via Data API. RLS avgjør hva den innloggede får se.
+ * Kall mot leads, pipeline_steg og kilder via Data API. RLS avgjør hva den innloggede får se.
  */
 @Injectable({
     providedIn: 'root'
@@ -18,7 +18,7 @@ export class LeadsService {
     private static readonly PageSize = 1000;
 
     private static readonly LeadColumns =
-        'id, navn, bedriftsnavn, orgnummer, telefon, epost, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
+        'id, navn, bedriftsnavn, orgnummer, telefon, epost, kilde_id, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
         'demo_dato, demo_tid, registrert_dato, lisenser';
 
     async getLeads(): Promise<Array<ILead>> {
@@ -91,6 +91,16 @@ export class LeadsService {
             if (!data || data.length < LeadsService.PageSize) break;
         }
         return all;
+    }
+
+    /** Alle kildene i rekkefølge, også de som ikke er aktive, siden eldre leads kan peke på dem. */
+    async getSources(): Promise<Array<ISource>> {
+        const { data, error } = await this.supabase.client
+            .from('kilder')
+            .select<string, ISource>('id, nokkel, label, rekkefolge, aktiv')
+            .order('rekkefolge', { ascending: true });
+        if (error) throw error;
+        return data ?? [];
     }
 
     async getPipelineSteps(): Promise<Array<IPipelineStep>> {

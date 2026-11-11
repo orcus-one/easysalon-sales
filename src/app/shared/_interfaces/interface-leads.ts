@@ -6,6 +6,9 @@ export interface ILead {
     orgnummer: string | null;
     telefon: string | null;
     epost: string | null;
+    /** Peker på kilder.id. Null på leads som er lagt inn med bare den gamle teksten. */
+    kilde_id: number | null;
+    /** Den gamle tekstkolonnen. Leses til selgerens app skriver kilde_id, og fjernes da. */
     kilde: string | null;
     status: string;
     opprettet_ekst: string;
@@ -17,10 +20,13 @@ export interface ILead {
     lisenser: number | null;
 }
 
-/** Et valg i kildelisten: verdien som lagres i leads.kilde og teksten som vises. */
-export interface ISourceOption {
-    value: string;
+/** public.kilder: hvor leadene kommer fra. leads.kilde_id peker hit. */
+export interface ISource {
+    id: number;
+    nokkel: string;
     label: string;
+    rekkefolge: number;
+    aktiv: boolean;
 }
 
 /** Feltene i skjemaet «Opprett lead». Navnene er kolonnene i leads, tomme felt sendes som null. */
@@ -32,22 +38,25 @@ export interface ILeadInput {
     orgnummer: string | null;
     telefon: string | null;
     epost: string | null;
-    kilde: string | null;
+    kilde_id: number | null;
     status: string;
     notater: string | null;
     neste_oppfolging: string | null;
     oppfolging_tid: string | null;
 }
 
-/** Raden som settes inn: skjemaet pluss organisasjonen fasaden legger på. */
+/** Raden som settes inn: skjemaet pluss det fasaden legger på. */
 export interface ILeadInsert extends ILeadInput {
     org_id: string;
+    /** Kildens visningstekst i den gamle tekstkolonnen, så selgerens app viser kilden til den leser kilde_id. */
+    kilde: string | null;
 }
 
-/** Én rad i leadlisten: leadet med oppløst steg og første planlagte dato fra og med i dag. */
+/** Én rad i leadlisten: leadet med oppløst steg, kildens visningstekst og første planlagte dato fra og med i dag. */
 export interface ILeadListItem {
     lead: ILead;
     step: IPipelineStep;
+    source: string;
     next: IUpcomingItem | null;
 }
 
@@ -72,8 +81,7 @@ export interface IPipelineCount {
 }
 
 export interface ISourceSummary {
-    kilde: string;
-    /** Visningstekst for kilden, se LeadsHelperService.sourceLabel. */
+    /** Visningstekst for kilden, se LeadsHelperService.sourceLabel. Leadene grupperes på den. */
     label: string;
     total: number;
     won: number;

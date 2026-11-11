@@ -38,7 +38,7 @@
         <dt>Org.nr.</dt>
         <dd class="num">@if (lead.orgnummer) { {{ formatOrgNumber(lead.orgnummer) }} } @else { <span class="muted">–</span> }</dd>
         <dt>Kilde</dt>
-        <dd>{{ sourceLabel(lead.kilde) }}</dd>
+        <dd>{{ sourceLabel() }}</dd>
         <dt>Opprettet</dt>
         <dd class="num">{{ lead.opprettet_ekst | date:'dd.MM.yyyy' }}</dd>
         <dt>Første kontakt</dt>

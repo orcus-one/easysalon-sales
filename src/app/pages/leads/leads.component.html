@@ -46,10 +46,10 @@
           </div>
           <div>
             <label for="lead-kilde">Kilde</label>
-            <select id="lead-kilde" name="kilde">
+            <select id="lead-kilde" name="kilde_id">
               <option value="">Velg kilde</option>
-              @for (source of sourceOptions(); track source.value) {
-                <option [value]="source.value">{{ source.label }}</option>
+              @for (source of sourceOptions(); track source.id) {
+                <option [value]="source.id">{{ source.label }}</option>
               }
             </select>
           </div>
@@ -143,7 +143,7 @@
                   <span class="muted">–</span>
                 }
               </td>
-              <td class="source">{{ sourceLabel(item.lead.kilde) }}</td>
+              <td class="source">{{ item.source }}</td>
               <td class="status">
                 <span class="swatch" [style.background]="item.step.farge"></span>{{ item.step.label }}
               </td>

@@ -18,7 +18,6 @@ export class LeadsComponent {
   private readonly router = inject(Router);
 
   formatOrgNumber = (orgnummer: string | null): string => this.leadsHelper.formatOrgNumber(orgnummer);
-  sourceLabel = (kilde: string | null): string => this.leadsHelper.sourceLabel(kilde);
 
   readonly isLoading = this.leadListFacade.isLoading;
   readonly error = this.leadListFacade.error;
@@ -92,7 +91,7 @@ export class LeadsComponent {
       orgnummer: field('orgnummer'),
       telefon: field('telefon'),
       epost: field('epost'),
-      kilde: field('kilde'),
+      kilde_id: field('kilde_id') === null ? null : Number(field('kilde_id')),
       status: field('status') ?? this.defaultStatus,
       notater: field('notater'),
       neste_oppfolging: field('neste_oppfolging'),

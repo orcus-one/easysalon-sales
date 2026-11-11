@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { ILeadInput, ILeadListItem, IPipelineCount, ISourceOption } from '../../_interfaces/interface-leads';
+import { ILeadInput, ILeadListItem, IPipelineCount, ISource } from '../../_interfaces/interface-leads';
 import { StateService } from '../__state/state.service';
 import { LeadsFacadeService } from '../leads/leads-facade.service';
 import { LeadsHelperService } from '../leads/leads-helper.service';
@@ -34,7 +34,8 @@ export class LeadListFacadeService {
     readonly hasLoaded = computed(() => this.stateService.leadsLoaded());
 
     readonly all = computed(() =>
-        this.leadsHelper.leadList(this.stateService.leads(), this.stateService.pipelineSteps(), this.leadsFacade.loadedAt()));
+        this.leadsHelper.leadList(this.stateService.leads(), this.stateService.pipelineSteps(), this.stateService.sources(),
+            this.leadsFacade.loadedAt()));
 
     /** Stegene som faktisk har leads, med antall, i appens rekkefølge. Brukes som statusfilter. */
     readonly statusOptions = computed<Array<IPipelineCount>>(() =>
@@ -57,19 +58,8 @@ export class LeadListFacadeService {
     readonly saveError = signal('');
     /** Dagens dato som yyyy-MM-dd, satt når skjemaet åpnes. Forslag i feltet «Opprettet». */
     readonly formDefaultDate = signal('');
-    /** Kilder som ennå ikke finnes blant leadene, men som skal kunne velges (Kenneth 2026-11-10). */
-    static readonly KnownSources = ['Kontaktskjema', 'Gatebesøk', 'organisk_registrering'];
-
-    /**
-     * Kildene som finnes blant leadene pluss de kjente, med visningstekst, alfabetisk på teksten. Selgerens app
-     * har en fast liste; dette speiler den.
-     */
-    readonly sourceOptions = computed<Array<ISourceOption>>(() => {
-        const fromLeads = this.stateService.leads().map(l => l.kilde).filter((k): k is string => k !== null);
-        return [...new Set([...fromLeads, ...LeadListFacadeService.KnownSources])]
-            .map(value => ({ value, label: this.leadsHelper.sourceLabel(value) }))
-            .sort((a, b) => a.label.localeCompare(b.label, 'nb'));
-    });
+    /** De aktive kildene fra public.kilder, i tabellens rekkefølge. */
+    readonly sourceOptions = computed<Array<ISource>>(() => this.stateService.sources().filter(s => s.aktiv));
     readonly stepOptions = computed(() => this.stateService.pipelineSteps());
     readonly defaultStatus = LeadListFacadeService.DefaultStatus;
 
@@ -104,7 +94,8 @@ export class LeadListFacadeService {
         this.isSaving.set(true);
         this.saveError.set('');
         try {
-            await this.leadsService.createLead({ ...input, org_id: organisations[0].id });
+            const source = this.stateService.sources().find(s => s.id === input.kilde_id);
+            await this.leadsService.createLead({ ...input, org_id: organisations[0].id, kilde: source?.label ?? null });
             await this.leadsFacade.load();
             this.isFormOpen.set(false);
         } catch {

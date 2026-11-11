@@ -25,7 +25,7 @@ export class DashboardFacadeService {
 
     readonly kpis = computed(() => this.leadsHelper.kpis(this.stateService.leads(), this.loadedAt()));
     readonly pipeline = computed(() => this.leadsHelper.pipeline(this.stateService.leads(), this.stateService.pipelineSteps()));
-    readonly bySource = computed(() => this.leadsHelper.bySource(this.stateService.leads()));
+    readonly bySource = computed(() => this.leadsHelper.bySource(this.stateService.leads(), this.stateService.sources()));
     readonly activity = computed(() => this.leadsHelper.activity(this.stateService.leadEvents(), this.loadedAt()));
     /** Samme dagsmål som KPI-siden, så grafen og KPI-kortene sier det samme om en dag. */
     static readonly CallTarget = KpiFacadeService.CallTarget;
