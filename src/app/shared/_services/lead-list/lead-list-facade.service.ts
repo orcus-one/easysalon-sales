@@ -39,21 +39,38 @@ export class LeadListFacadeService {
         this.leadsHelper.leadList(this.stateService.leads(), this.stateService.pipelineSteps(), this.stateService.sources(),
             this.leadsFacade.loadedAt()));
 
-    /** Stegene som faktisk har leads, med antall, i appens rekkefølge. Brukes som statusfilter. */
-    readonly statusOptions = computed<Array<IPipelineCount>>(() =>
-        this.leadsHelper.pipeline(this.stateService.leads(), this.stateService.pipelineSteps()).filter(p => p.count > 0));
+    /** Leadene som passer til søket, før status og kilde. */
+    private readonly searched = computed<Array<ILeadListItem>>(() => {
+        const query = this.query().trim().toLowerCase();
+        return query === '' ? this.all() : this.all().filter(item => this.leadsHelper.leadMatches(item.lead, query));
+    });
 
-    /** Kildene som faktisk har leads, med antall, største først. Brukes som kildefilter. */
-    readonly sourceFilterOptions = computed<Array<ISourceCount>>(() => this.leadsHelper.sourceCounts(this.all()));
+    /**
+     * Statusfilteret: stegene med antall, i appens rekkefølge. Antallene følger utvalget (Kenneth 2026-11-11):
+     * de telles blant leadene som passer til søket og valgt kilde. Steg uten leads i utvalget skjules, bortsett
+     * fra det valgte, så det alltid kan slås av.
+     */
+    readonly statusOptions = computed<Array<IPipelineCount>>(() => {
+        const source = this.source();
+        const status = this.status();
+        const leads = this.searched().filter(item => source === '' || item.source === source).map(item => item.lead);
+        return this.leadsHelper.pipeline(leads, this.stateService.pipelineSteps())
+            .filter(p => p.count > 0 || p.step.nokkel === status);
+    });
+
+    /** Kildefilteret: kildene med antall blant leadene som passer til søket og valgt status, største først. */
+    readonly sourceFilterOptions = computed<Array<ISourceCount>>(() => {
+        const status = this.status();
+        return this.leadsHelper.sourceCounts(
+            this.searched().filter(item => status === '' || item.lead.status === status), this.source());
+    });
 
     readonly filtered = computed<Array<ILeadListItem>>(() => {
-        const query = this.query().trim().toLowerCase();
         const status = this.status();
         const source = this.source();
-        return this.all().filter(item =>
+        return this.searched().filter(item =>
             (status === '' || item.lead.status === status)
-            && (source === '' || item.source === source)
-            && (query === '' || this.leadsHelper.leadMatches(item.lead, query)));
+            && (source === '' || item.source === source));
     });
 
     readonly visible = computed(() => this.filtered().slice(0, this.visibleCount()));

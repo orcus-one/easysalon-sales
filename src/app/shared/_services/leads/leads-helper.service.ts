@@ -368,9 +368,13 @@ export class LeadsHelperService {
         return result;
     }
 
-    /** Kildene som finnes i leadlisten med antall, største først. Brukes som kildefilter. */
-    sourceCounts(items: Array<ILeadListItem>): Array<ISourceCount> {
+    /**
+     * Kildene som finnes blant leadene med antall, største først. Brukes som kildefilter. Den valgte kilden
+     * (selected, tom = ingen) er alltid med, også med null leads, så filteret kan slås av.
+     */
+    sourceCounts(items: Array<ILeadListItem>, selected: string): Array<ISourceCount> {
         const counts = new Map<string, number>();
+        if (selected !== '') counts.set(selected, 0);
         for (const item of items) counts.set(item.source, (counts.get(item.source) ?? 0) + 1);
         return [...counts.entries()]
             .map(([source, count]) => ({ source, label: source === LeadsHelperService.NoSource ? 'Uten kilde' : source, count }))
