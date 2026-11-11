@@ -6,6 +6,13 @@
 
 /* Kontaktkolonnen gjør tabellen bredere enn standarden på 640 px før den ruller sidelengs. */
 .table-wrap .table { min-width: 860px; }
+/* Hele raden åpner leadet. Navnet er i tillegg en vanlig lenke, for tastatur og ny fane. */
+.lead-row { cursor: pointer; }
+.lead-row:hover td { background: var(--surface-2); }
+.lead-row .who-name { text-decoration: none; }
+.table .open { width: 1%; color: var(--muted); }
+.table .open svg { display: block; }
+.lead-row:hover .open { color: var(--fg); }
 .table .date { white-space: nowrap; color: var(--muted); }
 .contact { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; font-size: 13px; }
 .contact a { white-space: nowrap; }

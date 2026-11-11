@@ -19,8 +19,8 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'leads', component: LeadsComponent },
-      { path: 'leads/:id', component: LeadDetailComponent },
+      // Leadet er barnerute av listen: det vises som panel oppå den, og listen beholder rulleposisjonen.
+      { path: 'leads', component: LeadsComponent, children: [{ path: ':id', component: LeadDetailComponent }] },
       { path: 'kpi', component: KpiComponent },
       { path: 'kommende', component: UpcomingComponent },
       { path: 'historikk', component: HistoryComponent },

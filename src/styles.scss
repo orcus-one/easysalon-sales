@@ -36,6 +36,12 @@
   --radius-sm: 10px;
   --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-brand: 'Playfair Display', Georgia, serif;
+  /* Høyden på skallets topplinje: 60 + fanerad 42 + to kantstreker. Paneler som legges oppå en side starter under den. */
+  --topbar-height: 104px;
+}
+@media (max-width: 760px) {
+  /* Uten fanerad: 56 + kantstrek. */
+  :root { --topbar-height: 57px; }
 }
 @media (prefers-color-scheme: dark) {
   :root {

@@ -1,13 +1,13 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ILeadInput } from '../../shared/_interfaces/interface-leads';
 import { LeadListFacadeService } from '../../shared/_services/lead-list/lead-list-facade.service';
 import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
 
 @Component({
   selector: 'app-leads',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, RouterOutlet],
   templateUrl: './leads.component.html',
   styleUrl: './leads.component.scss'
 })
@@ -15,6 +15,7 @@ export class LeadsComponent {
 
   private readonly leadListFacade = inject(LeadListFacadeService);
   private readonly leadsHelper = inject(LeadsHelperService);
+  private readonly router = inject(Router);
 
   formatOrgNumber = (orgnummer: string | null): string => this.leadsHelper.formatOrgNumber(orgnummer);
   sourceLabel = (kilde: string | null): string => this.leadsHelper.sourceLabel(kilde);
@@ -47,6 +48,12 @@ export class LeadsComponent {
 
   toggleStatus(status: string): void {
     this.leadListFacade.toggleStatus(status);
+  }
+
+  /** Klikk hvor som helst på raden åpner leadet. Lenkene i raden (navn, telefon, e-post) gjør sitt eget. */
+  openLead(event: MouseEvent, id: string): void {
+    if ((event.target as HTMLElement).closest('a')) return;
+    this.router.navigate(['/leads', id]);
   }
 
   showMore(): void {

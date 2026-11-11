@@ -1,3 +1,13 @@
+/* Leadet ligger som et panel oppå Leads-listen, under topplinjen. Listen blir stående i DOM-en under, så
+   rulleposisjonen i den er urørt når panelet lukkes. Panelet ruller for seg selv. */
+:host {
+  position: fixed; inset: var(--topbar-height) 0 0 0; z-index: 5;
+  overflow-y: auto; overscroll-behavior: contain; background: var(--bg);
+}
+/* Samme bredde og luft som skallets .content. En piksel høyere enn panelet, så det alltid er noe å rulle og
+   hjulet aldri går videre til listen under. */
+.panel { max-width: 1200px; margin: 0 auto; padding-block: 28px 56px; padding-inline: 20px; min-height: calc(100% + 1px); }
+
 .back { display: inline-block; font-size: 13px; margin-bottom: 14px; }
 
 .status { display: inline-flex; align-items: center; white-space: nowrap; }
@@ -24,6 +34,10 @@
 
 @media (max-width: 900px) {
   .detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .panel { padding-inline: 16px; }
 }
 
 @media (max-width: 640px) {
