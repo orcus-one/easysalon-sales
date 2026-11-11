@@ -24,7 +24,7 @@ export class StateService {
     // Leads
     readonly leads = signal<Array<ILead>>([]);
     readonly pipelineSteps = signal<Array<IPipelineStep>>([]);
-    /** Kildene fra public.kilder i rekkefølge, også de som ikke er aktive. */
+    /** Kildene fra public.sources i rekkefølge, også de som ikke er aktive. */
     readonly sources = signal<Array<ISource>>([]);
     /** Selgerens organisasjoner, normalt én. Nye leads knyttes til den. */
     readonly organisations = signal<Array<IOrganisation>>([]);

@@ -46,7 +46,7 @@
           </div>
           <div>
             <label for="lead-kilde">Kilde</label>
-            <select id="lead-kilde" name="kilde_id">
+            <select id="lead-kilde" name="source_id">
               <option value="">Velg kilde</option>
               @for (source of sourceOptions(); track source.id) {
                 <option [value]="source.id">{{ source.label }}</option>

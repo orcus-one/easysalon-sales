@@ -3,7 +3,7 @@ import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, IOrganis
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
- * Kall mot leads, pipeline_steg og kilder via Data API. RLS avgjør hva den innloggede får se.
+ * Kall mot leads, pipeline_steg og sources via Data API. RLS avgjør hva den innloggede får se.
  */
 @Injectable({
     providedIn: 'root'
@@ -18,7 +18,7 @@ export class LeadsService {
     private static readonly PageSize = 1000;
 
     private static readonly LeadColumns =
-        'id, navn, bedriftsnavn, orgnummer, telefon, epost, kilde_id, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
+        'id, navn, bedriftsnavn, orgnummer, telefon, epost, source_id, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
         'demo_dato, demo_tid, registrert_dato, lisenser';
 
     async getLeads(): Promise<Array<ILead>> {
@@ -96,9 +96,9 @@ export class LeadsService {
     /** Alle kildene i rekkefølge, også de som ikke er aktive, siden eldre leads kan peke på dem. */
     async getSources(): Promise<Array<ISource>> {
         const { data, error } = await this.supabase.client
-            .from('kilder')
-            .select<string, ISource>('id, nokkel, label, rekkefolge, aktiv')
-            .order('rekkefolge', { ascending: true });
+            .from('sources')
+            .select<string, ISource>('id, key, label, sort_order, active')
+            .order('sort_order', { ascending: true });
         if (error) throw error;
         return data ?? [];
     }

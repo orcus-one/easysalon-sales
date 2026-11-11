@@ -91,7 +91,7 @@ export class LeadsComponent {
       orgnummer: field('orgnummer'),
       telefon: field('telefon'),
       epost: field('epost'),
-      kilde_id: field('kilde_id') === null ? null : Number(field('kilde_id')),
+      source_id: field('source_id') === null ? null : Number(field('source_id')),
       status: field('status') ?? this.defaultStatus,
       notater: field('notater'),
       neste_oppfolging: field('neste_oppfolging'),

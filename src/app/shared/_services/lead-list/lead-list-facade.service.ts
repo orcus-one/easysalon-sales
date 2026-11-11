@@ -58,8 +58,8 @@ export class LeadListFacadeService {
     readonly saveError = signal('');
     /** Dagens dato som yyyy-MM-dd, satt når skjemaet åpnes. Forslag i feltet «Opprettet». */
     readonly formDefaultDate = signal('');
-    /** De aktive kildene fra public.kilder, i tabellens rekkefølge. */
-    readonly sourceOptions = computed<Array<ISource>>(() => this.stateService.sources().filter(s => s.aktiv));
+    /** De aktive kildene fra public.sources, i tabellens rekkefølge. */
+    readonly sourceOptions = computed<Array<ISource>>(() => this.stateService.sources().filter(s => s.active));
     readonly stepOptions = computed(() => this.stateService.pipelineSteps());
     readonly defaultStatus = LeadListFacadeService.DefaultStatus;
 
@@ -94,7 +94,7 @@ export class LeadListFacadeService {
         this.isSaving.set(true);
         this.saveError.set('');
         try {
-            const source = this.stateService.sources().find(s => s.id === input.kilde_id);
+            const source = this.stateService.sources().find(s => s.id === input.source_id);
             await this.leadsService.createLead({ ...input, org_id: organisations[0].id, kilde: source?.label ?? null });
             await this.leadsFacade.load();
             this.isFormOpen.set(false);

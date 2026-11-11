@@ -33,11 +33,11 @@ export class LeadsHelperService {
     static readonly NoSource = '–';
 
     /**
-     * Visningsteksten for kilden til et lead: etiketten i kilder for leads.kilde_id. Leads som bare har den gamle
-     * teksten (lagt inn av selgerens app før den skriver kilde_id) viser teksten som den er.
+     * Visningsteksten for kilden til et lead: etiketten i sources for leads.source_id. Leads som bare har den gamle
+     * teksten (lagt inn av selgerens app før den skriver source_id) viser teksten som den er.
      */
-    sourceLabel(lead: Pick<ILead, 'kilde_id' | 'kilde'>, sources: Array<ISource>): string {
-        const source = lead.kilde_id === null ? undefined : sources.find(s => s.id === lead.kilde_id);
+    sourceLabel(lead: Pick<ILead, 'source_id' | 'kilde'>, sources: Array<ISource>): string {
+        const source = lead.source_id === null ? undefined : sources.find(s => s.id === lead.source_id);
         return source?.label ?? lead.kilde ?? LeadsHelperService.NoSource;
     }
 

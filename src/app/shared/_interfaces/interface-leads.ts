@@ -6,9 +6,9 @@ export interface ILead {
     orgnummer: string | null;
     telefon: string | null;
     epost: string | null;
-    /** Peker på kilder.id. Null på leads som er lagt inn med bare den gamle teksten. */
-    kilde_id: number | null;
-    /** Den gamle tekstkolonnen. Leses til selgerens app skriver kilde_id, og fjernes da. */
+    /** Peker på sources.id. Null på leads som er lagt inn med bare den gamle teksten. */
+    source_id: number | null;
+    /** Den gamle tekstkolonnen. Leses til selgerens app skriver source_id, og fjernes da. */
     kilde: string | null;
     status: string;
     opprettet_ekst: string;
@@ -20,13 +20,13 @@ export interface ILead {
     lisenser: number | null;
 }
 
-/** public.kilder: hvor leadene kommer fra. leads.kilde_id peker hit. */
+/** public.sources: hvor leadene kommer fra. leads.source_id peker hit. Nye tabeller har engelske navn. */
 export interface ISource {
     id: number;
-    nokkel: string;
+    key: string;
     label: string;
-    rekkefolge: number;
-    aktiv: boolean;
+    sort_order: number;
+    active: boolean;
 }
 
 /** Feltene i skjemaet «Opprett lead». Navnene er kolonnene i leads, tomme felt sendes som null. */
@@ -38,7 +38,7 @@ export interface ILeadInput {
     orgnummer: string | null;
     telefon: string | null;
     epost: string | null;
-    kilde_id: number | null;
+    source_id: number | null;
     status: string;
     notater: string | null;
     neste_oppfolging: string | null;
@@ -48,7 +48,7 @@ export interface ILeadInput {
 /** Raden som settes inn: skjemaet pluss det fasaden legger på. */
 export interface ILeadInsert extends ILeadInput {
     org_id: string;
-    /** Kildens visningstekst i den gamle tekstkolonnen, så selgerens app viser kilden til den leser kilde_id. */
+    /** Kildens visningstekst i den gamle tekstkolonnen, så selgerens app viser kilden til den leser source_id. */
     kilde: string | null;
 }
 
