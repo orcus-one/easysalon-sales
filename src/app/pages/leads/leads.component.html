@@ -132,6 +132,7 @@
             <th>Status</th>
             <th>Planlagt</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -170,6 +171,9 @@
                   <span class="muted">–</span>
                 }
               </td>
+              <td class="actions">
+                <button type="button" class="btn btn-light btn-small" (click)="addNote(item.lead)">Legg til notat</button>
+              </td>
               <td class="open">
                 <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </td>
@@ -186,6 +190,9 @@
     </div>
   </section>
 }
+
+<!-- Dialogen «Nytt notat», åpnes fra radene her og fra leadpanelet. Ligger over panelet. -->
+<app-note-dialog />
 
 <!-- Et åpnet lead legges som panel oppå listen. -->
 <router-outlet />

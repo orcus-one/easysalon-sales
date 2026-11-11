@@ -130,7 +130,30 @@ export interface ILeadEventDetail extends ILeadEvent {
     kommentar: string | null;
 }
 
-/** Én linje i livsløpet til et lead: en hendelse, eller opprettelsen (type «opprettet»). */
+/** public.lead_notes: notater på et lead, ett per rad. Bare lesing og oppretting, notater endres ikke. */
+export interface ILeadNote {
+    id: number;
+    lead_id: string;
+    body: string;
+    created_at: string;
+    /** E-posten til den innloggede som skrev notatet, satt av basen. Null når notatet ikke er skrevet fra Hermes. */
+    created_by_email: string | null;
+}
+
+/** Raden som settes inn i lead_notes. Tidspunkt og forfatter settes av basen. */
+export interface ILeadNoteInsert {
+    org_id: string;
+    lead_id: string;
+    body: string;
+}
+
+/** Leadet notatdialogen gjelder. */
+export interface INoteTarget {
+    id: string;
+    navn: string;
+}
+
+/** Én linje i livsløpet til et lead: en hendelse, et notat (type «note») eller opprettelsen (type «opprettet»). */
 export interface ILifecycleItem {
     id: string;
     /** ISO-tidspunkt. */
@@ -140,6 +163,8 @@ export interface ILifecycleItem {
     fromLabel: string | null;
     toLabel: string | null;
     comment: string | null;
+    /** Hvem som skrev notatet. Null for hendelser og for notater uten forfatter. */
+    author: string | null;
 }
 
 /** Antall hendelser av én type på et lead. */

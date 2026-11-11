@@ -42,6 +42,10 @@
 .comment { white-space: pre-wrap; overflow-wrap: anywhere; }
 .arrow { opacity: .7; padding: 0 2px; }
 .row[data-type="opprettet"] .pill { background: var(--ok-soft); color: var(--ok); }
+/* Notater fra lead_notes: teksten er innholdet, så den står i vanlig størrelse med forfatteren dempet under. */
+.row[data-type="note"] .pill { background: var(--accent-soft); color: var(--fg); }
+.row[data-type="note"] .comment { font-size: 14px; }
+.author { font-size: 12px; }
 
 @media (max-width: 900px) {
   .detail-grid { grid-template-columns: 1fr; }

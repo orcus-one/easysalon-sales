@@ -24,6 +24,7 @@
         <span class="status"><span class="swatch" [style.background]="step.farge"></span>{{ step.label }}</span>
       }
       <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+      <button type="button" class="btn" (click)="addNote()">Legg til notat</button>
     </div>
   </div>
 
@@ -75,7 +76,7 @@
     <section class="lifecycle">
       <h2 class="day-head">
         <span>Livsløp</span>
-        <span class="muted count num">{{ eventCount() }} hendelser</span>
+        <span class="muted count num">{{ eventCount() }} oppføringer</span>
       </h2>
       @if (counts().length > 0) {
         <div class="filters">
@@ -95,11 +96,12 @@
                 <span class="muted">{{ item.fromLabel ?? '–' }} <span class="arrow">til</span> {{ item.toLabel ?? '–' }}</span>
               }
               @if (item.comment) { <span class="comment">{{ item.comment }}</span> }
+              @if (item.author) { <span class="muted author">{{ item.author }}</span> }
             </span>
           </li>
         }
       </ul>
-      <p class="muted note">Livsløpet viser hendelsene som er loggført på leadet, nyeste øverst. Opprettet er dagen leadet kom inn.</p>
+      <p class="muted note">Livsløpet viser hendelsene som er loggført på leadet og notatene som er lagt til, nyeste øverst. Opprettet er dagen leadet kom inn.</p>
     </section>
   </div>
 }

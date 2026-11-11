@@ -1,0 +1,20 @@
+@if (target(); as target) {
+  <div class="backdrop" (click)="close()">
+    <section class="card dialog" role="dialog" aria-modal="true" aria-labelledby="note-dialog-title" (click)="$event.stopPropagation()">
+      <div class="dialog-head">
+        <h2 id="note-dialog-title">Nytt notat</h2>
+        <button type="button" class="close-btn" (click)="close()" aria-label="Lukk">&times;</button>
+      </div>
+      <p class="muted sub">{{ target.navn }}</p>
+      <form (submit)="onSubmit($event)">
+        <label for="note-dialog-body">Notat</label>
+        <textarea #bodyField id="note-dialog-body" name="body" rows="6" required></textarea>
+        <div class="form-actions">
+          @if (saveError()) { <p class="error" role="alert">{{ saveError() }}</p> }
+          <button type="button" class="btn btn-light" (click)="close()" [disabled]="isSaving()">Avbryt</button>
+          <button type="submit" class="btn" [disabled]="isSaving()">{{ isSaving() ? 'Lagrer' : 'Lagre notat' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

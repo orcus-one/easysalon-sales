@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
-import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
+import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadNote, INoteTarget, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 
 /**
  * All delt tilstand i appen, som i eris-fe. Komponentene leser signals herfra og
@@ -40,4 +40,10 @@ export class StateService {
     readonly curLead = signal<ILeadDetail | null>(null);
     /** Alle hendelsene på leadet som er åpnet, nyeste først. */
     readonly curLeadEvents = signal<Array<ILeadEventDetail>>([]);
+    /** Notatene på leadet som er åpnet, nyeste først. */
+    readonly curLeadNotes = signal<Array<ILeadNote>>([]);
+
+    // Dialogen «Nytt notat»
+    /** Leadet notatet skal legges på. null = dialogen er lukket. Åpnes fra leadlisten og fra leadpanelet. */
+    readonly noteTarget = signal<INoteTarget | null>(null);
 }

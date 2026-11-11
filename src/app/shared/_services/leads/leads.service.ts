@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
+import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, ILeadNote, ILeadNoteInsert, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
@@ -59,6 +59,24 @@ export class LeadsService {
             if (!data || data.length < LeadsService.PageSize) break;
         }
         return all;
+    }
+
+    /** Notatene på ett lead, nyeste først. */
+    async getLeadNotes(leadId: string): Promise<Array<ILeadNote>> {
+        const { data, error } = await this.supabase.client
+            .from('lead_notes')
+            .select<string, ILeadNote>('id, lead_id, body, created_at, created_by_email')
+            .eq('lead_id', leadId)
+            .order('created_at', { ascending: false })
+            .limit(LeadsService.PageSize);
+        if (error) throw error;
+        return data ?? [];
+    }
+
+    /** Legger til et notat. Tidspunkt og forfatter settes av basen. Regelen «Authenticated users can insert» (2026-11-11). */
+    async createLeadNote(row: ILeadNoteInsert): Promise<void> {
+        const { error } = await this.supabase.client.from('lead_notes').insert(row);
+        if (error) throw error;
     }
 
     /** Oppretter et lead. Regelen «Authenticated users can insert» på leads er på plass (Kenneth 2026-11-10). */

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     IActivitySummary, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
-    ILeadEventDetail, ILeadListItem, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceCount, ISourceSummary, IUpcomingItem
+    ILeadEventDetail, ILeadListItem, ILeadNote, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceCount, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
 /**
@@ -160,11 +160,15 @@ export class LeadsHelperService {
     /** Typen på linjen i livsløpet som står for selve opprettelsen. Finnes ikke i lead_hendelser. */
     static readonly CreatedType = 'opprettet';
 
+    /** Typen på linjene i livsløpet som er notater fra lead_notes. Finnes ikke i lead_hendelser. */
+    static readonly NoteType = 'note';
+    static readonly NoteLabel = 'Notat';
+
     /**
-     * Livsløpet til ett lead: alle hendelsene pluss opprettelsen (opprettet_ekst), nyeste først. Tidspunktene
-     * sammenlignes som datoer, siden de to kolonnene ikke nødvendigvis har samme tidssone i teksten.
+     * Livsløpet til ett lead: alle hendelsene, notatene fra lead_notes og opprettelsen (opprettet_ekst), nyeste
+     * først. Tidspunktene sammenlignes som datoer, siden kolonnene ikke nødvendigvis har samme tidssone i teksten.
      */
-    lifecycle(lead: ILead, events: Array<ILeadEventDetail>, steps: Array<IPipelineStep>): Array<ILifecycleItem> {
+    lifecycle(lead: ILead, events: Array<ILeadEventDetail>, notes: Array<ILeadNote>, steps: Array<IPipelineStep>): Array<ILifecycleItem> {
         const stepLabel = new Map(steps.map(s => [s.nokkel, s.label]));
         const items: Array<ILifecycleItem> = events.map(e => ({
             id: e.id,
@@ -173,20 +177,29 @@ export class LeadsHelperService {
             label: this.eventTypeLabel(e.type),
             fromLabel: e.fra_status ? (stepLabel.get(e.fra_status) ?? e.fra_status) : null,
             toLabel: e.til_status ? (stepLabel.get(e.til_status) ?? e.til_status) : null,
-            comment: e.kommentar?.trim() || null
+            comment: e.kommentar?.trim() || null,
+            author: null
         }));
+        for (const note of notes) {
+            items.push({
+                id: `${LeadsHelperService.NoteType}-${note.id}`, at: note.created_at, type: LeadsHelperService.NoteType,
+                label: LeadsHelperService.NoteLabel, fromLabel: null, toLabel: null, comment: note.body, author: note.created_by_email
+            });
+        }
         items.push({
             id: LeadsHelperService.CreatedType, at: lead.opprettet_ekst, type: LeadsHelperService.CreatedType,
-            label: 'Opprettet', fromLabel: null, toLabel: null, comment: null
+            label: 'Opprettet', fromLabel: null, toLabel: null, comment: null, author: null
         });
         return items.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
     }
 
-    /** Antall hendelser per type på ett lead, i visningsrekkefølge, bare typer som forekommer. */
-    lifecycleCounts(events: Array<ILeadEventDetail>): Array<ILifecycleCount> {
-        return LeadsHelperService.EventTypes
-            .map(t => ({ type: t.type, label: t.label, count: events.filter(e => e.type === t.type).length }))
-            .filter(c => c.count > 0);
+    /** Antall per type på ett lead: notatene først, så hendelsene i visningsrekkefølge. Bare typer som forekommer. */
+    lifecycleCounts(events: Array<ILeadEventDetail>, notes: Array<ILeadNote>): Array<ILifecycleCount> {
+        return [
+            { type: LeadsHelperService.NoteType, label: LeadsHelperService.NoteLabel, count: notes.length },
+            ...LeadsHelperService.EventTypes
+                .map(t => ({ type: t.type, label: t.label, count: events.filter(e => e.type === t.type).length }))
+        ].filter(c => c.count > 0);
     }
 
     /** Dato som yyyy-MM-dd i lokal tid, samme form som date-kolonnene i basen. */
