@@ -250,15 +250,25 @@ export class LeadsHelperService {
         };
     }
 
-    /** Telefoner per dag de siste days dagene til og med i dag, målt mot dagsmålet som på KPI-siden. */
-    dailyCalls(events: Array<ILeadEvent>, now: Date, days: number, target: number): Array<IKpiDay> {
-        const todayKey = this.toDateKey(now);
-        const callsByDay = new Map<string, number>();
+    /**
+     * Antall leads som er ringt per dag (yyyy-MM-dd, lokal tid). Målet gjelder hvor mange som nås, så flere
+     * telefoner til samme lead samme dag teller som én (Kenneth 2026-11-12). Samme lead en annen dag teller på nytt.
+     */
+    private calledLeadsByDay(events: Array<ILeadEvent>): Map<string, number> {
+        const leadsByDay = new Map<string, Set<string>>();
         for (const e of events) {
             if (e.type !== 'ringt_klikk') continue;
             const key = this.toDateKey(new Date(e.opprettet_at));
-            callsByDay.set(key, (callsByDay.get(key) ?? 0) + 1);
+            const leads = leadsByDay.get(key);
+            if (leads) leads.add(e.lead_id); else leadsByDay.set(key, new Set([e.lead_id]));
         }
+        return new Map([...leadsByDay].map(([key, leads]) => [key, leads.size]));
+    }
+
+    /** Leads ringt per dag de siste days dagene til og med i dag, målt mot dagsmålet som på KPI-siden. */
+    dailyCalls(events: Array<ILeadEvent>, now: Date, days: number, target: number): Array<IKpiDay> {
+        const todayKey = this.toDateKey(now);
+        const callsByDay = this.calledLeadsByDay(events);
         const result: Array<IKpiDay> = [];
         for (let i = days - 1; i >= 0; i--) {
             const date = this.addDays(now, -i);
@@ -275,12 +285,7 @@ export class LeadsHelperService {
     callKpiMonth(events: Array<ILeadEvent>, year: number, monthIndex: number, target: number, now: Date): IKpiMonth {
         const todayKey = this.toDateKey(now);
         const monthKey = this.toMonthKey(new Date(year, monthIndex, 1));
-        const callsByDay = new Map<string, number>();
-        for (const e of events) {
-            if (e.type !== 'ringt_klikk') continue;
-            const key = this.toDateKey(new Date(e.opprettet_at));
-            if (key.startsWith(monthKey)) callsByDay.set(key, (callsByDay.get(key) ?? 0) + 1);
-        }
+        const callsByDay = this.calledLeadsByDay(events);
 
         const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
         const days: Array<IKpiDay> = [];
