@@ -1,7 +1,17 @@
 /* Typefilteret bruker .filters og .chip fra styles.scss. */
-.row { grid-template-columns: 52px 120px 1fr auto; }
+.row { grid-template-columns: 52px 120px 1fr auto 18px; }
 .detail { font-size: 13px; text-align: right; }
 .arrow { opacity: .7; padding: 0 2px; }
+
+/* Hele raden åpner leadet, med pil til høyre som på Leads-siden. Navnet er i tillegg en vanlig lenke, for tastatur og ny fane. */
+.lead-row { cursor: pointer; }
+.lead-row .who-name { text-decoration: none; }
+.open { color: var(--muted); }
+.open svg { display: block; }
+.lead-row:hover .open { color: var(--fg); }
+/* Nyansen går helt ut til kanten av kortet. Skyggen til hver side dekker listens innrykk på 20 px, så skillelinjene står som før. */
+.list { overflow: hidden; }
+.lead-row:hover { background: var(--surface-2); box-shadow: -20px 0 0 var(--surface-2), 20px 0 0 var(--surface-2); }
 
 /* Datofeltet for én dag står ved siden av periodevalget, i samme høyde, og markeres når en dag er valgt. */
 .date-input { width: auto; font-size: 14px; padding: 8px 10px; }
@@ -10,8 +20,9 @@
 /* Fargen på merket per hendelsestype ligger i styles.scss, delt med livsløpet på et lead. */
 
 @media (max-width: 640px) {
-  .row { grid-template-columns: 52px 1fr; }
-  .pill { grid-column: 2; }
+  .row { grid-template-columns: 52px 1fr 18px; }
+  .pill { grid-column: 2; justify-self: start; }
+  .open { grid-column: 3; grid-row: 1; }
   .who, .detail { grid-column: 1 / -1; }
   .detail { text-align: left; }
 }

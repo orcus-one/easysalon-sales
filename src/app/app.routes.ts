@@ -23,7 +23,8 @@ export const routes: Routes = [
       { path: 'leads', component: LeadsComponent, children: [{ path: ':id', component: LeadDetailComponent }] },
       { path: 'kpi', component: KpiComponent },
       { path: 'kommende', component: UpcomingComponent },
-      { path: 'historikk', component: HistoryComponent },
+      // Samme panel som på Leads-siden, åpnet fra navnet i en hendelse.
+      { path: 'historikk', component: HistoryComponent, children: [{ path: ':id', component: LeadDetailComponent }] },
       { path: 'aar', component: MonthlyComponent },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ]

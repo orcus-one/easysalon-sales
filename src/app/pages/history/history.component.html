@@ -67,11 +67,15 @@
     </h2>
     <ul class="card list">
       @for (item of group.items; track item.event.id) {
-        <li class="row" [attr.data-type]="item.event.type">
+        <li class="row" [class.lead-row]="!!item.lead" [attr.data-type]="item.event.type" (click)="openLead($event, item.lead?.id)">
           <span class="time num">{{ item.event.opprettet_at | date:'HH:mm' }}</span>
           <span class="pill">{{ item.typeLabel }}</span>
           <span class="who">
-            <span class="who-name">{{ item.lead?.navn ?? 'Ukjent lead' }}</span>
+            @if (item.lead; as lead) {
+              <a class="who-name" [routerLink]="[lead.id]">{{ lead.navn }}</a>
+            } @else {
+              <span class="who-name">Ukjent lead</span>
+            }
             @if (item.lead?.bedriftsnavn) { <span class="muted who-company">{{ item.lead?.bedriftsnavn }}</span> }
           </span>
           <span class="detail muted">
@@ -79,8 +83,19 @@
               {{ item.fromLabel ?? '–' }} <span class="arrow">til</span> {{ item.toLabel ?? '–' }}
             }
           </span>
+          <span class="open">
+            @if (item.lead) {
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            }
+          </span>
         </li>
       }
     </ul>
   </section>
 }
+
+<!-- Dialogen «Nytt notat», åpnes fra leadpanelet og ligger over det. -->
+<app-note-dialog />
+
+<!-- Et åpnet lead legges som panel oppå listen, som på Leads-siden. -->
+<router-outlet />

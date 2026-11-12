@@ -1,16 +1,20 @@
 import { Component, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NoteDialogComponent } from '../../shared/components/note-dialog/note-dialog.component';
 import { HistoryFacadeService } from '../../shared/_services/history/history-facade.service';
 
 @Component({
   selector: 'app-history',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink, RouterOutlet, NoteDialogComponent],
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss'
 })
 export class HistoryComponent {
 
   private readonly historyFacade = inject(HistoryFacadeService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly isLoading = this.historyFacade.isLoading;
   readonly error = this.historyFacade.error;
@@ -37,6 +41,12 @@ export class HistoryComponent {
 
   onDate(event: Event): void {
     this.historyFacade.setDate((event.target as HTMLInputElement).value);
+  }
+
+  /** Klikk hvor som helst på raden åpner leadet, som på Leads-siden. Navnelenken gjør sitt eget. */
+  openLead(event: MouseEvent, id: string | undefined): void {
+    if (!id || (event.target as HTMLElement).closest('a')) return;
+    this.router.navigate([id], { relativeTo: this.route });
   }
 
   toggleType(type: string): void {

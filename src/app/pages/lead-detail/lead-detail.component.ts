@@ -1,6 +1,6 @@
 import { Component, HostListener, effect, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LeadDetailFacadeService } from '../../shared/_services/lead-detail/lead-detail-facade.service';
 import { LeadNoteFacadeService } from '../../shared/_services/lead-note/lead-note-facade.service';
 import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
@@ -17,6 +17,8 @@ export class LeadDetailComponent {
   private readonly leadNoteFacade = inject(LeadNoteFacadeService);
   private readonly leadsHelper = inject(LeadsHelperService);
   private readonly router = inject(Router);
+  /** Panelet ligger under både Leads og Løpende aktivitet, så lukking går ett nivå opp, til listen det ble åpnet fra. */
+  private readonly route = inject(ActivatedRoute);
 
   /** Rute-parameteren, bundet inn av ruteren (withComponentInputBinding). */
   readonly id = input.required<string>();
@@ -43,7 +45,7 @@ export class LeadDetailComponent {
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: Event): void {
     if (event.defaultPrevented || this.leadNoteFacade.isOpen()) return;
-    this.router.navigate(['/leads']);
+    this.router.navigate(['..'], { relativeTo: this.route });
   }
 
   addNote(): void {
