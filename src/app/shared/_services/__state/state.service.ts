@@ -1,6 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { Theme } from '../../_interfaces/interface-nav';
+import { ICampaign, IDailyAdCost } from '../../_interfaces/interface-ads';
 import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadNote, INoteTarget, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 
 /**
@@ -47,6 +48,14 @@ export class StateService {
     readonly curLeadEvents = signal<Array<ILeadEventDetail>>([]);
     /** Notatene på leadet som er åpnet, nyeste først. */
     readonly curLeadNotes = signal<Array<ILeadNote>>([]);
+
+    // Annonser
+    /** Kampanjene fra public.kampanjer. */
+    readonly campaigns = signal<Array<ICampaign>>([]);
+    /** Forbruk per kampanje per dag fra public.kostnad_daglig, eldste først. */
+    readonly dailyAdCosts = signal<Array<IDailyAdCost>>([]);
+    /** false til første vellykkede henting av de to over. */
+    readonly adsLoaded = signal(false);
 
     // Dialogen «Nytt notat»
     /** Leadet notatet skal legges på. null = dialogen er lukket. Åpnes fra leadpanelet. */

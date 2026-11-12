@@ -1,0 +1,13 @@
+/* Tabell, nøkkeltall og periodevalg er felles i styles.scss. Her bare det som er eget for annonsesiden. */
+.kpis { transition: opacity .2s; &.pending { opacity: .5; } }
+.unit { font-size: 16px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.kpi .muted { font-size: 13px; }
+
+.block { margin-bottom: 24px; }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.card-head .muted { font-size: 13px; }
+
+.table-wrap .table { min-width: 820px; }
+.table tfoot td { font-weight: 600; border-top: 2px solid var(--border); }
+.campaign { display: block; font-weight: 500; }
+.status { display: block; font-size: 12px; }

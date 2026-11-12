@@ -1,0 +1,123 @@
+<!-- Teksten under tallene: perioden leadene kom inn i. -->
+@let period = days() === 0 ? 'alle leads fra annonser' : 'leads inn siste ' + days() + ' dager';
+@let bucketName = bucketSize() === 'day' ? 'dag' : bucketSize() === 'week' ? 'uke' : 'måned';
+
+<div class="page-header">
+  <div>
+    <h1>Annonser</h1>
+    <p class="muted sub">Hva annonsene på Meta har kostet, og hva leadene derfra har blitt til</p>
+  </div>
+  <div class="page-actions">
+    <span class="muted num">Oppdatert {{ loadedAt() | date:'HH:mm' }}</span>
+    <div class="segmented" role="group" aria-label="Periode">
+      @for (option of dayOptions; track option) {
+        <button type="button" class="seg" [class.active]="days() === option" (click)="setDays(option)">
+          {{ option === 0 ? 'Alt' : option + ' dager' }}
+        </button>
+      }
+    </div>
+    <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
+  </div>
+</div>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+<section class="kpis" [class.pending]="!hasLoaded()">
+  <div class="card kpi">
+    <span class="eyebrow">Brukt</span>
+    <span class="kpi-value num">{{ totals().spend | number:'1.0-0' }} <span class="unit">kr</span></span>
+    <span class="muted">{{ days() === 0 ? 'i alt' : 'siste ' + days() + ' dager' }}</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Per lead</span>
+    <span class="kpi-value num">
+      @if (totals().costPerLead !== null) { {{ totals().costPerLead | number:'1.0-0' }} <span class="unit">kr</span> } @else { <span class="muted">–</span> }
+    </span>
+    <span class="muted">{{ totals().leads | number:'1.0-0' }} leads, Meta oppgir {{ totals().metaLeads | number:'1.0-0' }}</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Per demo</span>
+    <span class="kpi-value num">
+      @if (totals().costPerDemo !== null) { {{ totals().costPerDemo | number:'1.0-0' }} <span class="unit">kr</span> } @else { <span class="muted">–</span> }
+    </span>
+    <span class="muted">{{ totals().demos | number:'1.0-0' }} av leadene har fått demo</span>
+  </div>
+  <div class="card kpi">
+    <span class="eyebrow">Per kunde</span>
+    <span class="kpi-value num">
+      @if (totals().costPerCustomer !== null) { {{ totals().costPerCustomer | number:'1.0-0' }} <span class="unit">kr</span> } @else { <span class="muted">–</span> }
+    </span>
+    <span class="muted">{{ totals().customers | number:'1.0-0' }} av leadene er kunder</span>
+  </div>
+</section>
+
+<section class="card table-card block">
+  <div class="card-head">
+    <h2>Per kampanje</h2>
+    <span class="muted">{{ period }}</span>
+  </div>
+  @if (rows().length > 0) {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Kampanje</th>
+            <th class="r">Brukt</th>
+            <th class="r">Leads</th>
+            <th class="r">Meta</th>
+            <th class="r">Per lead</th>
+            <th class="r">Demoer</th>
+            <th class="r">Per demo</th>
+            <th class="r">Kunder</th>
+            <th class="r">Per kunde</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.key) {
+            <tr>
+              <td>
+                <span class="campaign">{{ row.name }}</span>
+                @if (row.status) { <span class="muted status">{{ row.status }}</span> }
+              </td>
+              <td class="num r">{{ row.spend | number:'1.0-0' }}</td>
+              <td class="num r">{{ row.leads | number:'1.0-0' }}</td>
+              <td class="num r muted">{{ row.metaLeads | number:'1.0-0' }}</td>
+              <td class="num r">@if (row.costPerLead !== null) { {{ row.costPerLead | number:'1.0-0' }} } @else { <span class="muted">–</span> }</td>
+              <td class="num r">{{ row.demos | number:'1.0-0' }}</td>
+              <td class="num r">@if (row.costPerDemo !== null) { {{ row.costPerDemo | number:'1.0-0' }} } @else { <span class="muted">–</span> }</td>
+              <td class="num r">{{ row.customers | number:'1.0-0' }}</td>
+              <td class="num r">@if (row.costPerCustomer !== null) { {{ row.costPerCustomer | number:'1.0-0' }} } @else { <span class="muted">–</span> }</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Sum</td>
+            <td class="num r">{{ totals().spend | number:'1.0-0' }}</td>
+            <td class="num r">{{ totals().leads | number:'1.0-0' }}</td>
+            <td class="num r">{{ totals().metaLeads | number:'1.0-0' }}</td>
+            <td class="num r">@if (totals().costPerLead !== null) { {{ totals().costPerLead | number:'1.0-0' }} } @else { – }</td>
+            <td class="num r">{{ totals().demos | number:'1.0-0' }}</td>
+            <td class="num r">@if (totals().costPerDemo !== null) { {{ totals().costPerDemo | number:'1.0-0' }} } @else { – }</td>
+            <td class="num r">{{ totals().customers | number:'1.0-0' }}</td>
+            <td class="num r">@if (totals().costPerCustomer !== null) { {{ totals().costPerCustomer | number:'1.0-0' }} } @else { – }</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  } @else if (hasLoaded()) {
+    <p class="muted">Ingen forbruk og ingen leads fra annonser i perioden.</p>
+  }
+  <p class="muted note">Beløp i kroner. Tabellen følger leadene som kom inn i perioden: demoer og kunder telles blant akkurat dem, uansett når det skjedde. Leads som nettopp har kommet inn kan fortsatt bli kunder, så ferske perioder ser svakere ut enn de blir. Demo er booket eller holdt. Meta er antall leads slik Meta selv teller dem.</p>
+</section>
+
+<section class="card block">
+  <div class="card-head">
+    <h2>Utvikling</h2>
+    <span class="muted">per {{ bucketName }}, etter dato</span>
+  </div>
+  <app-ad-trend-chart [data]="buckets()" />
+  <p class="muted note">Her står alt på datoen det skjedde: kroner på dagen de ble brukt, leads på dagen de kom inn, demoer på demodato og kunder på registreringsdato. Bare leads fra annonser er med. En kunde her kan derfor komme fra en eldre annonse, og tallene skal ikke deles på hverandre.</p>
+</section>

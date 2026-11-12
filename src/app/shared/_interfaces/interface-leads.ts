@@ -10,6 +10,8 @@ export interface ILead {
     source_id: number | null;
     /** Den gamle tekstkolonnen. Leses til selgerens app skriver source_id, og fjernes da. */
     kilde: string | null;
+    /** Peker på kampanjer.id. Satt på leads som kom fra en annonse på Meta, ellers null. */
+    kampanje_id: string | null;
     status: string;
     opprettet_ekst: string;
     neste_oppfolging: string | null;

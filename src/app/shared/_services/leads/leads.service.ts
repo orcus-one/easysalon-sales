@@ -18,7 +18,7 @@ export class LeadsService {
     private static readonly PageSize = 1000;
 
     private static readonly LeadColumns =
-        'id, navn, bedriftsnavn, orgnummer, telefon, epost, source_id, kilde, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
+        'id, navn, bedriftsnavn, orgnummer, telefon, epost, source_id, kilde, kampanje_id, status, opprettet_ekst, neste_oppfolging, oppfolging_tid, ' +
         'demo_dato, demo_tid, registrert_dato, lisenser';
 
     async getLeads(): Promise<Array<ILead>> {

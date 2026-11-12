@@ -1,0 +1,42 @@
+<svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+     aria-label="Kroner brukt, leads, demoer og kunder over tid">
+  <text class="caption" x="0" [attr.y]="spendCaptionY">Brukt, kroner</text>
+  @for (line of spendAxis(); track $index) {
+    <line class="grid" [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="line.y" [attr.y2]="line.y" />
+    <text class="axis" [attr.x]="padLeft - 8" [attr.y]="line.y + 3" text-anchor="end">{{ line.label }}</text>
+  }
+
+  <text class="caption" x="0" [attr.y]="leadsCaptionY">Leads inn</text>
+  @for (line of leadsAxis(); track $index) {
+    <line class="grid" [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="line.y" [attr.y2]="line.y" />
+    <text class="axis" [attr.x]="padLeft - 8" [attr.y]="line.y + 3" text-anchor="end">{{ line.label }}</text>
+  }
+
+  <text class="caption" x="0" [attr.y]="demosY">Demoer</text>
+  <text class="caption" x="0" [attr.y]="customersY">Kunder</text>
+
+  @for (col of columns(); track col.key; let i = $index) {
+    <g class="col">
+      <title>{{ col.title }}</title>
+      <!-- Hele høyden er treffflate, så tipset kommer fram uten å sikte på stolpen. -->
+      <rect class="slot" [attr.x]="col.slotX" [attr.y]="spendTop" [attr.width]="col.slotWidth" [attr.height]="customersY + 6 - spendTop" />
+      @if (col.spendPath) { <path class="bar" [attr.d]="col.spendPath" /> }
+      @if (col.leadsPath) { <path class="bar" [attr.d]="col.leadsPath" /> }
+      @if (col.spendLabel) {
+        <text class="val" [attr.x]="col.center" [attr.y]="col.spendLabelY" text-anchor="middle">{{ col.spendLabel }}</text>
+      }
+      @if (col.leadsLabel) {
+        <text class="val" [attr.x]="col.center" [attr.y]="col.leadsLabelY" text-anchor="middle">{{ col.leadsLabel }}</text>
+      }
+      @if (col.demos > 0) {
+        <text class="count" [attr.x]="col.center" [attr.y]="demosY" text-anchor="middle">{{ col.demos }}</text>
+      }
+      @if (col.customers > 0) {
+        <text class="count" [attr.x]="col.center" [attr.y]="customersY" text-anchor="middle">{{ col.customers }}</text>
+      }
+      @if (i % labelEvery() === 0) {
+        <text class="axis" [attr.x]="col.center" [attr.y]="labelY" text-anchor="middle">{{ col.label }}</text>
+      }
+    </g>
+  }
+</svg>

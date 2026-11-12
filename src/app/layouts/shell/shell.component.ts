@@ -34,7 +34,8 @@ export class ShellComponent {
     { path: '/leads', label: 'Leads' },
     { path: '/kommende', label: 'Kommende' },
     { path: '/historikk', label: 'Løpende aktivitet' },
-    { path: '/aar', label: 'Hittil i år' }
+    { path: '/aar', label: 'Hittil i år' },
+    { path: '/annonser', label: 'Annonser' }
   ];
 
   constructor() {

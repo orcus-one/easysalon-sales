@@ -9,6 +9,7 @@ import { KpiComponent } from './pages/kpi/kpi.component';
 import { UpcomingComponent } from './pages/upcoming/upcoming.component';
 import { HistoryComponent } from './pages/history/history.component';
 import { MonthlyComponent } from './pages/monthly/monthly.component';
+import { AdsComponent } from './pages/ads/ads.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -26,6 +27,7 @@ export const routes: Routes = [
       // Samme panel som på Leads-siden, åpnet fra navnet i en hendelse.
       { path: 'historikk', component: HistoryComponent, children: [{ path: ':id', component: LeadDetailComponent }] },
       { path: 'aar', component: MonthlyComponent },
+      { path: 'annonser', component: AdsComponent },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ]
   },

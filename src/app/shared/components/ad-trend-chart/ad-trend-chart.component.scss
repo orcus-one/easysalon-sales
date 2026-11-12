@@ -1,0 +1,12 @@
+:host { display: block; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+line.grid { stroke: var(--border); stroke-width: 1; }
+text.axis { fill: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+text.caption { fill: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .04em; }
+/* Tallene står i tekstfarge. Fargen hører til stolpene. */
+text.val { fill: var(--fg); font-size: 10px; font-weight: 600; font-variant-numeric: tabular-nums; pointer-events: none; }
+text.count { fill: var(--fg); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; pointer-events: none; }
+/* Begge feltene har én serie hver og samme farge; overskriften over feltet sier hva det viser. */
+path.bar { fill: var(--chart-1); pointer-events: none; }
+rect.slot { fill: transparent; }
+g.col:hover rect.slot { fill: var(--surface-2); }
