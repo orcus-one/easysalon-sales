@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { AuthFacadeService } from '../../shared/_services/auth/auth-facade.service';
 import { StateService } from '../../shared/_services/__state/state.service';
+import { ThemeFacadeService } from '../../shared/_services/theme/theme-facade.service';
 import { INavItem } from '../../shared/_interfaces/interface-nav';
 
 /**
@@ -21,7 +22,9 @@ export class ShellComponent {
   private readonly stateService = inject(StateService);
   private readonly authFacade = inject(AuthFacadeService);
   private readonly router = inject(Router);
+  private readonly themeFacade = inject(ThemeFacadeService);
 
+  readonly isDark = this.themeFacade.isDark;
   readonly userEmail = this.stateService.userEmail;
   readonly isMenuOpen = this.stateService.isMenuOpen;
 
@@ -52,6 +55,10 @@ export class ShellComponent {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.closeMenu();
+  }
+
+  toggleTheme(): void {
+    this.themeFacade.toggle();
   }
 
   logout(): void {

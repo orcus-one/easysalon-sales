@@ -8,6 +8,18 @@
   <meta name="robots" content="noindex">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- Utseendet settes før siden tegnes, så den ikke blinker i feil farger. Samme regel som i ThemeFacadeService:
+       brukerens eget valg hvis det finnes, ellers innstillingen i operativsystemet. -->
+  <script>
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem('hermes-theme'); } catch (e) { }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

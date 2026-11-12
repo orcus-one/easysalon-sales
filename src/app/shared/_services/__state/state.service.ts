@@ -1,5 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
+import { Theme } from '../../_interfaces/interface-nav';
 import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadNote, INoteTarget, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 
 /**
@@ -20,6 +21,10 @@ export class StateService {
     // Skall
     /** Mobilmenyen (panelet fra siden). Lukkes ved navigasjon og klikk utenfor. */
     readonly isMenuOpen = signal(false);
+    /** Utseendet brukeren selv har valgt med bryteren. null = ikke valgt, da følges operativsystemet. */
+    readonly chosenTheme = signal<Theme | null>(null);
+    /** Om operativsystemet står på mørkt utseende. */
+    readonly systemPrefersDark = signal(false);
 
     // Leads
     readonly leads = signal<Array<ILead>>([]);

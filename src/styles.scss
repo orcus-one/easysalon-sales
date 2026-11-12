@@ -14,17 +14,20 @@
   --fg: #1C1B22;
   --muted: #6B6879;
   --border: #E6E2EA;
-  --accent: #E48A9A;
-  --accent-ink: #B8536A;
-  --accent-soft: rgba(228, 138, 154, .14);
+  /* Valgt, aktiv og fokus er nøytrale (Kenneth 2026-11-12): rødt og rosa skal bare bety at noe er galt. */
+  --accent: #1C1B22;
+  --accent-soft: rgba(28, 27, 34, .08);
+  /* EasySalon-rosa, kun til pynt i merkevaren: prikken i ordmerket og bakgrunnen på innloggingssiden. */
+  --brand: #E48A9A;
+  --brand-soft: rgba(228, 138, 154, .14);
   --ok: #2E7D32;
   --ok-soft: rgba(46, 125, 50, .14);
   --warn: #B26A00;
   --crit: #C62828;
   --crit-soft: rgba(198, 40, 40, .12);
-  --chart-1: #E48A9A;
-  --chart-1-soft: rgba(228, 138, 154, .16);
-  --chart-1-ink: #B8536A;
+  --chart-1: #0284C7;
+  --chart-1-soft: rgba(2, 132, 199, .12);
+  --chart-1-ink: #0369A1;
   --chart-2: #0D9488;
   --chart-2-soft: rgba(13, 148, 136, .14);
   --chart-2-ink: #0F766E;
@@ -43,33 +46,33 @@
   /* Uten fanerad: 56 + kantstrek. */
   :root { --topbar-height: 57px; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: #15141A;
-    --surface: #1E1D25;
-    --surface-2: #24232C;
-    --fg: #ECEAF1;
-    --muted: #9B97A8;
-    --border: #2E2C38;
-    --accent: #E48A9A;
-    --accent-ink: #F0A6B3;
-    --accent-soft: rgba(228, 138, 154, .18);
-    --ok: #66BB6A;
-    --ok-soft: rgba(102, 187, 106, .18);
-    --warn: #FFB74D;
-    --crit: #EF5350;
-    --crit-soft: rgba(239, 83, 80, .18);
-    --chart-1: #F0A6B3;
-    --chart-1-soft: rgba(228, 138, 154, .22);
-    --chart-1-ink: #F0A6B3;
-    --chart-2: #2DD4BF;
-    --chart-2-soft: rgba(45, 212, 191, .18);
-    --chart-2-ink: #5EEAD4;
-    --info: #A5B4FC;
-    --info-soft: rgba(99, 102, 241, .22);
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .3);
-  }
+/* Mørkt utseende. data-theme settes på <html> av skriptet i index.html og holdes ved like av ThemeFacadeService. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15141A;
+  --surface: #1E1D25;
+  --surface-2: #24232C;
+  --fg: #ECEAF1;
+  --muted: #9B97A8;
+  --border: #2E2C38;
+  --accent: #ECEAF1;
+  --accent-soft: rgba(236, 234, 241, .12);
+  --brand: #E48A9A;
+  --brand-soft: rgba(228, 138, 154, .18);
+  --ok: #66BB6A;
+  --ok-soft: rgba(102, 187, 106, .18);
+  --warn: #FFB74D;
+  --crit: #EF5350;
+  --crit-soft: rgba(239, 83, 80, .18);
+  --chart-1: #7DD3FC;
+  --chart-1-soft: rgba(56, 189, 248, .18);
+  --chart-1-ink: #7DD3FC;
+  --chart-2: #2DD4BF;
+  --chart-2-soft: rgba(45, 212, 191, .18);
+  --chart-2-ink: #5EEAD4;
+  --info: #A5B4FC;
+  --info-soft: rgba(99, 102, 241, .22);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .3);
 }
 
 * { box-sizing: border-box; }
@@ -95,7 +98,7 @@ a:hover { text-decoration-color: var(--fg); }
 /* Ordmerket Hermes følger Moonde-logoens geometriske grotesk, ikke serifen. */
 .wordmark { font-family: var(--font-ui); font-weight: 500; letter-spacing: -.02em; }
 /* Prikken etter hermes speiler prikken i Moonde-logoen. */
-.wordmark .dot { color: var(--accent); }
+.wordmark .dot { color: var(--brand); }
 .muted { color: var(--muted); }
 .num { font-variant-numeric: tabular-nums; }
 .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }

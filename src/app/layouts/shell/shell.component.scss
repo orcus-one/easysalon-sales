@@ -10,8 +10,9 @@
 .brand {
   display: flex; align-items: center; justify-self: start;
   .logo { height: 24px; width: auto; margin-left: -5px; }
-  @media (prefers-color-scheme: dark) { .logo { filter: invert(1); } }
 }
+/* Logoen er svart på gjennomsiktig bunn; invertert blir den hvit i mørkt utseende. */
+:host-context([data-theme="dark"]) .brand .logo { filter: invert(1); }
 .title {
   display: flex; flex-direction: column; align-items: center; line-height: 1.1;
   .wordmark { font-size: 22px; }
@@ -21,6 +22,13 @@
   }
 }
 .user { display: flex; align-items: center; justify-self: end; gap: 12px; font-size: 14px; }
+/* Bryteren for lyst og mørkt utseende. */
+.theme-btn {
+  display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--muted); cursor: pointer;
+  &:hover { color: var(--fg); background: var(--surface-2); }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
 
 
 /* Fanerad under topplinjen */
