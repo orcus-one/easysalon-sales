@@ -77,6 +77,8 @@
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
+/* Leadpanelet ligger oppå siden og ruller selv. Siden under låses imens, ellers står det to rullefelt ved siden av hverandre. */
+html:has(app-lead-detail) { overflow: hidden; }
 body {
   margin: 0;
   font-family: var(--font-ui);
