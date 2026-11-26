@@ -340,18 +340,17 @@ export class LeadsHelperService {
     }
 
     /**
-     * Om hendelsen sier at en demo er holdt. Dobbeltregelen (Kenneth 2026-11-25): enten hendelsen knappen
-     * «Demo gjennomført» skriver, eller en statusendring til «Demo gjennomført» fra selgerens app.
+     * Om hendelsen sier at en demo er holdt. Bare hendelsen knappen «Demo gjennomført» skriver teller
+     * (Kenneth 2026-11-26). En statusendring til «Demo gjennomført» teller ikke, heller ikke de fra før knappen.
      */
     isDemoCompleted(event: ILeadEvent): boolean {
-        return event.type === LeadsHelperService.DemoCompletedType
-            || (event.type === LeadsHelperService.StatusChangedType && event.til_status === LeadsHelperService.DemoCompletedStatus);
+        return event.type === LeadsHelperService.DemoCompletedType;
     }
 
     /**
      * Antall leads merket «demo gjennomført» per dag (yyyy-MM-dd, lokal tid). Et lead teller én gang per dag, så
-     * hendelsen og statusendringen fra samme trykk teller som én. Samme lead en annen dag teller på nytt, siden en
-     * kunde kan få flere demoer (Kenneth 2026-11-26).
+     * to trykk på samme lead samme dag teller som én. Samme lead en annen dag teller på nytt, siden en kunde kan
+     * få flere demoer (Kenneth 2026-11-26).
      */
     private completedDemosByDay(events: Array<ILeadEvent>): Map<string, number> {
         const leadsByDay = new Map<string, Set<string>>();
