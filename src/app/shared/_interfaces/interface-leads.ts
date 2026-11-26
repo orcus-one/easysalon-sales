@@ -120,6 +120,15 @@ export interface ILeadEvent {
     opprettet_at: string;
 }
 
+/** Raden som settes inn i lead_hendelser. Id og tidspunkt settes av basen. */
+export interface ILeadEventInsert {
+    org_id: string;
+    lead_id: string;
+    type: string;
+    fra_status?: string;
+    til_status?: string;
+}
+
 /** Leadet slik detaljvisningen henter det: listekolonnene pluss notat og tidspunkter. */
 export interface ILeadDetail extends ILead {
     notater: string | null;
@@ -271,6 +280,8 @@ export interface IKpiWeek {
     isFuture: boolean;
     isCurrent: boolean;
     demos: number;
+    /** Demoer merket gjennomført i uken, lagt på dagen de ble registrert. Et lead teller én gang per dag. */
+    completed: number;
     /** Uke til og med denne med minst målet i demoer. Alltid false for uker frem i tid. */
     met: boolean;
 }
@@ -286,4 +297,6 @@ export interface IKpiYear {
     averageDemos: number;
     /** Alle demoer med demodato i årets uker, også bookede fremover. */
     demosTotal: number;
+    /** Demoer merket gjennomført i årets uker. */
+    completedTotal: number;
 }

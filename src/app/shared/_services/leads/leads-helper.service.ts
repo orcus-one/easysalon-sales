@@ -21,9 +21,26 @@ export class LeadsHelperService {
         { type: 'sms_klikk', label: 'SMS' },
         { type: 'epost_klikk', label: 'E-post' },
         { type: 'mote_klikk', label: 'Møte' },
+        { type: 'demo_completed', label: 'Demo gjennomført' },
         { type: 'status_endret', label: 'Status endret' },
         { type: 'notat_endret', label: 'Notat endret' }
     ];
+
+    /** Hendelsen knappen «Demo gjennomført» skriver. Vår type, derfor engelsk blant selgerens norske. */
+    static readonly DemoCompletedType = 'demo_completed';
+    /** Steget i pipeline_steg et lead flyttes til når demoen er holdt. */
+    static readonly DemoCompletedStatus = 'demo_gjennomfort';
+    static readonly StatusChangedType = 'status_endret';
+
+    /**
+     * Om et lead med denne statusen står på et steg før target. Status flyttes bare fremover: står leadet på
+     * target eller senere, eller på en status som ikke finnes blant stegene, er svaret nei.
+     */
+    isBeforeStep(status: string, target: string, steps: Array<IPipelineStep>): boolean {
+        const current = steps.find(s => s.nokkel === status);
+        const goal = steps.find(s => s.nokkel === target);
+        return current !== undefined && goal !== undefined && current.rekkefolge < goal.rekkefolge;
+    }
 
     eventTypeLabel(type: string): string {
         return LeadsHelperService.EventTypes.find(t => t.type === type)?.label ?? type;
@@ -323,21 +340,53 @@ export class LeadsHelperService {
     }
 
     /**
+     * Om hendelsen sier at en demo er holdt. Dobbeltregelen (Kenneth 2026-11-25): enten hendelsen knappen
+     * «Demo gjennomført» skriver, eller en statusendring til «Demo gjennomført» fra selgerens app.
+     */
+    isDemoCompleted(event: ILeadEvent): boolean {
+        return event.type === LeadsHelperService.DemoCompletedType
+            || (event.type === LeadsHelperService.StatusChangedType && event.til_status === LeadsHelperService.DemoCompletedStatus);
+    }
+
+    /**
+     * Antall leads merket «demo gjennomført» per dag (yyyy-MM-dd, lokal tid). Et lead teller én gang per dag, så
+     * hendelsen og statusendringen fra samme trykk teller som én. Samme lead en annen dag teller på nytt, siden en
+     * kunde kan få flere demoer (Kenneth 2026-11-26).
+     */
+    private completedDemosByDay(events: Array<ILeadEvent>): Map<string, number> {
+        const leadsByDay = new Map<string, Set<string>>();
+        for (const e of events) {
+            if (!this.isDemoCompleted(e)) continue;
+            const key = this.toDateKey(new Date(e.opprettet_at));
+            const leads = leadsByDay.get(key);
+            if (leads) leads.add(e.lead_id); else leadsByDay.set(key, new Set([e.lead_id]));
+        }
+        return new Map([...leadsByDay].map(([key, leads]) => [key, leads.size]));
+    }
+
+    /**
      * Demoer per ISO-uke i ett år målt mot et ukemål. Demoer telles på demo_dato, så uker frem i tid viser det
      * som er booket. Inneværende uke regnes som passert og måles mot målet. Uke 1 kan begynne i desember
      * året før og siste uke kan slutte i januar året etter; demoer der telles i den uken.
+     * Gjennomført telles for seg, på dagen det ble registrert, og måles ikke mot målet. Hendelsene hentes fra
+     * årsstart, så dager i uke 1 som ligger i desember året før er ikke med i det tallet.
      */
-    demoKpiYear(leads: Array<ILead>, year: number, target: number, now: Date): IKpiYear {
+    demoKpiYear(leads: Array<ILead>, events: Array<ILeadEvent>, year: number, target: number, now: Date): IKpiYear {
         const todayKey = this.toDateKey(now);
         const weekOneStart = this.isoWeekOneStart(year);
+        const completedByDay = [...this.completedDemosByDay(events)];
         const weeks: Array<IKpiWeek> = [];
         for (let w = 1; w <= this.isoWeeksInYear(year); w++) {
             const startDate = this.addDays(weekOneStart, (w - 1) * 7);
             const start = this.toDateKey(startDate);
             const end = this.toDateKey(this.addDays(startDate, 6));
             const demos = leads.filter(l => l.demo_dato !== null && l.demo_dato >= start && l.demo_dato <= end).length;
+            const completed = completedByDay.reduce((sum, [day, count]) => day >= start && day <= end ? sum + count : sum, 0);
             const isFuture = start > todayKey;
-            weeks.push({ week: w, start, end, isFuture, isCurrent: start <= todayKey && todayKey <= end, demos, met: !isFuture && demos >= target });
+            weeks.push({
+                week: w, start, end, isFuture, isCurrent: start <= todayKey && todayKey <= end, demos, completed,
+                met: !isFuture && demos >= target
+            });
         }
         const passed = weeks.filter(week => !week.isFuture);
         const demosOnPassedWeeks = passed.reduce((sum, week) => sum + week.demos, 0);
@@ -348,7 +397,8 @@ export class LeadsHelperService {
             weeksMet: passed.filter(week => week.met).length,
             demosOnPassedWeeks,
             averageDemos: passed.length === 0 ? 0 : demosOnPassedWeeks / passed.length,
-            demosTotal: weeks.reduce((sum, week) => sum + week.demos, 0)
+            demosTotal: weeks.reduce((sum, week) => sum + week.demos, 0),
+            completedTotal: weeks.reduce((sum, week) => sum + week.completed, 0)
         };
     }
 

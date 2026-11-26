@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadInsert, ILeadNote, ILeadNoteInsert, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
+import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadEventInsert, ILeadInsert, ILeadNote, ILeadNoteInsert, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 import { SupabaseService } from '../supabase/supabase.service';
 
 /**
@@ -77,6 +77,27 @@ export class LeadsService {
     async createLeadNote(row: ILeadNoteInsert): Promise<void> {
         const { error } = await this.supabase.client.from('lead_notes').insert(row);
         if (error) throw error;
+    }
+
+    /** Legger en hendelse på et lead. Krever regelen «Authenticated users can insert» på lead_hendelser (2026-11-25). */
+    async createLeadEvent(row: ILeadEventInsert): Promise<void> {
+        const { error } = await this.supabase.client.from('lead_hendelser').insert(row);
+        if (error) throw error;
+    }
+
+    /**
+     * Setter status på et lead og oppdatert_at til nå. Krever regelen «Authenticated users can update» på leads
+     * (2026-11-25). En oppdatering som RLS stopper gir ingen feil, bare null rader, så raden leses tilbake og
+     * null rader regnes som feil.
+     */
+    async updateLeadStatus(id: string, status: string): Promise<void> {
+        const { data, error } = await this.supabase.client
+            .from('leads')
+            .update({ status, oppdatert_at: new Date().toISOString() })
+            .eq('id', id)
+            .select('id');
+        if (error) throw error;
+        if (!data || data.length === 0) throw new Error('Lead was not updated');
     }
 
     /** Oppretter et lead. Regelen «Authenticated users can insert» på leads er på plass (Kenneth 2026-11-10). */

@@ -115,6 +115,11 @@
       <span class="kpi-value num">{{ demoKpi().demosTotal | number:'1.0-0' }}</span>
       <span class="muted">i år, booket fremover inkludert</span>
     </div>
+    <div class="card kpi">
+      <span class="eyebrow">Gjennomført</span>
+      <span class="kpi-value num">{{ demoKpi().completedTotal | number:'1.0-0' }}</span>
+      <span class="muted">demoer registrert som holdt i år</span>
+    </div>
   </section>
 
   <div class="weeks" [class.pending]="!hasLoaded()">
@@ -132,11 +137,14 @@
         }
         <span class="tile-foot muted">
           @if (week.isFuture) { booket }
-          @else { av {{ demoTarget }} }
+          @else {
+            av {{ demoTarget }}
+            <span class="tile-sub num">{{ week.completed }} gjennomført</span>
+          }
         </span>
       </div>
     }
   </div>
 
-  <p class="muted note">Demoer telles på demodato. Uker frem i tid viser det som er booket. Uke 1 kan begynne i desember året før og siste uke slutte i januar året etter.</p>
+  <p class="muted note">Demoer telles på demodato, og målet gjelder dem. Uker frem i tid viser det som er booket. Gjennomført er demoer som er registrert som holdt, og telles i uken de ble registrert, så en demo holdt fredag og registrert mandag står i uken etter. Samme kunde teller én gang per dag. Uke 1 kan begynne i desember året før og siste uke slutte i januar året etter.</p>
 }

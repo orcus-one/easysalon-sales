@@ -35,6 +35,8 @@ export class LeadDetailComponent {
   readonly counts = this.leadDetailFacade.counts;
   readonly eventCount = this.leadDetailFacade.eventCount;
   readonly createdType = this.leadDetailFacade.createdType;
+  readonly isRegisteringDemo = this.leadDetailFacade.isRegisteringDemo;
+  readonly demoError = this.leadDetailFacade.demoError;
 
   constructor() {
     // Ny id i ruten åpner et nytt lead, også når komponenten gjenbrukes.
@@ -55,5 +57,9 @@ export class LeadDetailComponent {
 
   refresh(): void {
     this.leadDetailFacade.refresh();
+  }
+
+  registerDemoCompleted(): void {
+    this.leadDetailFacade.registerDemoCompleted();
   }
 }

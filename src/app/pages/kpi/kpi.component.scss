@@ -44,6 +44,8 @@
 .tile-mark.medal circle { fill: #FBBF24; }
 .tile-count { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; text-align: center; }
 .tile-foot { font-size: 11px; text-align: center; min-height: 1.3em; }
+/* Gjennomførte demoer på egen linje under «av 5» på ukekortet. */
+.tile-sub { display: block; }
 
 @media (max-width: 640px) {
   .page-actions { width: 100%; flex-wrap: wrap; }

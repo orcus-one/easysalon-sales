@@ -33,7 +33,8 @@ export class KpiFacadeService {
     readonly year = computed(() => this.leadsFacade.loadedAt().getFullYear());
 
     readonly demoKpi = computed(() =>
-        this.leadsHelper.demoKpiYear(this.stateService.leads(), this.year(), KpiFacadeService.DemoTarget, this.leadsFacade.loadedAt()));
+        this.leadsHelper.demoKpiYear(
+            this.stateService.leads(), this.stateService.leadEvents(), this.year(), KpiFacadeService.DemoTarget, this.leadsFacade.loadedAt()));
 
     /** Den første i måneden som vises. Starter på inneværende måned. */
     readonly month = signal(this.firstOfMonth(new Date()));
