@@ -32,5 +32,8 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/easysalon-sales/browser
+      # Pause før utrulling: deploy-pages har feilet med «No artifacts named github-pages» når den leter etter
+      # pakken rett etter opplasting (2026-11-26).
+      - run: sleep 15
       - id: deployment
         uses: actions/deploy-pages@v4
