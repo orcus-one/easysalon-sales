@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
+    IActivitySummary, ICallWeek, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
     ILeadEventDetail, ILeadListItem, ILeadNote, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceCount, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
@@ -305,6 +305,40 @@ export class LeadsHelperService {
             result.push(this.kpiDay(date, callsByDay.get(this.toDateKey(date)) ?? 0, target, todayKey));
         }
         return result;
+    }
+
+    /**
+     * Telefonene i inneværende uke mot ukemålet, som er dagsmålet ganger arbeidsdagene i uken (Kenneth
+     * 2026-11-26: 25 x 5 = 125). En helligdag teller ikke som arbeidsdag, som ellers på KPI-siden, så uken får
+     * lavere mål. Telefoner i helg teller med i ukens antall.
+     * Skjemaet og dagsmålet for resten av uken regnes fra starten av dagen: er han 10 etter med to arbeidsdager
+     * igjen, blir dagsmålet 30 for hver av dem.
+     */
+    callWeek(events: Array<ILeadEvent>, now: Date, dayTarget: number): ICallWeek {
+        const todayKey = this.toDateKey(now);
+        const callsByDay = this.calledLeadsByDay(events);
+        // getDay gir søndag = 0; uken begynner mandag.
+        const monday = this.addDays(now, -((now.getDay() + 6) % 7));
+        const days = Array.from({ length: 7 }, (_, i) => {
+            const date = this.addDays(monday, i);
+            return this.kpiDay(date, callsByDay.get(this.toDateKey(date)) ?? 0, dayTarget, todayKey);
+        });
+        const workdays = days.filter(d => d.kind === 'workday');
+        const before = days.filter(d => !d.isFuture && !d.isToday);
+
+        const target = dayTarget * workdays.length;
+        const calls = days.filter(d => !d.isFuture).reduce((sum, d) => sum + d.calls, 0);
+        const callsBefore = before.reduce((sum, d) => sum + d.calls, 0);
+        const workdaysLeft = workdays.filter(d => d.isFuture || d.isToday).length;
+
+        return {
+            calls,
+            target,
+            remaining: Math.max(0, target - calls),
+            balance: callsBefore - dayTarget * before.filter(d => d.kind === 'workday').length,
+            workdaysLeft,
+            dailyNeed: workdaysLeft > 0 ? Math.max(0, Math.ceil((target - callsBefore) / workdaysLeft)) : 0
+        };
     }
 
     /**

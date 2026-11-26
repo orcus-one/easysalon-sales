@@ -18,9 +18,20 @@
     <span class="muted">totalt</span>
   </div>
   <div class="card kpi">
-    <span class="eyebrow">Nye</span>
-    <span class="kpi-value num">{{ kpis().newLast30 | number:'1.0-0' }}</span>
-    <span class="muted">siste 30 dager</span>
+    <span class="eyebrow">Telefoner denne uken</span>
+    <span class="kpi-value num">{{ callWeek().calls | number:'1.0-0' }} <span class="muted of">av {{ callWeek().target }}</span></span>
+    <!-- Hva som mangler til ukemålet, om han ligger foran eller etter skjema, og dagsmålet som henter det inn. -->
+    <span class="muted">
+      @if (callWeek().remaining === 0) {
+        Ukemålet er nådd.
+      } @else {
+        {{ callWeek().remaining }} igjen til ukemålet.
+        @if (callWeek().balance < 0) { {{ -callWeek().balance }} etter skjema. }
+        @else if (callWeek().balance > 0) { {{ callWeek().balance }} foran skjema. }
+        @else { I rute. }
+        @if (callWeek().workdaysLeft > 0) { Dagsmål {{ callWeek().dailyNeed }} resten av uken. }
+      }
+    </span>
   </div>
   <div class="card kpi">
     <span class="eyebrow">Demoer</span>

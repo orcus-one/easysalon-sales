@@ -45,6 +45,10 @@ export class DashboardFacadeService {
     readonly dailyCalls = computed(() => this.leadsHelper.dailyCalls(
         this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.ActivityDays, DashboardFacadeService.CallTarget));
 
+    /** Telefonene denne uken mot ukemålet, med hva som mangler og om han ligger foran eller etter skjema. */
+    readonly callWeek = computed(() =>
+        this.leadsHelper.callWeek(this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.CallTarget));
+
     /** Demoer registrert som holdt de siste 30 dagene, som nøkkeltall. Samme vindu som «Nye» og «Vunnet». */
     readonly completedDemosLast30 = computed(() =>
         this.leadsHelper.completedDemosSince(this.stateService.leadEvents(), this.loadedAt(), 30));

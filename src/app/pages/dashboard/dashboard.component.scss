@@ -1,5 +1,7 @@
 /* Nøkkeltall: dempet til første lasting er ferdig */
 .kpis { margin-bottom: 16px; transition: opacity .2s; &.pending { opacity: .5; } }
+/* «av 125» etter ukens telefoner, som på KPI-siden. */
+.of { font-size: 18px; font-weight: 500; }
 
 /* Kort i rutenett */
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }

@@ -245,6 +245,28 @@ export interface IDashboardKpis {
     licensesLast30: number;
 }
 
+/** Telefonene i inneværende uke, mandag til søndag, målt mot ukemålet (dagsmålet ganger arbeidsdagene i uken). */
+export interface ICallWeek {
+    /** Leads ringt i uken til og med i dag. Helg teller med. */
+    calls: number;
+    /** Dagsmålet ganger arbeidsdagene i uken: 125 i en vanlig uke, lavere i en uke med helligdag. */
+    target: number;
+    /** Hvor mange som mangler til ukemålet, aldri under 0. */
+    remaining: number;
+    /**
+     * Foran (positivt) eller etter (negativt) skjema ved starten av dagen: telefonene på dagene før i dag mot
+     * dagsmålet for arbeidsdagene som er passert. Dagen i dag er ikke med, siden den ikke er ferdig.
+     */
+    balance: number;
+    /** Arbeidsdager igjen i uken, i dag medregnet. */
+    workdaysLeft: number;
+    /**
+     * Dagsmålet for hver arbeidsdag som er igjen, i dag medregnet, for å nå ukemålet: det som manglet ved
+     * starten av dagen, fordelt jevnt og rundet opp. 0 når ingen arbeidsdager er igjen.
+     */
+    dailyNeed: number;
+}
+
 /** Hva slags dag et KPI-kort gjelder. Målet gjelder bare arbeidsdager. */
 export type KpiDayKind = 'workday' | 'weekend' | 'holiday';
 

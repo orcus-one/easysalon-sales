@@ -26,6 +26,7 @@ export class DashboardComponent {
   readonly callTarget = DashboardFacadeService.CallTarget;
   readonly activityDays = DashboardFacadeService.ActivityDays;
   readonly sections = DashboardFacadeService.Sections;
+  readonly callWeek = this.dashboardFacade.callWeek;
   readonly completedDemosLast30 = this.dashboardFacade.completedDemosLast30;
   readonly weeklyDemos = this.dashboardFacade.weeklyDemos;
   readonly demoTarget = DashboardFacadeService.DemoTarget;
