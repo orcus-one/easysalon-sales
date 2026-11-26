@@ -21,6 +21,7 @@ export class LeadDetailFacadeService {
 
     readonly createdType = LeadsHelperService.CreatedType;
     readonly noteType = LeadsHelperService.NoteType;
+    readonly demoType = LeadsHelperService.DemoCompletedType;
 
     readonly isLoading = signal(false);
     readonly error = signal('');
@@ -61,6 +62,8 @@ export class LeadDetailFacadeService {
         this.stateService.curLeadNotes.set([]);
         this.notFound.set(false);
         this.error.set('');
+        this.deleteCandidateId.set(null);
+        this.deleteError.set('');
         this.isLoading.set(true);
         try {
             const [lead, events, notes] = await Promise.all([
@@ -83,5 +86,49 @@ export class LeadDetailFacadeService {
 
     refresh(): void {
         if (this.openId) this.open(this.openId);
+    }
+
+    // Sletting av demoregistreringer. Bare hendelser av typen demo_completed kan slettes (Kenneth 2026-11-26).
+    /** Hendelsen brukeren har bedt om å slette og må bekrefte. null = ingen. */
+    readonly deleteCandidateId = signal<string | null>(null);
+    readonly isDeleting = signal(false);
+    readonly deleteError = signal('');
+
+    askDeleteDemo(eventId: string): void {
+        if (this.isDeleting()) return;
+        this.deleteError.set('');
+        this.deleteCandidateId.set(eventId);
+    }
+
+    cancelDeleteDemo(): void {
+        if (this.isDeleting()) return;
+        this.deleteCandidateId.set(null);
+    }
+
+    /**
+     * Sletter demoregistreringen som er bekreftet. Status på leadet røres ikke: flyttet registreringen leadet
+     * til «Demo gjennomført», står statusen og statusendringen igjen, og rettes i selgerens app.
+     */
+    async deleteDemo(): Promise<void> {
+        const eventId = this.deleteCandidateId();
+        const leadId = this.openId;
+        if (!eventId || this.isDeleting()) return;
+        this.isDeleting.set(true);
+        this.deleteError.set('');
+        try {
+            await this.leadsService.deleteDemoEvent(eventId);
+        } catch {
+            this.deleteError.set('Fikk ikke slettet registreringen. Prøv igjen.');
+            this.isDeleting.set(false);
+            return;
+        }
+        // Registreringen er slettet. Feiler oppfriskingen, er den borte neste gang leadet hentes.
+        try {
+            const events = await this.leadsService.getLeadEvents(leadId);
+            if (this.openId === leadId) this.stateService.curLeadEvents.set(events);
+            await this.leadsFacade.load();
+        } catch { /* se over */ }
+        this.isDeleting.set(false);
+        this.deleteCandidateId.set(null);
     }
 }

@@ -37,6 +37,10 @@ export class LeadDetailComponent {
   readonly counts = this.leadDetailFacade.counts;
   readonly eventCount = this.leadDetailFacade.eventCount;
   readonly createdType = this.leadDetailFacade.createdType;
+  readonly demoType = this.leadDetailFacade.demoType;
+  readonly deleteCandidateId = this.leadDetailFacade.deleteCandidateId;
+  readonly isDeleting = this.leadDetailFacade.isDeleting;
+  readonly deleteError = this.leadDetailFacade.deleteError;
 
   constructor() {
     // Ny id i ruten åpner et nytt lead, også når komponenten gjenbrukes.
@@ -57,6 +61,18 @@ export class LeadDetailComponent {
 
   refresh(): void {
     this.leadDetailFacade.refresh();
+  }
+
+  askDeleteDemo(eventId: string): void {
+    this.leadDetailFacade.askDeleteDemo(eventId);
+  }
+
+  cancelDeleteDemo(): void {
+    this.leadDetailFacade.cancelDeleteDemo();
+  }
+
+  deleteDemo(): void {
+    this.leadDetailFacade.deleteDemo();
   }
 
   registerDemo(): void {

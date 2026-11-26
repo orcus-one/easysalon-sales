@@ -86,6 +86,23 @@ export class LeadsService {
     }
 
     /**
+     * Sletter én demoregistrering (hendelse av typen demo_completed). Krever regelen «Authenticated users can
+     * delete demo completed» på lead_hendelser (2026-11-26), som bare slipper gjennom den typen. Typen står også
+     * i spørringen, så andre hendelser aldri forsøkes slettet. En sletting som RLS stopper gir ingen feil, bare
+     * null rader, så raden leses tilbake og null rader regnes som feil.
+     */
+    async deleteDemoEvent(id: string): Promise<void> {
+        const { data, error } = await this.supabase.client
+            .from('lead_hendelser')
+            .delete()
+            .eq('id', id)
+            .eq('type', 'demo_completed')
+            .select('id');
+        if (error) throw error;
+        if (!data || data.length === 0) throw new Error('Event was not deleted');
+    }
+
+    /**
      * Setter status på et lead og oppdatert_at til nå. Krever regelen «Authenticated users can update» på leads
      * (2026-11-25). En oppdatering som RLS stopper gir ingen feil, bare null rader, så raden leses tilbake og
      * null rader regnes som feil.

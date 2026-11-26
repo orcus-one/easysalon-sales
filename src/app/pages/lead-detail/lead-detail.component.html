@@ -98,11 +98,24 @@
               }
               @if (item.comment) { <span class="comment">{{ item.comment }}</span> }
               @if (item.author) { <span class="muted author">{{ item.author }}</span> }
+              <!-- Bare demoregistreringer kan slettes. Sletting bekreftes på raden. -->
+              @if (item.type === demoType) {
+                @if (deleteCandidateId() === item.id) {
+                  <span class="confirm">
+                    <span>Slette registreringen?</span>
+                    <button type="button" class="link-btn danger" (click)="deleteDemo()" [disabled]="isDeleting()">{{ isDeleting() ? 'Sletter' : 'Slett' }}</button>
+                    <button type="button" class="link-btn" (click)="cancelDeleteDemo()" [disabled]="isDeleting()">Avbryt</button>
+                  </span>
+                  @if (deleteError()) { <span class="delete-error" role="alert">{{ deleteError() }}</span> }
+                } @else {
+                  <button type="button" class="link-btn" (click)="askDeleteDemo(item.id)">Slett</button>
+                }
+              }
             </span>
           </li>
         }
       </ul>
-      <p class="muted note">Livsløpet viser hendelsene som er loggført på leadet og notatene som er lagt til, nyeste øverst. Opprettet er dagen leadet kom inn.</p>
+      <p class="muted note">Livsløpet viser hendelsene som er loggført på leadet og notatene som er lagt til, nyeste øverst. Opprettet er dagen leadet kom inn. En registrert demo kan slettes; status på leadet endres ikke av det.</p>
     </section>
   </div>
 }
