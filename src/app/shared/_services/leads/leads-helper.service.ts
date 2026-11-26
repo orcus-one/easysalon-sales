@@ -330,6 +330,8 @@ export class LeadsHelperService {
         const calls = days.filter(d => !d.isFuture).reduce((sum, d) => sum + d.calls, 0);
         const callsBefore = before.reduce((sum, d) => sum + d.calls, 0);
         const workdaysLeft = workdays.filter(d => d.isFuture || d.isToday).length;
+        const dailyNeed = workdaysLeft > 0 ? Math.max(0, Math.ceil((target - callsBefore) / workdaysLeft)) : 0;
+        const today = workdays.find(d => d.isToday);
 
         return {
             calls,
@@ -337,7 +339,8 @@ export class LeadsHelperService {
             remaining: Math.max(0, target - calls),
             balance: callsBefore - dayTarget * before.filter(d => d.kind === 'workday').length,
             workdaysLeft,
-            dailyNeed: workdaysLeft > 0 ? Math.max(0, Math.ceil((target - callsBefore) / workdaysLeft)) : 0
+            dailyNeed,
+            todayRemaining: today ? Math.max(0, dailyNeed - today.calls) : null
         };
     }
 

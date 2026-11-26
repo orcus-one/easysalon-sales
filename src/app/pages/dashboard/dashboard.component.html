@@ -29,7 +29,11 @@
         @if (callWeek().balance < 0) { {{ -callWeek().balance }} etter skjema. }
         @else if (callWeek().balance > 0) { {{ callWeek().balance }} foran skjema. }
         @else { I rute. }
-        @if (callWeek().workdaysLeft > 0) { Dagsmål {{ callWeek().dailyNeed }} resten av uken. }
+        @if (callWeek().workdaysLeft > 0) {
+          @if (callWeek().todayRemaining === null) { Dagsmål {{ callWeek().dailyNeed }} resten av uken. }
+          @else if (callWeek().todayRemaining === 0) { Dagsmål {{ callWeek().dailyNeed }} resten av uken, dagens mål er nådd. }
+          @else { Dagsmål {{ callWeek().dailyNeed }} resten av uken, {{ callWeek().todayRemaining }} igjen i dag. }
+        }
       }
     </span>
   </div>

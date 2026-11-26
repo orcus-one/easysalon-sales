@@ -265,6 +265,8 @@ export interface ICallWeek {
      * starten av dagen, fordelt jevnt og rundet opp. 0 når ingen arbeidsdager er igjen.
      */
     dailyNeed: number;
+    /** Hvor mange som mangler i dag for å nå dailyNeed, aldri under 0. null når dagen i dag ikke er arbeidsdag. */
+    todayRemaining: number | null;
 }
 
 /** Hva slags dag et KPI-kort gjelder. Målet gjelder bare arbeidsdager. */
