@@ -1,0 +1,31 @@
+<div class="legend">
+  <span class="legend-item"><span class="swatch met"></span>Booket, på mål</span>
+  <span class="legend-item"><span class="swatch missed"></span>Booket, under mål</span>
+  <span class="legend-item"><span class="swatch completed"></span>Gjennomført</span>
+  <span class="legend-item"><span class="swatch-line"></span>Mål {{ target() }}</span>
+</div>
+
+<svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+     aria-label="Demoer per uke: booket målt mot ukemålet, og gjennomført">
+  @for (line of gridLines(); track line.value) {
+    <line class="grid" [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="line.y" [attr.y2]="line.y" />
+    <text class="axis" x="0" [attr.y]="line.y + 3">{{ line.value }}</text>
+  }
+
+  @for (week of weeks(); track week.week) {
+    <g [attr.data-status]="week.met ? 'met' : 'missed'" [class.current]="week.isCurrent">
+      <title>{{ week.title }}</title>
+      <rect class="slot" [attr.x]="week.slotX" [attr.y]="padTop" [attr.width]="week.slotWidth" [attr.height]="baseline - padTop" />
+      <rect class="bar booked" [attr.x]="week.bookedX" [attr.y]="week.bookedY" [attr.width]="barWidth()" [attr.height]="week.bookedHeight" />
+      <text class="val booked" [attr.x]="week.bookedX + barWidth() / 2" [attr.y]="week.bookedY - 4" text-anchor="middle">{{ week.demos }}</text>
+      <rect class="bar completed" [attr.x]="week.completedX" [attr.y]="week.completedY" [attr.width]="barWidth()" [attr.height]="week.completedHeight" />
+      <!-- Uker uten gjennomførte har ingen stolpe og heller ikke noe tall. -->
+      @if (week.completed > 0) {
+        <text class="val completed" [attr.x]="week.completedX + barWidth() / 2" [attr.y]="week.completedY - 4" text-anchor="middle">{{ week.completed }}</text>
+      }
+      <text class="axis week" [attr.x]="week.centerX" [attr.y]="labelY" text-anchor="middle">{{ week.week }}</text>
+    </g>
+  }
+
+  <line class="target" [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="targetY()" [attr.y2]="targetY()" />
+</svg>

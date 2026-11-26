@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { DatePipe, DecimalPipe, PercentPipe } from '@angular/common';
 import { DashboardFacadeService } from '../../shared/_services/dashboard/dashboard-facade.service';
 import { CallChartComponent } from '../../shared/components/call-chart/call-chart.component';
+import { DemoChartComponent } from '../../shared/components/demo-chart/demo-chart.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DatePipe, DecimalPipe, PercentPipe, CallChartComponent],
+  imports: [DatePipe, DecimalPipe, PercentPipe, CallChartComponent, DemoChartComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -24,6 +25,8 @@ export class DashboardComponent {
   readonly dailyCalls = this.dashboardFacade.dailyCalls;
   readonly callTarget = DashboardFacadeService.CallTarget;
   readonly activityDays = DashboardFacadeService.ActivityDays;
+  readonly weeklyDemos = this.dashboardFacade.weeklyDemos;
+  readonly demoTarget = DashboardFacadeService.DemoTarget;
 
   constructor() {
     this.dashboardFacade.ensureLoaded();

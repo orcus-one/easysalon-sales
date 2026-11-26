@@ -13,6 +13,7 @@ import { LeadsHelperService } from '../leads/leads-helper.service';
 export class DashboardFacadeService {
 
     private readonly stateService = inject(StateService);
+    private readonly kpiFacade = inject(KpiFacadeService);
     private readonly leadsFacade = inject(LeadsFacadeService);
     private readonly leadsHelper = inject(LeadsHelperService);
 
@@ -31,6 +32,17 @@ export class DashboardFacadeService {
     static readonly CallTarget = KpiFacadeService.CallTarget;
     readonly dailyCalls = computed(() => this.leadsHelper.dailyCalls(
         this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.ActivityDays, DashboardFacadeService.CallTarget));
+
+    /** Samme ukemål som KPI-siden. */
+    static readonly DemoTarget = KpiFacadeService.DemoTarget;
+    /** Antall uker i demografen, til og med denne. */
+    static readonly DemoWeeks = 12;
+    /**
+     * Ukene i demografen: de siste ukene til og med denne, hentet fra samme utregning som KPI-siden, så grafen
+     * og ukekortene sier det samme. Utregningen gjelder inneværende år, så tidlig i året er det færre uker.
+     */
+    readonly weeklyDemos = computed(() =>
+        this.kpiFacade.demoKpi().weeks.filter(w => !w.isFuture).slice(-DashboardFacadeService.DemoWeeks));
 
     ensureLoaded(): void {
         this.leadsFacade.ensureLoaded();

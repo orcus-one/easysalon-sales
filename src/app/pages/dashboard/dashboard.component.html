@@ -45,6 +45,15 @@
     <app-call-chart [data]="dailyCalls()" [target]="callTarget" />
   </section>
 
+  <!-- Demoer per uke: booket og gjennomført side om side -->
+  <section class="card span-3">
+    <div class="card-head">
+      <h2>Demoer per uke</h2>
+      <span class="muted">booket og gjennomført, siste {{ weeklyDemos().length }} uker, mål {{ demoTarget }} booket per uke</span>
+    </div>
+    <app-demo-chart [data]="weeklyDemos()" [target]="demoTarget" />
+  </section>
+
   <!-- Pipeline -->
   <section class="card span-2">
     <div class="card-head">
