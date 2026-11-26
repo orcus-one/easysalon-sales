@@ -42,11 +42,16 @@ export class DashboardFacadeService {
     /** Antall uker i demografen, til og med denne. */
     static readonly DemoWeeks = 12;
     /**
-     * Ukene i demografen: de siste ukene til og med denne, hentet fra samme utregning som KPI-siden, så grafen
-     * og ukekortene sier det samme. Utregningen gjelder inneværende år, så tidlig i året er det færre uker.
+     * Ukene i demografen: de siste ukene til og med denne, pluss neste uke som viser det som er booket. Hentet
+     * fra samme utregning som KPI-siden, så grafen og ukekortene sier det samme. Utregningen gjelder inneværende
+     * år, så tidlig i året er det færre uker, og i årets siste uke mangler neste uke.
      */
-    readonly weeklyDemos = computed(() =>
-        this.kpiFacade.demoKpi().weeks.filter(w => !w.isFuture).slice(-DashboardFacadeService.DemoWeeks));
+    readonly weeklyDemos = computed(() => {
+        const weeks = this.kpiFacade.demoKpi().weeks;
+        const passed = weeks.filter(w => !w.isFuture).slice(-DashboardFacadeService.DemoWeeks);
+        const next = weeks.find(w => w.isFuture);
+        return next ? [...passed, next] : passed;
+    });
 
     ensureLoaded(): void {
         this.leadsFacade.ensureLoaded();

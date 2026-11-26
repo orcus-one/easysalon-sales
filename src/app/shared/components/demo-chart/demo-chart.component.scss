@@ -6,6 +6,7 @@
 .swatch.met { background: var(--ok); }
 .swatch.missed { background: var(--crit); }
 .swatch.completed { background: var(--chart-1); }
+.swatch.future { background: var(--muted); opacity: .45; }
 .swatch-line { width: 16px; border-top: 2px dashed var(--fg); opacity: .6; }
 
 .chart { width: 100%; height: auto; display: block; overflow: visible; }
@@ -24,6 +25,10 @@ g[data-status="met"] rect.booked { fill: var(--ok); }
 g[data-status="met"] text.booked { fill: var(--ok); }
 g[data-status="missed"] rect.booked { fill: var(--crit); }
 g[data-status="missed"] text.booked { fill: var(--crit); }
+/* Uken frem i tid måles ikke: nøytral grå, som helg og helligdag i telefongrafen. */
+g[data-status="future"] rect.booked { fill: var(--muted); opacity: .45; }
+g[data-status="future"] text.booked { fill: var(--muted); }
+g[data-status="future"]:hover rect.booked { opacity: .35; }
 rect.completed { fill: var(--chart-1); }
 text.completed { fill: var(--chart-1-ink); }
 g.current text.week { font-weight: 700; fill: var(--fg); }

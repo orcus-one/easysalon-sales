@@ -7,7 +7,8 @@ interface IWeekBars {
   slotWidth: number;
   /** Midt i uken, der ukenummeret står. */
   centerX: number;
-  met: boolean;
+  /** På mål, under mål, eller en uke frem i tid som ikke måles. */
+  status: 'met' | 'missed' | 'future';
   isCurrent: boolean;
   demos: number;
   bookedX: number;
@@ -27,7 +28,8 @@ interface IGridLine {
 
 /**
  * Demoer per uke som to stolper side om side: booket målt mot ukemålet, med samme regler og farger som kortene
- * på KPI-siden (grønn på mål, rød under), og gjennomført i egen farge uten mål. Ren SVG, skalerer med bredden.
+ * på KPI-siden (grønn på mål, rød under), og gjennomført i egen farge uten mål. En uke frem i tid viser det
+ * som er booket i nøytral farge, uten måling. Ren SVG, skalerer med bredden.
  */
 @Component({
   selector: 'app-demo-chart',
@@ -88,17 +90,20 @@ export class DemoChartComponent {
         slotX: this.padLeft + i * slot + 1,
         slotWidth: Math.max(1, slot - 2),
         centerX,
-        met: w.met,
+        status: w.isFuture ? 'future' as const : w.met ? 'met' as const : 'missed' as const,
         isCurrent: w.isCurrent,
         demos: w.demos,
-        bookedX: centerX - gap / 2 - barWidth,
+        // En uke frem i tid har bare booket-stolpen, så den står midt i uken.
+        bookedX: w.isFuture ? centerX - barWidth / 2 : centerX - gap / 2 - barWidth,
         bookedY: this.baseline - bookedHeight,
         bookedHeight,
         completed: w.completed,
         completedX: centerX + gap / 2,
         completedY: this.baseline - completedHeight,
         completedHeight,
-        title: `Uke ${w.week} (${this.dayMonth(w.start)}–${this.dayMonth(w.end)}): ${w.demos} av ${target} booket, ${w.completed} gjennomført`
+        title: w.isFuture
+          ? `Uke ${w.week} (${this.dayMonth(w.start)}–${this.dayMonth(w.end)}): ${w.demos} booket`
+          : `Uke ${w.week} (${this.dayMonth(w.start)}–${this.dayMonth(w.end)}): ${w.demos} av ${target} booket, ${w.completed} gjennomført`
       };
     });
   });
