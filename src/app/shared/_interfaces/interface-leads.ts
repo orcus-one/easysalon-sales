@@ -120,13 +120,17 @@ export interface ILeadEvent {
     opprettet_at: string;
 }
 
-/** Raden som settes inn i lead_hendelser. Id og tidspunkt settes av basen. */
+/**
+ * Raden som settes inn i lead_hendelser. Id settes av basen, og tidspunktet også når opprettet_at utelates.
+ * opprettet_at sendes bare med når en demo etterregistreres på en eldre dato.
+ */
 export interface ILeadEventInsert {
     org_id: string;
     lead_id: string;
     type: string;
     fra_status?: string;
     til_status?: string;
+    opprettet_at?: string;
 }
 
 /** Leadet slik detaljvisningen henter det: listekolonnene pluss notat og tidspunkter. */
@@ -160,6 +164,12 @@ export interface ILeadNoteInsert {
 
 /** Leadet notatdialogen gjelder. */
 export interface INoteTarget {
+    id: string;
+    navn: string;
+}
+
+/** Leadet dialogen «Demo gjennomført» gjelder. */
+export interface IDemoTarget {
     id: string;
     navn: string;
 }

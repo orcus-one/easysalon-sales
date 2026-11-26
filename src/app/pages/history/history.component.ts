@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { DemoDialogComponent } from '../../shared/components/demo-dialog/demo-dialog.component';
 import { NoteDialogComponent } from '../../shared/components/note-dialog/note-dialog.component';
 import { HistoryFacadeService } from '../../shared/_services/history/history-facade.service';
 
 @Component({
   selector: 'app-history',
-  imports: [DatePipe, RouterLink, RouterOutlet, NoteDialogComponent],
+  imports: [DatePipe, RouterLink, RouterOutlet, DemoDialogComponent, NoteDialogComponent],
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss'
 })

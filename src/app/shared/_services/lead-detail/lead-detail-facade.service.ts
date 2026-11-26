@@ -61,7 +61,6 @@ export class LeadDetailFacadeService {
         this.stateService.curLeadNotes.set([]);
         this.notFound.set(false);
         this.error.set('');
-        this.demoError.set('');
         this.isLoading.set(true);
         try {
             const [lead, events, notes] = await Promise.all([
@@ -84,53 +83,5 @@ export class LeadDetailFacadeService {
 
     refresh(): void {
         if (this.openId) this.open(this.openId);
-    }
-
-    readonly isRegisteringDemo = signal(false);
-    readonly demoError = signal('');
-
-    /**
-     * Registrerer at demoen er holdt på leadet som er åpent: en demo_completed-hendelse, og når leadet står på
-     * et steg før «Demo gjennomført», flyttes status dit med egen status_endret-hendelse, som i selgerens app.
-     * Status leses på nytt først, siden den kan være endret i selgerens app etter at panelet ble åpnet.
-     * Kallene går etter hverandre uten transaksjon. Feiler et av dem, blir det som alt er skrevet stående.
-     */
-    async registerDemoCompleted(): Promise<void> {
-        const id = this.lead()?.id;
-        if (!id || this.isRegisteringDemo()) return;
-        const organisations = this.stateService.organisations();
-        if (organisations.length !== 1) {
-            this.demoError.set(organisations.length === 0
-                ? 'Fant ingen organisasjon å knytte hendelsen til.'
-                : 'Fant flere organisasjoner, vet ikke hvilken hendelsen skal knyttes til.');
-            return;
-        }
-        const orgId = organisations[0].id;
-        const target = LeadsHelperService.DemoCompletedStatus;
-        this.isRegisteringDemo.set(true);
-        this.demoError.set('');
-        try {
-            const current = await this.leadsService.getLead(id);
-            if (!current) throw new Error('Lead not found');
-            await this.leadsService.createLeadEvent({ org_id: orgId, lead_id: id, type: LeadsHelperService.DemoCompletedType });
-            if (this.leadsHelper.isBeforeStep(current.status, target, this.stateService.pipelineSteps())) {
-                await this.leadsService.updateLeadStatus(id, target);
-                await this.leadsService.createLeadEvent({
-                    org_id: orgId, lead_id: id, type: LeadsHelperService.StatusChangedType, fra_status: current.status, til_status: target
-                });
-            }
-        } catch {
-            this.demoError.set('Fikk ikke registrert demoen fullt ut. Se i livsløpet hva som ble lagret.');
-        }
-        // Hentes på nytt også etter feil, så panelet viser det som faktisk står i basen.
-        try {
-            const [lead, events] = await Promise.all([this.leadsService.getLead(id), this.leadsService.getLeadEvents(id)]);
-            if (this.openId === id) {
-                this.stateService.curLead.set(lead);
-                this.stateService.curLeadEvents.set(events);
-            }
-            await this.leadsFacade.load();
-        } catch { /* panelet viser forrige tilstand til neste oppdatering */ }
-        this.isRegisteringDemo.set(false);
     }
 }

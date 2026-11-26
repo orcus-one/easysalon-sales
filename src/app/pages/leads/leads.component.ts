@@ -1,6 +1,7 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { DemoDialogComponent } from '../../shared/components/demo-dialog/demo-dialog.component';
 import { NoteDialogComponent } from '../../shared/components/note-dialog/note-dialog.component';
 import { ILeadInput } from '../../shared/_interfaces/interface-leads';
 import { LeadListFacadeService } from '../../shared/_services/lead-list/lead-list-facade.service';
@@ -8,7 +9,7 @@ import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.se
 
 @Component({
   selector: 'app-leads',
-  imports: [DatePipe, RouterLink, RouterOutlet, NoteDialogComponent],
+  imports: [DatePipe, RouterLink, RouterOutlet, DemoDialogComponent, NoteDialogComponent],
   templateUrl: './leads.component.html',
   styleUrl: './leads.component.scss'
 })

@@ -79,7 +79,7 @@ export class LeadsService {
         if (error) throw error;
     }
 
-    /** Legger en hendelse på et lead. Krever regelen «Authenticated users can insert» på lead_hendelser (2026-11-25). */
+    /** Legger en hendelse på et lead. Tidspunktet settes av basen når opprettet_at ikke er med. Krever regelen «Authenticated users can insert» på lead_hendelser (2026-11-25). */
     async createLeadEvent(row: ILeadEventInsert): Promise<void> {
         const { error } = await this.supabase.client.from('lead_hendelser').insert(row);
         if (error) throw error;

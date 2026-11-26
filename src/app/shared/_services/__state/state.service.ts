@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { Theme } from '../../_interfaces/interface-nav';
 import { ICampaign, IDailyAdCost } from '../../_interfaces/interface-ads';
-import { ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadNote, INoteTarget, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
+import { IDemoTarget, ILead, ILeadDetail, ILeadEvent, ILeadEventDetail, ILeadNote, INoteTarget, IOrganisation, IPipelineStep, ISource } from '../../_interfaces/interface-leads';
 
 /**
  * All delt tilstand i appen, som i eris-fe. Komponentene leser signals herfra og
@@ -60,4 +60,8 @@ export class StateService {
     // Dialogen «Nytt notat»
     /** Leadet notatet skal legges på. null = dialogen er lukket. Åpnes fra leadpanelet. */
     readonly noteTarget = signal<INoteTarget | null>(null);
+
+    // Dialogen «Demo gjennomført»
+    /** Leadet demoen skal registreres på. null = dialogen er lukket. Åpnes fra leadpanelet. */
+    readonly demoTarget = signal<IDemoTarget | null>(null);
 }

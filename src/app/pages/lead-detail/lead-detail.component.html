@@ -7,10 +7,6 @@
   <p class="error notice" role="alert">{{ error() }}</p>
 }
 
-@if (demoError()) {
-  <p class="error notice" role="alert">{{ demoError() }}</p>
-}
-
 @if (notFound()) {
   <section class="card notice">
     <p class="muted">Fant ikke leadet.</p>
@@ -28,7 +24,7 @@
         <span class="status"><span class="swatch" [style.background]="step.farge"></span>{{ step.label }}</span>
       }
       <button type="button" class="btn btn-light" (click)="refresh()" [disabled]="isLoading()">Oppdater</button>
-      <button type="button" class="btn" (click)="registerDemoCompleted()" [disabled]="isRegisteringDemo()">Demo gjennomført</button>
+      <button type="button" class="btn" (click)="registerDemo()">Demo gjennomført</button>
       <button type="button" class="btn" (click)="addNote()">Legg til notat</button>
     </div>
   </div>

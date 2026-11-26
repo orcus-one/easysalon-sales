@@ -1,0 +1,24 @@
+@if (target(); as target) {
+  <div class="backdrop" (click)="close()">
+    <section class="card dialog" role="dialog" aria-modal="true" aria-labelledby="demo-dialog-title" (click)="$event.stopPropagation()">
+      <div class="dialog-head">
+        <h2 id="demo-dialog-title">Demo gjennomført</h2>
+        <button type="button" class="close-btn" (click)="close()" aria-label="Lukk">&times;</button>
+      </div>
+      <p class="muted sub">{{ target.navn }}</p>
+      <form (submit)="onSubmit($event)">
+        <label for="demo-dialog-date">Dato demoen ble holdt</label>
+        <input #dateField id="demo-dialog-date" name="date" type="date" [value]="today()" [max]="today()" required>
+        <div class="form-actions">
+          @if (saveError()) { <p class="error" role="alert">{{ saveError() }}</p> }
+          @if (isSavedWithError()) {
+            <button type="button" class="btn" (click)="close()">Lukk</button>
+          } @else {
+            <button type="button" class="btn btn-light" (click)="close()" [disabled]="isSaving()">Avbryt</button>
+            <button type="submit" class="btn" [disabled]="isSaving()">{{ isSaving() ? 'Lagrer' : 'Lagre' }}</button>
+          }
+        </div>
+      </form>
+    </section>
+  </div>
+}

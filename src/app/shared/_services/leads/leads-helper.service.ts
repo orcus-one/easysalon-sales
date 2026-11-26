@@ -227,6 +227,19 @@ export class LeadsHelperService {
         return `${y}-${m}-${d}`;
     }
 
+    /** Om teksten er en gyldig dato på formen yyyy-MM-dd. */
+    isDateKey(value: string): boolean {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+        const [y, m, d] = value.split('-').map(Number);
+        return this.toDateKey(new Date(y, m - 1, d)) === value;
+    }
+
+    /** Klokken 12 lokal tid på datoen, som ISO-tidspunkt. Midt på dagen, så tidspunktet ikke glir over på nabodagen. */
+    noonIso(dateKey: string): string {
+        const [y, m, d] = dateKey.split('-').map(Number);
+        return new Date(y, m - 1, d, 12).toISOString();
+    }
+
     addDays(date: Date, days: number): Date {
         const copy = new Date(date);
         copy.setDate(copy.getDate() + days);

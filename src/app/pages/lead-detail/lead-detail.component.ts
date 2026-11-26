@@ -1,6 +1,7 @@
 import { Component, HostListener, effect, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LeadDemoFacadeService } from '../../shared/_services/lead-demo/lead-demo-facade.service';
 import { LeadDetailFacadeService } from '../../shared/_services/lead-detail/lead-detail-facade.service';
 import { LeadNoteFacadeService } from '../../shared/_services/lead-note/lead-note-facade.service';
 import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.service';
@@ -14,6 +15,7 @@ import { LeadsHelperService } from '../../shared/_services/leads/leads-helper.se
 export class LeadDetailComponent {
 
   private readonly leadDetailFacade = inject(LeadDetailFacadeService);
+  private readonly leadDemoFacade = inject(LeadDemoFacadeService);
   private readonly leadNoteFacade = inject(LeadNoteFacadeService);
   private readonly leadsHelper = inject(LeadsHelperService);
   private readonly router = inject(Router);
@@ -35,18 +37,16 @@ export class LeadDetailComponent {
   readonly counts = this.leadDetailFacade.counts;
   readonly eventCount = this.leadDetailFacade.eventCount;
   readonly createdType = this.leadDetailFacade.createdType;
-  readonly isRegisteringDemo = this.leadDetailFacade.isRegisteringDemo;
-  readonly demoError = this.leadDetailFacade.demoError;
 
   constructor() {
     // Ny id i ruten åpner et nytt lead, også når komponenten gjenbrukes.
     effect(() => this.leadDetailFacade.open(this.id()));
   }
 
-  /** Escape lukker panelet, som lukkeknappen. Står notatdialogen åpen, er det den som lukkes, ikke panelet. */
+  /** Escape lukker panelet, som lukkeknappen. Står en dialog åpen over panelet, er det den som lukkes, ikke panelet. */
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: Event): void {
-    if (event.defaultPrevented || this.leadNoteFacade.isOpen()) return;
+    if (event.defaultPrevented || this.leadNoteFacade.isOpen() || this.leadDemoFacade.isOpen()) return;
     this.router.navigate(['..'], { relativeTo: this.route });
   }
 
@@ -59,7 +59,8 @@ export class LeadDetailComponent {
     this.leadDetailFacade.refresh();
   }
 
-  registerDemoCompleted(): void {
-    this.leadDetailFacade.registerDemoCompleted();
+  registerDemo(): void {
+    const lead = this.lead();
+    if (lead) this.leadDemoFacade.open({ id: lead.id, navn: lead.navn });
   }
 }
