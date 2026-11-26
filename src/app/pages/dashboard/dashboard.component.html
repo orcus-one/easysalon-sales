@@ -28,6 +28,11 @@
     <span class="muted">booket fremover</span>
   </div>
   <div class="card kpi">
+    <span class="eyebrow">Demoer gjennomført</span>
+    <span class="kpi-value num">{{ completedDemosLast30() | number:'1.0-0' }}</span>
+    <span class="muted">siste 30 dager</span>
+  </div>
+  <div class="card kpi">
     <span class="eyebrow">Vunnet</span>
     <span class="kpi-value num">{{ kpis().wonLast30 | number:'1.0-0' }}</span>
     <span class="muted">siste 30 dager, {{ kpis().licensesLast30 | number:'1.0-0' }} lisenser</span>

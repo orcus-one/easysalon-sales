@@ -377,6 +377,17 @@ export class LeadsHelperService {
     }
 
     /**
+     * Demoer merket gjennomført de siste dagene til og med i dag, talt som på KPI-siden: et lead én gang per dag.
+     * Hendelsene hentes fra årsstart, så tidlig i januar dekker tallet bare dagene i år.
+     */
+    completedDemosSince(events: Array<ILeadEvent>, now: Date, days: number): number {
+        const sinceKey = this.toDateKey(this.addDays(now, -days));
+        const todayKey = this.toDateKey(now);
+        return [...this.completedDemosByDay(events)]
+            .reduce((sum, [day, count]) => day >= sinceKey && day <= todayKey ? sum + count : sum, 0);
+    }
+
+    /**
      * Demoer per ISO-uke i ett år målt mot et ukemål. Demoer telles på demo_dato, så uker frem i tid viser det
      * som er booket. Inneværende uke regnes som passert og måles mot målet. Uke 1 kan begynne i desember
      * året før og siste uke kan slutte i januar året etter; demoer der telles i den uken.

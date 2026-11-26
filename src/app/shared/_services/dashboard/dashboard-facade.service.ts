@@ -33,6 +33,10 @@ export class DashboardFacadeService {
     readonly dailyCalls = computed(() => this.leadsHelper.dailyCalls(
         this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.ActivityDays, DashboardFacadeService.CallTarget));
 
+    /** Demoer registrert som holdt de siste 30 dagene, som nøkkeltall. Samme vindu som «Nye» og «Vunnet». */
+    readonly completedDemosLast30 = computed(() =>
+        this.leadsHelper.completedDemosSince(this.stateService.leadEvents(), this.loadedAt(), 30));
+
     /** Samme ukemål som KPI-siden. */
     static readonly DemoTarget = KpiFacadeService.DemoTarget;
     /** Antall uker i demografen, til og med denne. */
