@@ -21,7 +21,7 @@
     <span class="eyebrow">Telefoner denne uken</span>
     <span class="kpi-value num">{{ callWeek().calls | number:'1.0-0' }} <span class="muted of">av {{ callWeek().target }}</span></span>
     <!-- Hva som mangler til ukemålet, om han ligger foran eller etter skjema, og dagsmålet som henter det inn. -->
-    <span class="muted">
+    <span class="muted kpi-note">
       @if (callWeek().remaining === 0) {
         Ukemålet er nådd.
       } @else {

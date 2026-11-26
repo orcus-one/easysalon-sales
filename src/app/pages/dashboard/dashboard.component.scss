@@ -2,6 +2,12 @@
 .kpis { margin-bottom: 16px; transition: opacity .2s; &.pending { opacity: .5; } }
 /* «av 125» etter ukens telefoner, som på KPI-siden. */
 .of { font-size: 18px; font-weight: 500; }
+/* Forklaringen under ukens telefoner: mindre skrift i et eget felt inne i kortet. I mørkt tema er feltet
+   lysere enn kortet. I lyst tema er kortet hvitt og feltet nesten likt, så en tynn kant holder det samlet. */
+.kpi-note {
+  font-size: 12px; line-height: 1.45; margin-top: 6px; padding: 8px 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2);
+}
 
 /* Kort i rutenett */
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
