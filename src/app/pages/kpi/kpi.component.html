@@ -133,7 +133,7 @@
         @if (week.isFuture && week.demos === 0) {
           <span class="tile-count muted">–</span>
         } @else {
-          <span class="tile-count num">{{ week.demos }} <span class="muted tile-unit">booket</span></span>
+          <span class="tile-count num">{{ week.demos }}<span class="muted tile-unit">booket</span></span>
         }
         <span class="tile-foot muted num">
           @if (!week.isFuture) { {{ week.completed }} gjennomført }
