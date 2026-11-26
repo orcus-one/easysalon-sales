@@ -19,6 +19,18 @@ export class DashboardFacadeService {
 
     static readonly ActivityDays = LeadsFacadeService.ActivityDays;
 
+    /**
+     * Bolkene under nøkkeltallene på Oversikt. active styrer om bolken vises. Pipeline, kilder og aktivitet er
+     * slått av (Kenneth 2026-11-26), men koden står, så de slås på igjen ved å sette active til true.
+     */
+    static readonly Sections = {
+        calls: { active: true },
+        demos: { active: true },
+        pipeline: { active: false },
+        sources: { active: false },
+        activity: { active: false }
+    };
+
     readonly isLoading = this.leadsFacade.isLoading;
     readonly error = this.leadsFacade.error;
     readonly loadedAt = this.leadsFacade.loadedAt;

@@ -41,7 +41,8 @@
 
 <div class="grid">
 
-  <!-- Graf -->
+  <!-- Telefoner per dag. Bolkene under slås av og på i DashboardFacadeService.Sections. -->
+  @if (sections.calls.active) {
   <section class="card span-3">
     <div class="card-head">
       <h2>Telefoner per dag</h2>
@@ -49,8 +50,10 @@
     </div>
     <app-call-chart [data]="dailyCalls()" [target]="callTarget" />
   </section>
+  }
 
   <!-- Demoer per uke: booket og gjennomført side om side -->
+  @if (sections.demos.active) {
   <section class="card span-3">
     <div class="card-head">
       <h2>Demoer per uke</h2>
@@ -58,8 +61,10 @@
     </div>
     <app-demo-chart [data]="weeklyDemos()" [target]="demoTarget" />
   </section>
+  }
 
-  <!-- Pipeline -->
+  <!-- Pipeline. Slås av og på i DashboardFacadeService.Sections. -->
+  @if (sections.pipeline.active) {
   <section class="card span-2">
     <div class="card-head">
       <h2>Pipeline</h2>
@@ -86,8 +91,10 @@
       }
     </ul>
   </section>
+  }
 
-  <!-- Per kilde -->
+  <!-- Per kilde. Slås av og på i DashboardFacadeService.Sections. -->
+  @if (sections.sources.active) {
   <section class="card">
     <div class="card-head">
       <h2>Kilder</h2>
@@ -109,8 +116,10 @@
       </tbody>
     </table>
   </section>
+  }
 
-  <!-- Aktivitet -->
+  <!-- Aktivitet. Slås av og på i DashboardFacadeService.Sections. -->
+  @if (sections.activity.active) {
   <section class="card span-3">
     <div class="card-head">
       <h2>Aktivitet</h2>
@@ -135,5 +144,6 @@
     </table>
     <p class="muted note">Unike leads. Tallet i parentes er antall handlinger.</p>
   </section>
+  }
 
 </div>
