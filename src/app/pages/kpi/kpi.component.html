@@ -136,9 +136,8 @@
           <span class="tile-count num">{{ week.demos }}</span>
         }
         <span class="tile-foot muted">
-          @if (week.isFuture) { booket }
-          @else {
-            av {{ demoTarget }}
+          booket
+          @if (!week.isFuture) {
             <span class="tile-sub num">{{ week.completed }} gjennomført</span>
           }
         </span>
