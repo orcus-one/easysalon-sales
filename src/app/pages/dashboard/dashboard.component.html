@@ -24,7 +24,7 @@
     </span>
     <p class="muted account-text">
       Hver arbeidsdag trekker {{ callTarget }}, hver telefon setter inn 1. Siden {{ callAccount().start | date:'d.M.' }}:
-      {{ callAccount().calls | number:'1.0-0' }} telefoner mot et krav på {{ callAccount().required | number:'1.0-0' }}.
+      {{ callAccount().calls | number:'1.0-0' }} telefoner mot et mål på {{ callAccount().required | number:'1.0-0' }}.
       Dagsmålet er nådd {{ callAccount().daysMet }} av {{ callAccount().workdaysPassed }} arbeidsdager.
     </p>
     <p class="account-advice">
@@ -40,7 +40,7 @@
   </div>
   <table class="table account-weeks">
     <thead>
-      <tr><th>Uke</th><th class="num r">Telefoner</th><th class="num r">Krav</th><th class="num r">Dager nådd</th><th class="num r">Uken</th><th class="num r">Saldo</th></tr>
+      <tr><th>Uke</th><th class="num r">Telefoner</th><th class="num r">Mål</th><th class="num r">Dager nådd</th><th class="num r">Uken</th><th class="num r">Saldo</th></tr>
     </thead>
     <tbody>
       @for (week of callAccountWeeks(); track week.start) {
