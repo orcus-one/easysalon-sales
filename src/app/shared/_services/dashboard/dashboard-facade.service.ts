@@ -49,6 +49,16 @@ export class DashboardFacadeService {
     readonly callWeek = computed(() =>
         this.leadsHelper.callWeek(this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.CallTarget));
 
+    /** Det han bør sikte på per dag, så kontoen bygger buffer til dager som glipper (Kenneth 2026-11-27). */
+    static readonly CallAim = 30;
+    /** Antall uker i ukelisten på telefonkontoen, til og med denne. */
+    static readonly AccountWeeks = 6;
+    /** Telefonkontoen: løpende saldo mot dagsmålet siden uke 47, uten nullstilling. */
+    readonly callAccount = computed(() => this.leadsHelper.callAccount(
+        this.stateService.leadEvents(), this.loadedAt(), DashboardFacadeService.CallTarget,
+        DashboardFacadeService.CallAim, LeadsFacadeService.CallAccountStart));
+    readonly callAccountWeeks = computed(() => this.callAccount().weeks.slice(-DashboardFacadeService.AccountWeeks));
+
     /** Demoer registrert som holdt de siste 30 dagene, som nøkkeltall. Samme vindu som «Nye» og «Vunnet». */
     readonly completedDemosLast30 = computed(() =>
         this.leadsHelper.completedDemosSince(this.stateService.leadEvents(), this.loadedAt(), 30));

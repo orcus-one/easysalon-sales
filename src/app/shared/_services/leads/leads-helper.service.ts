@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    IActivitySummary, ICallWeek, IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
+    IActivitySummary, ICallAccount, ICallAccountWeek, ICallWeek,IDashboardKpis, IEventTypeOption, IHistoryItem, IKpiDay, IKpiMonth, IKpiWeek, IKpiYear, ILead, ILeadEvent,
     ILeadEventDetail, ILeadListItem, ILeadNote, ILifecycleCount, ILifecycleItem, IMonthlySummary, IPipelineCount, IPipelineStep, ISource, ISourceCount, ISourceSummary, IUpcomingItem
 } from '../../_interfaces/interface-leads';
 
@@ -342,6 +342,62 @@ export class LeadsHelperService {
             dailyNeed,
             todayRemaining: today ? Math.max(0, dailyNeed - today.calls) : null
         };
+    }
+
+    /**
+     * Telefonkontoen (Kenneth 2026-11-27): en løpende saldo fra og med startKey som aldri nullstilles. Hver
+     * arbeidsdag til og med i dag trekker dagsmålet, hver telefon setter inn 1. Helg og helligdag trekker
+     * ikke, men telefoner de dagene teller som innskudd. Dagens trekk er med fra morgenen, så saldoen viser
+     * hva som må til for å være i balanse i kveld.
+     * aim er det han bør sikte på per dag for å bygge buffer; daysToBalance sier hvor mange arbeidsdager på
+     * aim som henter inn det saldoen var i minus ved starten av dagen.
+     */
+    callAccount(events: Array<ILeadEvent>, now: Date, dayTarget: number, aim: number, startKey: string): ICallAccount {
+        const todayKey = this.toDateKey(now);
+        const callsByDay = this.calledLeadsByDay(events);
+        const [y, m, d] = startKey.split('-').map(Number);
+        const start = new Date(y, m - 1, d);
+
+        const weeks: Array<ICallAccountWeek> = [];
+        let balance = 0, balanceBefore = 0, calls = 0, required = 0, daysMet = 0, workdaysPassed = 0;
+        let todayIsWorkday = false;
+
+        for (let date = start; this.toDateKey(date) <= todayKey; date = this.addDays(date, 1)) {
+            const day = this.kpiDay(date, callsByDay.get(this.toDateKey(date)) ?? 0, dayTarget, todayKey);
+            const monday = this.addDays(date, -((date.getDay() + 6) % 7));
+            const mondayKey = this.toDateKey(monday);
+            let week = weeks[weeks.length - 1];
+            if (!week || week.start !== mondayKey) {
+                const workdays = Array.from({ length: 7 }, (_, i) => this.addDays(monday, i))
+                    .filter(x => this.kpiDay(x, 0, dayTarget, todayKey).kind === 'workday' && this.toDateKey(x) >= startKey).length;
+                week = { week: this.isoWeekNumber(monday), start: mondayKey, calls: 0, required: 0, change: 0, balance: 0, daysMet: 0, workdays, isCurrent: false };
+                weeks.push(week);
+            }
+            const dayRequired = day.kind === 'workday' ? dayTarget : 0;
+            if (day.isToday) { balanceBefore = balance; todayIsWorkday = day.kind === 'workday'; week.isCurrent = true; }
+            balance += day.calls - dayRequired;
+            calls += day.calls;
+            required += dayRequired;
+            week.calls += day.calls;
+            week.required += dayRequired;
+            week.change += day.calls - dayRequired;
+            week.balance = balance;
+            if (day.kind === 'workday') workdaysPassed++;
+            if (day.met) { daysMet++; week.daysMet++; }
+        }
+
+        return {
+            start: startKey, balance, calls, required, workdaysPassed, daysMet,
+            todayToBalance: todayIsWorkday ? Math.max(0, -balance) : null,
+            daysToBalance: balanceBefore < 0 && aim > dayTarget ? Math.ceil(-balanceBefore / (aim - dayTarget)) : 0,
+            weeks
+        };
+    }
+
+    /** ISO-ukenummeret for uken som begynner på mandagen. Torsdagen avgjør hvilket år uken hører til. */
+    private isoWeekNumber(monday: Date): number {
+        const weekOne = this.isoWeekOneStart(this.addDays(monday, 3).getFullYear());
+        return Math.round((monday.getTime() - weekOne.getTime()) / (7 * 86_400_000)) + 1;
     }
 
     /**

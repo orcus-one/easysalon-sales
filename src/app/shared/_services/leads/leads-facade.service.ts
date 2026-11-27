@@ -19,11 +19,19 @@ export class LeadsFacadeService {
     /** Vinduet for aktivitetstallene og loggen. */
     static readonly ActivityDays = 30;
 
-    /** Hendelser hentes fra årsstart for månedsoversikten, minst 30 dager tilbake rett etter nyttår. */
+    /** Første dag på telefonkontoen: mandag i uke 47 2026, første hele uke med dagsmål (Kenneth 2026-11-27). */
+    static readonly CallAccountStart = '2026-11-16';
+
+    /**
+     * Hendelser hentes fra årsstart for månedsoversikten, minst 30 dager tilbake rett etter nyttår, og aldri
+     * senere enn starten på telefonkontoen, siden saldoen der regnes fra første dag.
+     */
     private eventsSince(now: Date): Date {
         const yearStart = new Date(now.getFullYear(), 0, 1);
         const thirtyDays = this.leadsHelper.addDays(now, -LeadsFacadeService.ActivityDays);
-        return yearStart < thirtyDays ? yearStart : thirtyDays;
+        const [y, m, d] = LeadsFacadeService.CallAccountStart.split('-').map(Number);
+        const accountStart = new Date(y, m - 1, d);
+        return [yearStart, thirtyDays, accountStart].reduce((first, date) => date < first ? date : first);
     }
 
     readonly isLoading = signal(false);

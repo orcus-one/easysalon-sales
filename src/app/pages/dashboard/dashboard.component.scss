@@ -9,6 +9,20 @@
   border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2);
 }
 
+/* Telefonkontoen øverst: saldoen til venstre, ukene til høyre */
+.account {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px 32px; align-items: start;
+  margin-bottom: 16px; transition: opacity .2s;
+  &.pending { opacity: .5; }
+}
+.account-main { display: flex; flex-direction: column; gap: 4px; }
+.account-value { font-size: 52px; font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
+.account-state { font-size: 14px; font-weight: 600; }
+.account-text { font-size: 13px; line-height: 1.5; margin: 8px 0 0; }
+.account-advice { font-size: 13px; line-height: 1.5; margin: 6px 0 0; }
+.plus { color: var(--ok); }
+.minus { color: var(--crit); }
+
 /* Kort i rutenett */
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .span-2 { grid-column: span 2; }
@@ -38,6 +52,7 @@
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
   .span-2, .span-3 { grid-column: auto; }
+  .account { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .steps { grid-template-columns: 1fr; }

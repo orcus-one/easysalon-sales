@@ -269,6 +269,41 @@ export interface ICallWeek {
     todayRemaining: number | null;
 }
 
+/** Telefonkontoen: løpende saldo siden start, der hver arbeidsdag trekker dagsmålet og hver telefon setter inn 1. */
+export interface ICallAccount {
+    /** Første dag på kontoen, yyyy-MM-dd. */
+    start: string;
+    /** Telefoner minus krav til og med i dag. Dagens trekk er med fra morgenen. */
+    balance: number;
+    calls: number;
+    required: number;
+    workdaysPassed: number;
+    /** Arbeidsdager der dagsmålet ble nådd. */
+    daysMet: number;
+    /** Hvor mange telefoner som mangler i dag for å være i balanse i kveld. null når dagen i dag ikke er arbeidsdag. */
+    todayToBalance: number | null;
+    /** Arbeidsdager på det han bør sikte på som henter inn minusen fra starten av dagen. 0 når kontoen ikke var i minus. */
+    daysToBalance: number;
+    weeks: Array<ICallAccountWeek>;
+}
+
+/** Én uke på telefonkontoen, til og med i dag for inneværende uke. */
+export interface ICallAccountWeek {
+    week: number;
+    /** Mandagen i uken, yyyy-MM-dd. */
+    start: string;
+    calls: number;
+    required: number;
+    /** Telefoner minus krav i uken. */
+    change: number;
+    /** Saldoen ved utgangen av uken. */
+    balance: number;
+    daysMet: number;
+    /** Arbeidsdager i hele uken, også de som ikke er passert. */
+    workdays: number;
+    isCurrent: boolean;
+}
+
 /** Hva slags dag et KPI-kort gjelder. Målet gjelder bare arbeidsdager. */
 export type KpiDayKind = 'workday' | 'weekend' | 'holiday';
 
