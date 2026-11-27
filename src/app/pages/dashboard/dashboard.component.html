@@ -45,7 +45,7 @@
     <tbody>
       @for (week of callAccountWeeks(); track week.start) {
         <tr>
-          <td>Uke {{ week.week }}@if (week.isCurrent) { <span class="muted small">så langt</span> }</td>
+          <td>Uke {{ week.week }}@if (week.isCurrent) { <span class="muted small">&nbsp;(så langt)</span> }</td>
           <td class="num r">{{ week.calls | number:'1.0-0' }}</td>
           <td class="num r">{{ week.required | number:'1.0-0' }}</td>
           <td class="num r">{{ week.daysMet }} av {{ week.workdays }}</td>
