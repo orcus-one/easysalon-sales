@@ -267,12 +267,22 @@ export class LeadsHelperService {
         ['2028-06-05', 'Andre pinsedag'], ['2028-12-25', 'Første juledag'], ['2028-12-26', 'Andre juledag']
     ]);
 
+    /**
+     * Fridager utenom de offentlige høytidsdagene: ferie, sykdom og dager som julaften (Kenneth 2026-11-27).
+     * De behandles som helligdager overalt: dagsmålet gjelder ikke, telefonkontoen trekkes ikke, og telefoner
+     * som likevel tas teller. Føres inn her for hånd, én linje per dag med dato (yyyy-MM-dd) og hva dagen er,
+     * for eksempel ['2026-12-24', 'Julaften'] eller ['2027-02-22', 'Ferie'].
+     */
+    static readonly DaysOff: ReadonlyMap<string, string> = new Map<string, string>([
+    ]);
+
     /** Én dag målt mot dagsmålet: arbeidsdag, helg eller helligdag, og om målet ble nådd. Felles for KPI-siden og grafen på Oversikt. */
     private kpiDay(date: Date, calls: number, target: number, todayKey: string): IKpiDay {
         const key = this.toDateKey(date);
-        const holidayName = LeadsHelperService.Holidays.get(key) ?? null;
+        const holiday = LeadsHelperService.Holidays.get(key);
+        const holidayName = holiday ?? LeadsHelperService.DaysOff.get(key) ?? null;
         const weekday = date.getDay();
-        const kind = holidayName ? 'holiday' : (weekday === 0 || weekday === 6) ? 'weekend' : 'workday';
+        const kind = holiday ? 'holiday' : holidayName ? 'dayoff' : (weekday === 0 || weekday === 6) ? 'weekend' : 'workday';
         const isFuture = key > todayKey;
         return {
             date: key, dayOfMonth: date.getDate(), kind, holidayName, isFuture, isToday: key === todayKey, calls,

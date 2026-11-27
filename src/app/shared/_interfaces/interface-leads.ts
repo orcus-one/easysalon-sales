@@ -305,14 +305,14 @@ export interface ICallAccountWeek {
 }
 
 /** Hva slags dag et KPI-kort gjelder. Målet gjelder bare arbeidsdager. */
-export type KpiDayKind = 'workday' | 'weekend' | 'holiday';
+export type KpiDayKind = 'workday' | 'weekend' | 'holiday' | 'dayoff';
 
 /** Én dag i KPI-måneden: antall telefoner og om målet ble nådd. */
 export interface IKpiDay {
     date: string;
     dayOfMonth: number;
     kind: KpiDayKind;
-    /** Navnet på helligdagen, ellers null. */
+    /** Navnet på helligdagen, eller hva fridagen er (kind «dayoff», fra LeadsHelperService.DaysOff), ellers null. */
     holidayName: string | null;
     /** Dagen er etter i dag og vises uten tall. */
     isFuture: boolean;

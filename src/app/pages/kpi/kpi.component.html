@@ -90,6 +90,7 @@
         }
         <span class="tile-foot muted">
           @if (day.kind === 'holiday') { Helligdag }
+          @else if (day.kind === 'dayoff') { Fri }
           @else if (day.kind === 'weekend') { Helg }
           @else if (!day.isFuture) { av {{ target }} }
         </span>
