@@ -274,9 +274,12 @@ export class LeadsHelperService {
      * for eksempel ['2026-12-24', 'Julaften'] eller ['2027-02-22', 'Ferie'].
      */
     static readonly DaysOff: ReadonlyMap<string, string> = new Map<string, string>([
-        ['2026-12-24', 'Julaften'], ['2026-12-31', 'Nyttårsaften'],
-        ['2027-12-24', 'Julaften'], ['2027-12-31', 'Nyttårsaften'],
-        ['2028-12-24', 'Julaften'], ['2028-12-31', 'Nyttårsaften']
+        ['2026-12-24', 'Julaften'], ['2026-12-27', 'Romjul'], ['2026-12-28', 'Romjul'], ['2026-12-29', 'Romjul'],
+        ['2026-12-30', 'Romjul'], ['2026-12-31', 'Nyttårsaften'],
+        ['2027-12-24', 'Julaften'], ['2027-12-27', 'Romjul'], ['2027-12-28', 'Romjul'], ['2027-12-29', 'Romjul'],
+        ['2027-12-30', 'Romjul'], ['2027-12-31', 'Nyttårsaften'],
+        ['2028-12-24', 'Julaften'], ['2028-12-27', 'Romjul'], ['2028-12-28', 'Romjul'], ['2028-12-29', 'Romjul'],
+        ['2028-12-30', 'Romjul'], ['2028-12-31', 'Nyttårsaften']
     ]);
 
     /** Én dag målt mot dagsmålet: arbeidsdag, helg eller helligdag, og om målet ble nådd. Felles for KPI-siden og grafen på Oversikt. */
